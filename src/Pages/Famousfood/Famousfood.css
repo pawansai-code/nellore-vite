@@ -827,32 +827,97 @@
   color: #0b5ed7;
 }
 
+@media (max-width: 992px) {
+  .famousfood-header {
+    padding: 0 1.5rem;
+    /* Slightly more padding for aesthetics */
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
 @media (max-width: 768px) {
-  .famousfood-title {
-    font-size: 1.5rem;
+  .famousfood-header {
+    padding: 0 1rem;
+    margin-bottom: 2rem;
   }
 
+  .famousfood-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  /* Title Section - Wrap nicely */
+  .famousfood-title-section {
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    /* Space out title and 'View Local' button */
+    gap: 1rem;
+  }
+
+  .famousfood-title {
+    font-size: 1.5rem;
+    white-space: normal;
+    line-height: 1.3;
+  }
+
+  .famousfood-local-btn {
+    margin-left: auto;
+    /* Push to right if wrapping */
+  }
+
+  /* Controls Section - Stack and full width */
   .famousfood-controls {
+    width: 100%;
     flex-direction: column;
     align-items: stretch;
+    gap: 1rem;
   }
 
   .famousfood-search-bar {
-    max-width: 100%;
+    width: 100%;
   }
 
+  .famousfood-search-bar input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Filter Buttons - Wrap for visibility on small screens to allow dropdowns to pop over */
   .famousfood-filter-buttons {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    /* Changed from nowrap to wrap */
+    overflow-x: visible;
+    /* Changed from auto to visible */
+    padding-bottom: 0;
+    gap: 0.75rem;
+  }
+
+  .famousfood-filter-buttons::-webkit-scrollbar {
+    display: none;
   }
 
   .famousfood-filter-btn {
-    flex: 1;
+    flex-shrink: 0;
+    margin-bottom: 0.5rem;
+    /* Add margin for wrapped rows */
   }
 
-  .famousfood-location-filter {
-    width: 100%;
-    justify-content: center;
+  /* Reset dropdown positioning */
+  .filter-wrapper:last-child .filter-dropdown {
+    right: 0;
+    left: auto;
+  }
+
+  /* Ensure dropdowns go over other elements */
+  .filter-wrapper {
+    position: relative;
+    z-index: 50;
   }
 
   .famousfood-tour-plan-actions {
@@ -861,5 +926,29 @@
 
   .famousfood-tour-share-btn {
     width: 100%;
+  }
+
+  /* Fix for large fixed-width cards causing overflow elsewhere */
+  .famousfood-editors-picks-card,
+  .famousfood-tour-plan-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 576px) {
+  .famousfood-title {
+    font-size: 1.35rem;
+  }
+
+  .famousfood-header-content {
+    gap: 1rem;
+    padding: 0.5rem 0;
+  }
+
+  .famousfood-local-btn {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
   }
 }

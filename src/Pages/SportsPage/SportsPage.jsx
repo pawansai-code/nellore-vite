@@ -294,23 +294,6 @@ const SportsPage = () => {
                   ))}
                 </div>
               </section>
-            </div>
-
-            {/* Sidebar - Right Column (only Sponsored now) */}
-            <div className="sports-sidebar">
-
-
-              <section className="sports-sidebar-section">
-                <h3 className="sports-sidebar-title">{t('NewsLines')}</h3>
-                <div className="sports-news-lines-list">
-                  {newsLines.map((line) => (
-                    <div key={line.id} className="sports-news-line-item">
-                      <i className="bi bi-lightning-charge"></i>
-                      <span>{line.text}</span>
-                    </div>
-                  ))}
-                </div>
-              </section>
 
               <section className="sports-sidebar-section">
                 <h3 className="sports-sidebar-title">
@@ -332,6 +315,25 @@ const SportsPage = () => {
                   ))}
                 </div>
               </section>
+            </div>
+
+            {/* Sidebar - Right Column (only Sponsored now) */}
+            <div className="sports-sidebar">
+
+
+              <section className="sports-sidebar-section">
+                <h3 className="sports-sidebar-title">{t('NewsLines')}</h3>
+                <div className="sports-news-lines-list">
+                  {newsLines.map((line) => (
+                    <div key={line.id} className="sports-news-line-item">
+                      <i className="bi bi-lightning-charge"></i>
+                      <span>{line.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+
               {/* Sponsored Section */}
               {/* <section className="sports-sidebar-section">
                 <h3 className="sports-sidebar-title">Sponsored</h3>

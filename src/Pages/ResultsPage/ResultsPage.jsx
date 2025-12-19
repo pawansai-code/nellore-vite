@@ -106,6 +106,12 @@ const ResultsPage = () => {
     handlePageChange(resultsPage.currentPage + 1);
   };
 
+  const handleNextPage = () => {
+    if (resultsPage.currentPage < resultsPage.totalPages) {
+      handlePageChange(resultsPage.currentPage + 1);
+    }
+  };
+
   const handleResultAction = (result, actionType) => {
     console.log(`Action: ${actionType} for result: ${result.id}`);
   };
@@ -312,35 +318,45 @@ const ResultsPage = () => {
 
   // Pagination
   const pagination = (
-    <>
-      <span className="results-pagination-status">
-        {t('Page')} {resultsPage.currentPage} {t('Of')} {resultsPage.totalPages}
-      </span>
-      <div className="results-pagination-controls">
-        {resultsPage.isLoading ? (
-          <>
-            <span className="results-loading-text">{t('LoadingMore')}</span>
-            <span
-              className="spinner-border spinner-border-sm ms-2"
-              role="status"
-              aria-hidden="true"
-            ></span>
-          </>
-        ) : (
-          <>
-            <span className="results-loading-text">{t('LoadingMore')}</span>
+    <div className="results-pagination-section">
+      <div className="results-pagination-panel">
+        <div className="pagination-controls-group">
+          <span className="pagination-status-chip">
+            {t('Page')} {resultsPage.currentPage} {t('Of')} {resultsPage.totalPages}
+          </span>
+          <div className="pagination-controls">
             <button
-              className="results-load-more-btn"
-              onClick={handleLoadMore}
-              disabled={resultsPage.currentPage >= resultsPage.totalPages}
+              className="btn pagination-chip-btn"
+              onClick={() => handlePageChange(1)}
+              disabled={resultsPage.currentPage === 1}
             >
-              <i className="bi bi-arrow-repeat me-2"></i>
-              {t('LoadMore')}
+              1
             </button>
-          </>
-        )}
+            <button
+              className="btn pagination-chip-btn"
+              onClick={() => handlePageChange(2)}
+              disabled={resultsPage.currentPage === 2}
+            >
+              2
+            </button>
+            <button
+              className="btn pagination-chip-btn"
+              onClick={() => handlePageChange(3)}
+              disabled={resultsPage.currentPage === 3}
+            >
+              3
+            </button>
+            <button
+              className="btn pagination-chip-btn pagination-chip-btn-primary"
+              onClick={handleNextPage}
+              disabled={resultsPage.currentPage >= resultsPage.totalPages || resultsPage.isLoading}
+            >
+              {t('Next')}
+            </button>
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 
   const localizedFilters = resultsFilters.map(f => ({

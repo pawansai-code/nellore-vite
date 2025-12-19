@@ -82,24 +82,23 @@
   pointer-events: none;
   font-size: 0.75rem;
   color: #0d6efd;
-} 
+}
 
 @media (max-width: 768px) {
   .site-title {
     font-size: 1.25rem;
   }
-  
+
   .tagline {
     font-size: 0.8rem;
   }
-  
+
   .logo-circle {
     width: 50px;
     height: 50px;
   }
-  
+
   .logo-icon {
     font-size: 1.25rem;
   }
 }
-

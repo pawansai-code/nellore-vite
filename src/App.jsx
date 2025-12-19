@@ -6,7 +6,9 @@ import Footer from "./components/Footer";
 import MainHeader from "./components/MainHeader";
 import Navbar from "./components/Navbar";
 import TopHeader from "./components/TopHeader";
-import Banner from "./Layout/CustomHeader/Banner";
+import Carousel from "./Layout/CustomHeader/Carousel";
+import ArticlesPage from "./Pages/ArticlesPage/ArticlesPage.jsx";
+import EventsPage from "./Pages/EventsPage/EventsPage.jsx";
 import Famousfood from "./Pages/Famousfood/Famousfood.jsx";
 import FamousstayPage from "./Pages/FamousstayPage/FamousstayPage.jsx";
 import HistoryPage from "./Pages/HistoryPage/HistoryPage.jsx";
@@ -15,11 +17,9 @@ import JobsPage from "./Pages/JobsPage";
 import NewsPage from "./Pages/NewsPage";
 import NotificationPage from "./Pages/NotificationPage/NotificationPage.jsx";
 import ResultsPage from "./Pages/ResultsPage/ResultsPage.jsx";
+import SportsPage from "./Pages/SportsPage/SportsPage.jsx";
 import UpdatesPage from "./Pages/UpdatesPage";
 import "./styles/App.css";
-import EventsPage from "./Pages/EventsPage/EventsPage.jsx";
-import SportsPage from "./Pages/SportsPage/SportsPage.jsx";
-import ArticlesPage from "./Pages/ArticlesPage/ArticlesPage.jsx";
 
 function HomePage() {
   return (
@@ -31,7 +31,13 @@ function HomePage() {
       />
       <BreakingNews />
       <Navbar />
-      <Banner />
+      <Carousel />
+      <div className="welcome-section">
+        <h1 className="welcome-title">Welcome To Nellorien</h1>
+        <p className="welcome-subtitle">
+          Discover the rich heritage, vibrant culture, and endless opportunities of our beautiful city.
+        </p>
+      </div>
       {/* <main className="main-content">
         <div className="container-fluid">
           <div className="row">

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     FaAddressCard,
     FaBell,
@@ -8,6 +9,7 @@ import {
     FaHistory,
     FaHome,
     FaInfoCircle,
+    FaList,
     FaMapMarkerAlt,
     FaNewspaper,
     FaPhone,
@@ -19,6 +21,7 @@ import useTranslation from "../../hooks/useTranslation";
 import "./Navigation.css";
 
 const Navigation = ({ includeSearch = false }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { t } = useTranslation();
 
@@ -57,8 +60,11 @@ const Navigation = ({ includeSearch = false }) => {
 
   return (
     <nav className="main-navigation">
-        <div className="d-flex justify-content-center align-items-center">
-          <div className="nav-links">
+        <div className="d-flex justify-content-center align-items-center navigation-wrapper">
+          <div className="mobile-menu-icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <FaList />
+          </div>
+          <div className={`nav-links ${isMenuOpen ? "active" : ""}`}>
             {items.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;

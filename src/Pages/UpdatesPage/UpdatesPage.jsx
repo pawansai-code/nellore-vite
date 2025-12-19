@@ -32,6 +32,25 @@ const UpdatesPage = () => {
     updatesFeedItems[0]?.id ?? null
   );
 
+  // Pagination state copied from JobsPage
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const totalPages = updatesPaginationInfo.total || 14;
+
+  const handlePageChange = (page) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setCurrentPage(page);
+      setIsLoading(false);
+    }, 300);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      handlePageChange(currentPage + 1);
+    }
+  };
+
   useEffect(() => {
     if (!updatesFeedItems.length) {
       setSelectedUpdateId(null);
@@ -344,28 +363,47 @@ const UpdatesPage = () => {
                 )}
               
 
-              <div className="updates-pagination">
-                <span className="updates-pagination-info">
-                  {t('Page')} {updatesPaginationInfo.current} {t('Of')}{' '}
-                  {updatesPaginationInfo.total}
-                </span>
-                <div className="updates-pagination-controls">
-                  <div className="updates-loading-indicator">
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                    {t('LoadingMore')}
+              <section className="updates-pagination-section">
+                <div className="container-fluid">
+                  <div className="updates-pagination-panel">
+                    <div className="pagination-controls-group">
+                      <span className="pagination-status-chip">
+                        {t('Page')} {currentPage} {t('Of')} {totalPages}
+                      </span>
+                      <div className="pagination-controls">
+                        <button
+                          className="btn pagination-chip-btn"
+                          onClick={() => handlePageChange(1)}
+                          disabled={currentPage === 1}
+                        >
+                          1
+                        </button>
+                        <button
+                          className="btn pagination-chip-btn"
+                          onClick={() => handlePageChange(2)}
+                          disabled={currentPage === 2}
+                        >
+                          2
+                        </button>
+                        <button
+                          className="btn pagination-chip-btn"
+                          onClick={() => handlePageChange(3)}
+                          disabled={currentPage === 3}
+                        >
+                          3
+                        </button>
+                        <button
+                          className="btn pagination-chip-btn pagination-chip-btn-primary"
+                          onClick={handleNextPage}
+                          disabled={currentPage >= totalPages || isLoading}
+                        >
+                          {t('Next')}
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <button
-                    className="btn btn-primary updates-load-more-btn"
-                    onClick={handleLoadMoreUpdates}
-                  >
-                    {t('LoadMore')}
-                  </button>
                 </div>
-              </div>
+              </section>
             </div>
 
             <aside className="updates-sidebar">

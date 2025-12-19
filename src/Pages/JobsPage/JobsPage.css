@@ -1038,7 +1038,7 @@
 
 .jobs-pagination-panel {
   background: white;
-  border-radius: 999px;
+  border-radius: 50px;
   padding: 0.5rem 1rem 0.5rem 0.5rem;
   box-shadow: 0 20px 35px rgba(15, 23, 42, 0.08);
   border: 1px solid #e3eaff;
@@ -1046,6 +1046,8 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  max-width: 800px;
+  width: 100%;
 }
 
 .pagination-controls-group {
@@ -1313,7 +1315,7 @@
     padding: 0.3rem 0.6rem;
     font-size: 0.8rem;
   }
-} 
+}
 
 
 .jobs-grid {
@@ -1377,4 +1379,86 @@
   border: none;
   cursor: pointer;
   width: 100%;
+}
+
+/* Responsive Filter Section */
+@media (max-width: 992px) {
+  .jobs-heading-title {
+    font-size: 1.5rem;
+  }
+
+  .jobs-filter-row {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .jobs-filter-section {
+    padding: 1rem 0;
+  }
+
+  .jobs-heading-title {
+    font-size: 1.35rem;
+  }
+
+  .jobs-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .filter-buttons-container {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    flex-wrap: nowrap;
+    /* Enable horizontal scrolling for filters */
+    -webkit-overflow-scrolling: touch;
+    gap: 0.75rem;
+  }
+
+  /* Hide scrollbar for cleaner look */
+  .filter-buttons-container::-webkit-scrollbar {
+    height: 4px;
+    /* Small scrollbar */
+  }
+
+  .filter-buttons-container::-webkit-scrollbar-thumb {
+    background: #dee2e6;
+    border-radius: 4px;
+  }
+
+  .filter-button-wrapper {
+    flex-shrink: 0;
+  }
+
+  .apply-filters-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .jobs-section-heading {
+    margin-bottom: 1rem;
+  }
+
+  .jobs-heading-title {
+    font-size: 1.25rem;
+  }
+
+  .jobs-section-heading i {
+    font-size: 1.25rem;
+  }
+
+  .filter-pill-btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .apply-filters-btn {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
 }

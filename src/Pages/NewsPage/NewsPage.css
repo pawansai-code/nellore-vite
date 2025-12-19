@@ -1020,3 +1020,54 @@
         }
     }
 }
+
+/* Responsive Tabs Section */
+@media (max-width: 992px) {
+    .news-page-tabs {
+        gap: 0.5rem;
+    }
+
+    .news-page-tab {
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .news-page-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+        gap: 0.75rem;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    /* Hide scrollbar for cleaner look */
+    .news-page-tabs::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .news-page-tabs::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 4px;
+    }
+
+    .news-page-tab {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 576px) {
+    .news-page-tabs {
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .news-page-tab {
+        padding: 0.45rem 1rem;
+        font-size: 0.85rem;
+    }
+}

@@ -1,6 +1,6 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { useSelector } from 'react-redux';
+import WeatherCard from '../WeatherCard';
 import './SidebarContent.css';
 
 const SidebarContent = () => {
@@ -19,6 +19,10 @@ const SidebarContent = () => {
             </li>
           ))}
         </ul>
+      </div>
+      
+      <div className="sidebar-section">
+        <WeatherCard />
       </div>
 
 

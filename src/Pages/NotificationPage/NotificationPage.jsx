@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import CommonPageLayout from "../../components/CommonPageLayout";
 import useTranslation from "../../hooks/useTranslation";
 import {
-    setNotificationsLoading,
-    setNotificationsPage,
+  setNotificationsLoading,
+  setNotificationsPage,
 } from "../../state/slices/notificationSlice";
 import "./NotificationPage.css";
 

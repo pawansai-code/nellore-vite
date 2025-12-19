@@ -12,126 +12,133 @@
 }
 
 /* Hero Section */
-.famousstay-hero {
-  position: relative;
-  width: 100%;
-  margin-bottom: 2rem;
+/* Redesigned Hero Header */
+.famousstay-header-section {
+  padding: 10px 0;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.famousstay-hero-banner {
-  position: relative;
-  width: 100%;
-  height: 200px;
-  background: url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=1200') center/cover;
+.famousstay-header-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 3rem 0;
-}
-
-.famousstay-hero-content {
-  max-width: 1200px;
-  width: 100%;
-  padding: 0 2rem;
-  text-align: center;
-  color: white;
-  z-index: 1;
-}
-
-.famousstay-hero-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.famousstay-hero-subtitle {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  color: rgba(255, 255, 255, 0.95);
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.famousstay-search-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  max-width: 1000px;
+  gap: 40px;
+  max-width: 1300px;
   margin: 0 auto;
 }
 
-.famousstay-search-bar {
-  position: relative;
-  flex: 1;
-  min-width: 300px;
-  max-width: 500px;
+/* Left Image - Pill Shape */
+.famousstay-header-image-wrapper {
+  width: 400px;
+  height: 150px;
+  border-radius: 100px;
+  /* High radius for pill shape */
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.famousstay-search-bar i {
-  position: absolute;
-  left: 1.25rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #6c757d;
-  font-size: 1.1rem;
-}
-
-.famousstay-search-bar input {
+.famousstay-header-image-wrapper img {
   width: 100%;
-  padding: 0.875rem 1.25rem 0.875rem 3.5rem;
-  border: none;
-  border-radius: 50px;
-  background-color: white;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Right Content */
+.famousstay-header-content-wrapper {
+  flex: 1;
+}
+
+.famousstay-header-title {
+  font-size: 2rem;
+  /* Matches "Famous Stays in Nellore" */
+  font-weight: 700;
+  color: #0f172a;
+  /* Dark blue/black */
+  margin-bottom: 0.5rem;
+}
+
+.famousstay-header-subtitle {
   font-size: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: box-shadow 0.3s ease;
+  color: #64748b;
+  /* Greyish blue */
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
 }
 
-.famousstay-search-bar input:focus {
-  outline: none;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-}
-
-.famousstay-filter-btn {
+/* Action Row */
+.famousstay-header-action-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.5rem;
+  gap: 15px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.famousstay-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* Search Bar */
+.famousstay-header-search {
+  position: relative;
+  width: 320px;
+}
+
+.famousstay-header-search i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+.famousstay-header-search input {
+  width: 100%;
+  padding: 10px 15px 10px 40px;
   border: 1px solid #e2e8f0;
   border-radius: 50px;
-  background-color: white;
-  color: #212529;
+  font-size: 0.95rem;
+  color: #334155;
+  background-color: #fff;
+}
+
+.famousstay-header-search input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Filter Button */
+.famousstay-header-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 50px;
+  background-color: #fff;
+  color: #334155;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-  white-space: nowrap;
 }
 
-.famousstay-filter-btn:hover,
-.famousstay-filter-btn.active {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  border-color: #0B66D1;
-  color: #0B66D1;
-  background-color: #f8f9fa;
-  transform: translateY(-1px);
+.famousstay-header-filter-btn i {
+  color: #94a3b8;
 }
 
-.famousstay-filter-btn i {
-  font-size: 1rem;
-  color: #6c757d;
+.famousstay-header-filter-btn:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
 }
 
-.famousstay-filter-btn.active i {
-  color: #0B66D1;
-}
-
+/* Filter Dropdown & Wrapper */
 .filter-wrapper {
   position: relative;
 }
@@ -192,24 +199,53 @@
   }
 }
 
-.famousstay-map-btn {
-  padding: 0.875rem 1.5rem;
+/* Map Button */
+.famousstay-header-map-btn {
+  padding: 10px 24px;
   border: none;
   border-radius: 50px;
   background-color: #0B66D1;
-  color: white;
+  /* Primary Blue */
+  color: #fff;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
-  transition: all 0.3s ease;
-  white-space: nowrap;
+  transition: background-color 0.2s;
 }
 
-.famousstay-map-btn:hover {
-  background-color: #00B8FF;
-  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.5);
-  transform: translateY(-1px);
+.famousstay-header-map-btn:hover {
+  background-color: #0099ff;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .famousstay-header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+  }
+
+  .famousstay-header-image-wrapper {
+    width: 100%;
+    height: 250px;
+    border-radius: 20px;
+    /* Standard rounded corners on mobile */
+  }
+
+  .famousstay-header-action-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .famousstay-header-actions {
+    margin-left: 0;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .famousstay-header-search {
+    width: 100%;
+  }
 }
 
 /* Content Wrapper */
@@ -731,34 +767,118 @@
     order: -1;
   }
 
+  /* Reset grid to column for tablet since we sidebar is top */
   .famousstay-stays-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    display: flex;
+    flex-direction: column;
   }
 }
 
 @media (max-width: 768px) {
-  .famousstay-hero-title {
-    font-size: 2rem;
+  .famousstay-header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1rem;
   }
 
-  .famousstay-hero-subtitle {
-    font-size: 1rem;
+  /* Image wrapper adjustments for mobile */
+  .famousstay-header-image-wrapper {
+    width: 100%;
+    height: 180px;
+    border-radius: 20px;
+    margin-bottom: 0.5rem;
   }
 
-  .famousstay-search-controls {
+  .famousstay-header-content-wrapper {
+    width: 100%;
+  }
+
+  .famousstay-header-title {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .famousstay-header-subtitle {
+    font-size: 0.95rem;
+  }
+
+  /* Action row stacking */
+  .famousstay-header-action-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .famousstay-header-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  /* Full width search */
+  .famousstay-header-search {
+    width: 100%;
+  }
+
+  .famousstay-header-search input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Filter buttons full width / stacked */
+  .famousstay-header-filter-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Filter dropdown full width */
+  .filter-dropdown {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  /* Map button full width */
+  .famousstay-header-map-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Card adjustments */
+  .famousstay-stay-card {
     flex-direction: column;
   }
 
-  .famousstay-search-bar {
+  .famousstay-stay-image {
     width: 100%;
-    max-width: 100%;
+    height: 200px;
   }
 
-  .famousstay-stays-grid {
-    grid-template-columns: 1fr;
+  .famousstay-filters-grid {
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 cols even on mobile for chips is often fine */
+  }
+}
+
+@media (max-width: 576px) {
+  .famousstay-header-title {
+    font-size: 1.35rem;
+    /* Matches other pages */
   }
 
   .famousstay-filters-grid {
     grid-template-columns: 1fr;
+    /* 1 col for very small screens */
+  }
+
+  .famousstay-stay-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .famousstay-stay-rating {
+    margin-bottom: 0.25rem;
   }
 }

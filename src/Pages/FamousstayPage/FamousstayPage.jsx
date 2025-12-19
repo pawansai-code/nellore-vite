@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
+import MapView from "../../components/MapView/MapView";
 import Navbar from "../../components/Navbar";
 import TopHeader from "../../components/TopHeader";
 import useTranslation from '../../hooks/useTranslation';
@@ -193,103 +194,69 @@ const FamousstayPage = () => {
 
       <main className="famousstay-main">
         {/* Hero Header Section */}
-        <section className="famousstay-hero">
-          <div className="famousstay-hero-banner">
-            <div className="famousstay-hero-content">
-              <h1 className="famousstay-hero-title">{t('FamousStaysInNellore')}</h1>
-              <p className="famousstay-hero-subtitle">
-                {t('StaysSubtitle')}
-              </p>
+        {/* Hero Header Section */}
+        <section className="famousstay-header-section">
+          <div className="container-fluid">
+            <div className="famousstay-header-container">
+              {/* Left Image */}
+              <div className="famousstay-header-image-wrapper">
+                <img src="https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=1200" alt="Famous Stays" />
+              </div>
 
-              <div className="famousstay-search-controls" ref={dropdownRef}>
-                <div className="famousstay-search-bar">
-                  <i className="bi bi-search"></i>
-                  <input
-                    type="text"
-                    placeholder={t('SearchHotel')}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                
-                {/* Price Filter */}
-                <div className="filter-wrapper">
-                  <button 
-                    className={`famousstay-filter-btn ${activeFilters.price !== 'All' || openDropdown === 'price' ? 'active' : ''}`}
-                    onClick={() => toggleDropdown('price')}
-                  >
-                    <i className="bi bi-tag"></i>
-                    {activeFilters.price === 'All' ? 'Price' : activeFilters.price}
-                  </button>
-                  {openDropdown === 'price' && (
-                    <div className="filter-dropdown">
-                      {['All', '< ₹2000', '₹2000 - ₹5000', '> ₹5000'].map(price => (
-                        <button 
-                          key={price}
-                          className={activeFilters.price === price ? 'selected' : ''}
-                          onClick={() => handleLocalFilterChange('price', price)}
-                        >
-                          {price}
-                        </button>
-                      ))}
+              {/* Right Content */}
+              <div className="famousstay-header-content-wrapper">
+                <h1 className="famousstay-header-title">Famous Stays in Nellore</h1>
+                <p className="famousstay-header-subtitle">
+                  Curated hotels, heritage stays, and budget picks — close to food streets and historic landmarks.
+                </p>
+
+                <div className="famousstay-header-action-row">
+                  {/* Search Bar */}
+                  <div className="famousstay-header-search">
+                    <i className="bi bi-search"></i>
+                    <input
+                      type="text"
+                      placeholder="Search hotel, area, landmark"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Actions Group */}
+                  <div className="famousstay-header-actions">
+                    {/* Filter Button */}
+                    <div className="filter-wrapper">
+                      <button 
+                        className="famousstay-header-filter-btn"
+                        onClick={() => toggleDropdown('price')} 
+                      >
+                        <i className="bi bi-funnel"></i>
+                        Price · Rating · Near
+                      </button>
+                      {openDropdown === 'price' && (
+                        <div className="filter-dropdown">
+                          {['All', '< ₹2000', '₹2000 - ₹5000', '> ₹5000'].map(price => (
+                            <button 
+                              key={price}
+                              className={activeFilters.price === price ? 'selected' : ''}
+                              onClick={() => handleLocalFilterChange('price', price)}
+                            >
+                              {price}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
 
-                {/* Rating Filter */}
-                <div className="filter-wrapper">
-                  <button 
-                    className={`famousstay-filter-btn ${activeFilters.rating !== 'All' || openDropdown === 'rating' ? 'active' : ''}`}
-                    onClick={() => toggleDropdown('rating')}
-                  >
-                    <i className="bi bi-star"></i>
-                    {activeFilters.rating === 'All' ? 'Rating' : activeFilters.rating}
-                  </button>
-                  {openDropdown === 'rating' && (
-                    <div className="filter-dropdown">
-                      {['All', '4.0+', '4.5+'].map(rating => (
-                        <button 
-                          key={rating}
-                          className={activeFilters.rating === rating ? 'selected' : ''}
-                          onClick={() => handleLocalFilterChange('rating', rating)}
-                        >
-                          {rating}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                    {/* View City Map Button */}
+                    <button
+                      className="famousstay-header-map-btn"
+                      onClick={handleViewCityMap}
+                    >
+                      View city map
+                    </button>
+                  </div>
                 </div>
-
-                {/* Location Filter */}
-                <div className="filter-wrapper">
-                  <button 
-                    className={`famousstay-filter-btn ${activeFilters.location !== 'All' || openDropdown === 'location' ? 'active' : ''}`}
-                    onClick={() => toggleDropdown('location')}
-                  >
-                    <i className="bi bi-geo-alt"></i>
-                    {activeFilters.location === 'All' ? t('Location') : activeFilters.location}
-                  </button>
-                  {openDropdown === 'location' && (
-                    <div className="filter-dropdown">
-                      {uniqueLocations.map(loc => (
-                        <button 
-                          key={loc}
-                          className={activeFilters.location === loc ? 'selected' : ''}
-                          onClick={() => handleLocalFilterChange('location', loc)}
-                        >
-                          {loc}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <button
-                  className="famousstay-map-btn"
-                  onClick={handleViewCityMap}
-                >
-                  View city map
-                </button>
               </div>
             </div>
           </div>
@@ -371,10 +338,11 @@ const FamousstayPage = () => {
                   <button className="famousstay-explore-btn">{t('Explore')}</button>
                 </div>
                 <div className="famousstay-map-container">
-                  <div className="famousstay-map-placeholder">
+                 {/* <div className="famousstay-map-placeholder">
                     <i className="bi bi-map"></i>
                     <p>Interactive Map View</p>
-                  </div>
+                  </div>  */}
+                  <MapView />
                 </div>
                 <div className="famousstay-nearby-filters">
                   <span className="famousstay-nearby-label">

@@ -3,6 +3,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import BannerImg from "../../assets/images/Banner_img.jpg";
+import HistoryImg1 from "../../assets/images/history-img1.jpg";
+import NellorePic from "../../assets/images/nellore_pic.jpg";
+import SportsImg from "../../assets/images/sports-hero.jpg";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
@@ -229,8 +233,31 @@ const HistoryPage = () => {
                 </div>
               </div>
 
+              {/* Photo Gallery Section */}
+              <div className="photo-gallery-section">
+                <div className="section-header">
+                  <h3>{t('PhotoGallery')}</h3>
+                  <span className="badge-visuals">{t('Visuals')}</span>
+                </div>
+                <hr />
+                <div className="gallery-list">
+                  <div className="gallery-item">
+                    <img src={HistoryImg1} alt="Nellore History 1" />
+                  </div>
+                  <div className="gallery-item">
+                    <img src={NellorePic} alt="Nellore History 2" />
+                  </div>
+                  <div className="gallery-item">
+                    <img src={BannerImg} alt="Nellore History 3" />
+                  </div>
+                  <div className="gallery-item">
+                    <img src={SportsImg} alt="Nellore History 4" />
+                  </div>
+                </div>
+              </div>
+
               {/* Latest News Section */}
-              <div className="history-news-section">
+              {/* <div className="history-news-section">
                 <div className="section-header">
                   <h3>{t('LatestNews')}</h3>
                   <button
@@ -263,7 +290,7 @@ const HistoryPage = () => {
                     </article>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* right side sidebar */}

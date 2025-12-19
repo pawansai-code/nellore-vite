@@ -28,9 +28,12 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -70,6 +73,7 @@
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -89,14 +93,13 @@
   .breaking-news-container .d-flex {
     flex-direction: column;
   }
-  
+
   .breaking-news-banner {
     width: 100%;
     justify-content: center;
   }
-  
+
   .news-ticker {
     width: 100%;
   }
 }
-

@@ -6,6 +6,7 @@ import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
 import TopHeader from "../../components/TopHeader";
+import WeatherCard from "../../components/WeatherCard";
 import useTranslation from '../../hooks/useTranslation';
 import { setLanguage } from "../../state/slices/appSlice";
 import "../../styles/HubHomePage.css";
@@ -192,51 +193,18 @@ export function HubHomePage() {
         </div>
       </div> */}
 
-      {/* <main className="hub-main-content">
+      <main className="hub-main-content">
         <div className="container-fluid">
-          <div className="row"> */}
+          <div className="row">
             {/* main content column section */}
-            {/* <div className="col-lg-8"> */}
-              {/* hero section */}
+            <div className="col-lg-8">
+              {/* hero section - keeping commented as it has missing images */}
               {/* <div className="hero-section mb-4">
-                <div className="hero-image-container position-relative">
-                  <img src="" alt="Nellore City" className="hero-image" /> */}
-                  {/* discover nellore button */}
-                  {/* <div className="discover-nellore-btn">
-                    <button className="btn btn-light btn-sm rounded-pill">
-                      <i className="bi bi-geo-alt-fill me-2"></i>Discover
-                      Nellore
-                    </button>
-                  </div> */}
-                  {/* hero content overlay */}
-                  {/* <div className="hero-content-overlay">
-                    <h1 className="hero-title">
-                      Explore Nellore & Beyond - Jobs, News, Travel, and More.
-                    </h1>
-                    <p className="hero-tagline">
-                      Your trusted portal for local opportunities and global
-                      inspiration.
-                    </p>
-                    <div className="hero-buttons">
-                      <button
-                        className="btn btn-primary btn-lg rounded-pill me-2"
-                        onClick={() => navigate("/hub/jobs")}
-                      >
-                        <i className="bi bi-briefcase me-2"></i>Latest Jobs
-                      </button>
-                      <button
-                        className="btn btn-light btn-lg rounded-pill"
-                        onClick={() => navigate("/hub/news")}
-                      >
-                        <i className="bi bi-newspaper me-2"></i>Today's News
-                      </button>
-                    </div>
-                  </div> */}
-                {/* </div>
+                ... 
               </div> */}
 
               {/*navigation sections */}
-              {/* {renderSection("Jobs", "View All", jobs, (item, index) =>
+              {renderSection("Jobs", "View All", jobs, (item, index) =>
                 navigate(`/hub/jobs/${index}`)
               )}
               {renderSection("News", "View All", newsItems, (item, index) =>
@@ -269,11 +237,31 @@ export function HubHomePage() {
               {renderSection("Offers", "View All", offers, (item, index) =>
                 navigate(`/hub/offers/${index}`)
               )}
-            </div> */}
+            </div>
 
             {/* sidebar that column */}
-            {/* <div className="col-lg-4">
-              <aside className="hub-sidebar"> */}
+            <div className="col-lg-4">
+              <aside className="hub-sidebar">
+                {/* News Lines Section */}
+                <div className="sidebar-section mb-4">
+                   <h5 className="mb-3 fw-bold">News Lines</h5>
+                   <ul className="list-unstyled bg-white p-3 rounded shadow-sm">
+                     {sidebarNews.map((news, index) => (
+                       <li key={index} className="mb-2 pb-2 border-bottom last-no-border">
+                         <div className="d-flex">
+                           <i className="bi bi-newspaper me-2 text-primary"></i>
+                           <span className="small">{news}</span>
+                         </div>
+                       </li>
+                     ))}
+                   </ul>
+                </div>
+
+                {/* Weather Card Section */}
+                <div className="sidebar-section mb-4">
+                  <WeatherCard />
+                </div>
+
                 {/* search section */}
                 {/* <div className="sidebar-search mb-4">
                   <div className="input-group">
@@ -289,27 +277,27 @@ export function HubHomePage() {
                 </div> */}
 
                 {/* category buttons section */}
-                {/* <div className="category-buttons-grid">
+                <div className="category-buttons-grid">
                   <button
-                    className="category-btn btn btn-outline-primary rounded-pill"
+                    className="category-btn btn btn-outline-primary rounded-pill mb-2 me-2"
                     onClick={() => navigate("/hub/events")}
                   >
                     Events
                   </button>
                   <button
-                    className="category-btn btn btn-outline-primary rounded-pill"
+                    className="category-btn btn btn-outline-primary rounded-pill mb-2 me-2"
                     onClick={() => navigate("/hub/famousFood")}
                   >
                     Famous Foods
                   </button>
                   <button
-                    className="category-btn btn btn-outline-primary rounded-pill"
+                    className="category-btn btn btn-outline-primary rounded-pill mb-2 me-2"
                     onClick={() => navigate("/hub/history")}
                   >
                     Nellore History
                   </button>
                   <button
-                    className="category-btn btn btn-outline-primary rounded-pill"
+                    className="category-btn btn btn-outline-primary rounded-pill mb-2"
                     onClick={() => navigate("/hub/famousstay")}
                   >
                     Famous Stay
@@ -319,7 +307,7 @@ export function HubHomePage() {
             </div>
           </div>
         </div>
-      </main> */}
+      </main>
 
       {/* Tourism Portal Section
       <section className="tourism-portal-section">

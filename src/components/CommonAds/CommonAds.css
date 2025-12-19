@@ -63,9 +63,9 @@
     transition: all 0.3s ease;
 }
 
-.btn-primary:hover{
+.btn-primary:hover {
     background-color: #00B8FF;
-    transform: translateY(-1px);    
+    transform: translateY(-1px);
 }
 
 .btn-light {
@@ -74,7 +74,7 @@
     color: #212529;
 }
 
-.btn-light:hover{
+.btn-light:hover {
     background-color: #e9ecef;
     transform: translateY(-1px);
 }
