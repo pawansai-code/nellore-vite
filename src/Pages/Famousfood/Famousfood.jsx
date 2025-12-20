@@ -35,6 +35,9 @@ const Famousfood = () => {
     location: 'All',
   });
 
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
+
   const [openDropdown, setOpenDropdown] = useState(null);
   const dropdownRef = useRef(null);
 
@@ -57,6 +60,11 @@ const Famousfood = () => {
     const locs = new Set(allDishes.map(d => d.location));
     return ['All', ...Array.from(locs)];
   }, [allDishes]);
+
+  // Reset pagination when filters or search change
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [filters, searchTerm]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -111,6 +119,18 @@ const Famousfood = () => {
       return true;
     });
   }, [allDishes, filters, searchTerm]);
+
+  const displayedDishes = useMemo(() => {
+    return filteredDishes.slice(0, visibleCount);
+  }, [filteredDishes, visibleCount]);
+
+  const handleLoadMore = () => {
+    setIsLocalLoading(true);
+    setTimeout(() => {
+      setVisibleCount((prev) => prev + 6);
+      setIsLocalLoading(false);
+    }, 500);
+  };
 
   const handleDishAction = (dish, action) => {
     console.log(`${action} for ${dish.name}`);
@@ -263,7 +283,7 @@ const Famousfood = () => {
                 </div>
 
                 <div className="famousfood-dishes-list">
-                  {filteredDishes.map((dish) => (
+                  {displayedDishes.map((dish) => (
                     <div key={dish.id} className="famousfood-dish-card">
                       <div className="famousfood-dish-image">
                         <img src={dish.image} alt={dish.name} />
@@ -292,6 +312,25 @@ const Famousfood = () => {
                     </div>
                   ))}
                 </div>
+
+                {visibleCount < filteredDishes.length && (
+                  <div className="famousfood-load-more-container">
+                    <button 
+                      className="famousfood-load-more-btn" 
+                      onClick={handleLoadMore}
+                      disabled={isLocalLoading}
+                    >
+                      {isLocalLoading ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                          {t('Loading') || 'Loading...'}
+                        </>
+                      ) : (
+                        t('LoadMore') || 'Load More'
+                      )}
+                    </button>
+                  </div>
+                )}
               </section>
             </div>
 

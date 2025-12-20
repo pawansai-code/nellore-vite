@@ -22,6 +22,7 @@ const initialState = {
       description: "Important notice for school managements regarding academic schedule.",
       actions: ["View", "Download PDF"],
       publishedDate: new Date("2025-10-27"),
+      fullContent: "The Andhra Pradesh State Board of Education has released a new circular regarding the academic schedule for the upcoming months. All schools are mandated to follow the revised timings and holiday list. \n\n Key highlights include the rescheduling of the mid-term exams to the first week of November and the declaration of Dussehra holidays from October 15th. School principals are requested to disseminate this information to parents and students immediately.",
     },
     {
       id: 2,
@@ -33,6 +34,7 @@ const initialState = {
       description: "Candidates shortlisted for CV. Schedule released.",
       actions: ["Open", "PDF"],
       publishedDate: new Date("2025-10-27"),
+      fullContent: "The AP Public Service Commission has released the schedule for the certificate verification process for Group-IV service posts. Candidates who have qualified in the written examination are required to attend the verification on their allotted dates. \n\n Please carry all original certificates along with two sets of photocopies. The verification will take place at the Commission's headquarters in Vijayawada from November 5th to November 10th. Failure to attend will result in disqualification.",
     },
     {
       id: 3,
@@ -44,6 +46,7 @@ const initialState = {
       description: "Revised reporting guidelines for students.",
       actions: ["Instructions", "Allotment"],
       publishedDate: new Date("2025-10-27"),
+      fullContent: "The Medical Counselling Committee (MCC) has updated the instructions for the second round of NEET UG counselling. Students allotted seats in this round must report to their respective colleges by November 2nd. \n\n The updated guidelines clarify the documents required for admission and the fee payment process. Candidates are advised to download their allotment letters from the official portal and proceed with the reporting formalities to secure their seats.",
     },
     {
       id: 4,
@@ -55,6 +58,7 @@ const initialState = {
       description: "Schools closed due to heavy rainfall for two days.",
       actions: ["View Notice"],
       publishedDate: new Date("2025-10-26"),
+      fullContent: "Due to the heavy rainfall forecast by the IMD, the District Collector has declared a holiday for all public and private schools in the Nellore district for the next two days (October 27th and 28th). \n\n This measure is taken to ensure the safety of students and staff. Online classes may be conducted at the discretion of the school management. Please stay indoors and stay safe.",
     },
     {
       id: 5,
@@ -66,6 +70,7 @@ const initialState = {
       description: "Revised timetable for semester exams.",
       actions: ["Download Calendar"],
       publishedDate: new Date("2025-10-25"),
+      fullContent: "The revised academic calendar for state universities has been published. The semester examinations previously scheduled for late October have been pushed to the second week of November to accommodate the missed working days. \n\n Students can download the detailed subject-wise timetable from their respective university websites. Practical exams will commence immediately after the theory exams.",
     },
   ],
 

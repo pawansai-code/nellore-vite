@@ -242,6 +242,10 @@ export function HubHomePage() {
             {/* sidebar that column */}
             <div className="col-lg-4">
               <aside className="hub-sidebar">
+
+              {/* Weather Card Section */}
+                  <WeatherCard />
+              
                 {/* News Lines Section */}
                 <div className="sidebar-section mb-4">
                    <h5 className="mb-3 fw-bold">News Lines</h5>
@@ -257,10 +261,6 @@ export function HubHomePage() {
                    </ul>
                 </div>
 
-                {/* Weather Card Section */}
-                <div className="sidebar-section mb-4">
-                  <WeatherCard />
-                </div>
 
                 {/* search section */}
                 {/* <div className="sidebar-search mb-4">

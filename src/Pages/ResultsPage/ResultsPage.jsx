@@ -1,6 +1,8 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useMemo, useState } from "react";
+import { jsPDF } from "jspdf";
+import { useEffect, useMemo, useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import CommonPageLayout from "../../components/CommonPageLayout";
 import useTranslation from "../../hooks/useTranslation";
@@ -31,6 +33,8 @@ const ResultsPage = () => {
     sort: "Recent",
   });
   const [rollNumber, setRollNumber] = useState("");
+  const [selectedResult, setSelectedResult] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const filteredResults = useMemo(() => {
     let filtered = resultsList.filter((result) => {
@@ -101,9 +105,15 @@ const ResultsPage = () => {
     }, 400);
   };
 
-  const handleLoadMore = () => {
-    if (resultsPage.currentPage >= resultsPage.totalPages) return;
-    handlePageChange(resultsPage.currentPage + 1);
+
+
+  const handleCheckResult = () => {
+    if (!rollNumber.trim()) {
+      alert(t('EnterRollNumber'));
+      return;
+    }
+    console.log("Checking result for:", rollNumber);
+    // TODO: Implement actual result checking logic
   };
 
   const handleNextPage = () => {
@@ -113,14 +123,138 @@ const ResultsPage = () => {
   };
 
   const handleResultAction = (result, actionType) => {
-    console.log(`Action: ${actionType} for result: ${result.id}`);
+    // Check for direct download actions
+    if (actionType.toLowerCase().includes('download') || actionType.toLowerCase().includes('memo') || actionType.toLowerCase().includes('card')) {
+       generatePDF(result);
+       // Show modal for feedback since download is weirdly silent otherwise
+       setSelectedResult(result);
+       setShowModal(true);
+    } else {
+       setSelectedResult(result);
+       setShowModal(true);
+    }
+    // Optionally log or track action
+    console.log(`Open result: ${result.id}, action: ${actionType}`);
   };
 
-  const handleCheckResult = () => {
-    if (rollNumber.trim()) {
-      console.log("Checking result for roll number:", rollNumber);
+  const generatePDF = (item) => {
+    const doc = new jsPDF();
+    
+    // Header (Official Look)
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(0, 102, 51); // Dark Green
+    doc.text("Nellorien Hub Results", 105, 20, { align: "center" });
+
+    doc.setLineWidth(0.5);
+    doc.line(10, 25, 200, 25);
+    
+    // Title
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    const titleLines = doc.splitTextToSize(item.title, 190);
+    doc.text(titleLines, 10, 40);
+
+    let yPos = 40 + (titleLines.length * 7) + 5;
+    
+    // Meta
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    const metaText = `Category: ${item.category}   |   Board: ${item.board}   |   Date: ${item.publishedDate ? new Date(item.publishedDate).toLocaleDateString() : 'N/A'}`;
+    doc.text(metaText, 10, yPos);
+    yPos += 10;
+
+    if (item.passPercentage) {
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0, 150, 0);
+        doc.text(`Pass Percentage: ${item.passPercentage}%`, 10, yPos);
+        yPos += 10;
     }
+    
+    // Full Content
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    const content = item.fullContent || item.description || "";
+    const paragraphs = content.split('\n');
+
+    paragraphs.forEach(para => {
+        if (!para.trim()) {
+            yPos += 5;
+            return;
+        }
+        const lines = doc.splitTextToSize(para.trim(), 190);
+        
+        if (yPos + (lines.length * 7) > 280) {
+            doc.addPage();
+            yPos = 20;
+        }
+        
+        doc.text(lines, 10, yPos);
+        yPos += (lines.length * 7) + 5;
+    });
+    
+    // Footer
+    doc.setFontSize(10);
+    doc.setTextColor(150);
+    doc.text("This is a computer-generated document. Not valid for legal purposes without seal.", 105, 290, { align: "center" });
+    
+    doc.save(`${item.title.substring(0, 30).trim().replace(/[^a-z0-9]/gi, '_')}.pdf`);
   };
+
+  const handleModalPrimaryAction = () => {
+     if (!selectedResult) return;
+     
+     const primaryAction = selectedResult.actions[0];
+     // Check for typical download/print keywords
+     if (primaryAction && (
+        primaryAction.toLowerCase().includes('pdf') || 
+        primaryAction.toLowerCase().includes('download') ||
+        primaryAction.toLowerCase().includes('check') ||
+        primaryAction.toLowerCase().includes('memo')
+     )) {
+        // For 'Check' or 'Memo', we might normally just show it, but let's offer PDF download too
+        // or strictly only if it is a 'Download' action. 
+        // User request: "when the download pdf button clicked".
+        if (primaryAction.toLowerCase().includes('download') || primaryAction.toLowerCase().includes('memo')) {
+             generatePDF(selectedResult);
+        } else {
+             alert(t("RedirectingToPortal") || "Redirecting to official portal...");
+        }
+     }
+     handleCloseModal();
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setTimeout(() => setSelectedResult(null), 300);
+  };
+
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
+  const isLoading = isLocalLoading || resultsPage.isLoading;
+
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [activeFilter, filters, searchTerm]);
+
+  const displayedResults = useMemo(() => {
+    return filteredResults.slice(0, visibleCount);
+  }, [filteredResults, visibleCount]);
+
+  const handleLoadMore = () => {
+    setIsLocalLoading(true);
+    setTimeout(() => {
+      setVisibleCount((prev) => prev + 6);
+      setIsLocalLoading(false);
+    }, 500);
+  };
+
+  // ... inside ResultsPage component
+
+
 
   // Find Section Left
   const findSectionLeft = (
@@ -219,7 +353,7 @@ const ResultsPage = () => {
   // Main Content
   const mainContent = (
     <div className="results-list-container">
-      {filteredResults.map((result) => (
+      {displayedResults.map((result) => (
         <div key={result.id} className="result-card">
           <div className="result-card-header">
             <h3 className="result-card-title">{result.title}</h3>
@@ -254,6 +388,32 @@ const ResultsPage = () => {
           </div>
         </div>
       ))}
+      
+      {displayedResults.length === 0 && (
+         <div className="text-center py-5 w-100">
+           <p className="text-muted">{t('NoResultsFound') || 'No results found'}</p>
+         </div>
+      )}
+
+      {/* Load More Button inside Main Content */}
+      {visibleCount < filteredResults.length && (
+        <div className="d-flex justify-content-center py-4 w-100">
+          <button 
+            className="btn btn-primary rounded-pill px-5 py-2" 
+            onClick={handleLoadMore}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Loading...
+              </>
+            ) : (
+              'Load More'
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 
@@ -316,55 +476,13 @@ const ResultsPage = () => {
     </>
   );
 
-  // Pagination
-  const pagination = (
-    <div className="results-pagination-section">
-      <div className="results-pagination-panel">
-        <div className="pagination-controls-group">
-          <span className="pagination-status-chip">
-            {t('Page')} {resultsPage.currentPage} {t('Of')} {resultsPage.totalPages}
-          </span>
-          <div className="pagination-controls">
-            <button
-              className="btn pagination-chip-btn"
-              onClick={() => handlePageChange(1)}
-              disabled={resultsPage.currentPage === 1}
-            >
-              1
-            </button>
-            <button
-              className="btn pagination-chip-btn"
-              onClick={() => handlePageChange(2)}
-              disabled={resultsPage.currentPage === 2}
-            >
-              2
-            </button>
-            <button
-              className="btn pagination-chip-btn"
-              onClick={() => handlePageChange(3)}
-              disabled={resultsPage.currentPage === 3}
-            >
-              3
-            </button>
-            <button
-              className="btn pagination-chip-btn pagination-chip-btn-primary"
-              onClick={handleNextPage}
-              disabled={resultsPage.currentPage >= resultsPage.totalPages || resultsPage.isLoading}
-            >
-              {t('Next')}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   const localizedFilters = resultsFilters.map(f => ({
       ...f,
       label: t(f.label) || f.label
   }));
 
   return (
+    <>
     <CommonPageLayout
       pageTitle={t('Results')}
       pageIcon="bi bi-mortarboard"
@@ -381,12 +499,65 @@ const ResultsPage = () => {
       filtersRow={filtersRow}
       mainContent={mainContent}
       sidebarContent={sidebarContent}
-      pagination={pagination}
       footerTagline={t('FooterTagline')}
       includeNavbarSearch={false}
       className="results-page"
       mainClassName="results-page-main"
     />
+
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedResult && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedResult.title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="mb-4">
+                <div className="d-flex flex-wrap gap-2 text-muted mb-3">
+                  <span className="d-flex align-items-center"><i className="bi bi-tag me-1"></i>{selectedResult.category}</span>
+                  <span className="d-flex align-items-center"><i className="bi bi-calendar me-1"></i>{selectedResult.publishedDate ? new Date(selectedResult.publishedDate).toLocaleDateString() : 'N/A'}</span>
+                  <span className="d-flex align-items-center"><i className="bi bi-bookmark me-1"></i>{selectedResult.board}</span>
+                  {selectedResult.passPercentage && (
+                    <span className="d-flex align-items-center text-success fw-bold"><i className="bi bi-percent me-1"></i>Pass: {selectedResult.passPercentage}%</span>
+                  )}
+                </div>
+                
+                {selectedResult.tags && selectedResult.tags.length > 0 && (
+                  <div className="mb-3">
+                    {selectedResult.tags.map((tag, idx) => (
+                      <span key={idx} className="result-tag me-2 mb-1 d-inline-block">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="result-full-content">
+                 <h6 className="mb-2 text-primary">{t('FullDetails') || 'Full Details'}</h6>
+                 {selectedResult.fullContent ? (
+                    selectedResult.fullContent.split('\n\n').map((paragraph, idx) => (
+                      <p key={idx} className="text-secondary">{paragraph}</p>
+                    ))
+                 ) : (
+                   <p className="text-secondary">{selectedResult.description}</p>
+                 )}
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                {t('Close')}
+              </Button>
+               {selectedResult.actions && selectedResult.actions[0] && (
+                  <Button variant="primary" onClick={handleModalPrimaryAction}>
+                    {t(selectedResult.actions[0]) || selectedResult.actions[0]}
+                  </Button>
+                )}
+            </Modal.Footer>
+          </>
+        )}
+      </Modal>
+    </>
   );
 };
 

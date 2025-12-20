@@ -1,19 +1,10 @@
-import { FaChevronDown, FaGlobe, FaMapMarkerAlt } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { setLanguage } from "../../state/slices/appSlice";
+import { FaGlobe } from "react-icons/fa";
+import BreakingNews from "./BreakingNews";
 import "./MainHeader.css";
 
 const MainHeader = ({
   siteName = "NELLORIENS",
-  tagline = "Explore, Discover, Connect",
 }) => {
-  const language = useSelector((state) => state.app.language);
-  const dispatch = useDispatch();
-
-  const handleLanguageChange = (e) => {
-    dispatch(setLanguage(e.target.value));
-  };
-
   return (
     <div className="main-header">
       <div className="container-fluid">
@@ -24,23 +15,10 @@ const MainHeader = ({
             </div>
             <div>
               <h1 className="site-title">{siteName}</h1>
-              <div className="d-flex align-items-center gap-2 tagline">
-                <FaMapMarkerAlt />
-                <span>{tagline}</span>
-              </div>
             </div>
           </div>
-          <div className="language-selector">
-            <select
-              value={language}
-              onChange={handleLanguageChange}
-              className="language-dropdown"
-            >
-              <option value="English">English</option>
-              <option value="Telugu">Telugu</option>
-              <option value="Hindi">Hindi</option>
-            </select>
-            <FaChevronDown className="dropdown-arrow" />
+          <div className="flex-grow-1 ms-4" style={{ minWidth: 0 }}>
+            <BreakingNews />
           </div>
         </div>
       </div>

@@ -125,6 +125,7 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 400px));
     gap: 1.25rem;
+    justify-content: center;
 }
 
 .news-page-card {
@@ -698,328 +699,330 @@
     .live-news-feed-title,
     .headlines-title {
         font-size: 1.1rem;
-
-        .live-news-action-btn:hover {
-            background-color: #f1f5f9;
-            border-color: #cbd5e1;
-            color: #1e293b;
-        }
-
-        .live-news-indicator {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e2e8f0;
-            font-size: 0.85rem;
-            color: #64748b;
-            font-weight: 600;
-        }
-
-        .headlines-container {
-            background-color: #ffffff;
-            border-radius: 50px;
-            padding: 2rem;
-            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
-        }
-
-        .headlines-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin: 0 0 1.5rem 0;
-        }
-
-        .headlines-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 1.5rem 0;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .headlines-list-item {
-            font-size: 0.95rem;
-            color: #475569;
-            padding-left: 1.5rem;
-            position: relative;
-            line-height: 1.5;
-        }
-
-        .headlines-list-item::before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #4f46e5;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .headlines-items {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
-
-        .headlines-item {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .headlines-item-image {
-            flex-shrink: 0;
-            width: 120px;
-            height: 80px;
-            border-radius: 30px;
-            overflow: hidden;
-        }
-
-        .headlines-item-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .headlines-item-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        .headlines-item-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin: 0;
-            line-height: 1.4;
-        }
-
-        .headlines-item-meta {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .load-new-btn {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: linear-gradient(135deg, #4f46e5, #2563eb);
-            color: #ffffff;
-            border: none;
-            border-radius: 50px;
-            padding: 0.85rem 1.75rem;
-            font-size: 1rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.4);
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            z-index: 100;
-        }
-
-        .load-new-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.5);
-        }
-
-        .load-new-btn i {
-            font-size: 1.1rem;
-        }
-
-        @media (max-width: 992px) {
-            .news-feed-headlines-layout {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .article-details-container,
-            .live-news-feed-container,
-            .headlines-container {
-                padding: 1.5rem;
-            }
-
-            .load-new-btn {
-                bottom: 1.5rem;
-                right: 1.5rem;
-                padding: 0.75rem 1.5rem;
-                font-size: 0.95rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .news-featured-section {
-                margin-top: 2rem;
-            }
-
-            .article-details-title {
-                font-size: 1.5rem;
-            }
-
-            .live-news-item,
-            .headlines-item {
-                flex-direction: column;
-            }
-
-            .live-news-item-image,
-            .headlines-item-image {
-                width: 100%;
-                height: 180px;
-            }
-
-            .load-new-btn {
-                bottom: 1rem;
-                right: 1rem;
-                padding: 0.7rem 1.25rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-
-            .article-details-container,
-            .live-news-feed-container,
-            .headlines-container {
-                padding: 1.25rem;
-                border-radius: 18px;
-            }
-
-            .article-details-title {
-                font-size: 1.3rem;
-            }
-
-            .live-news-feed-title,
-            .headlines-title {
-                font-size: 1.1rem;
-            }
-
-            .load-new-btn {
-                bottom: 0.75rem;
-                right: 0.75rem;
-                padding: 0.65rem 1rem;
-                font-size: 0.85rem;
-            }
-        }
-
-        /* News Page Layout */
-        .news-content-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            align-items: start;
-            margin-top: 2rem;
-        }
-
-        .news-main-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .news-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        @media (max-width: 992px) {
-            .news-content-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Common Ads Styles (from JobsPage) */
-        .jobs-common-ads-card {
-            background: white;
-            border-radius: 50px;
-            padding: 1.5rem;
-            border: 1px solid #e9ecef;
-            box-shadow: 0 15px 30px rgba(15, 23, 42, 0.08);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .common-ads-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .common-ads-header h5 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .common-ads-header span {
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
-
-        .common-ads-header i {
-            font-size: 1.5rem;
-            color: #2563eb;
-        }
-
-        .common-ads-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .common-ad-item {
-            display: flex;
-            gap: 0.75rem;
-            border: 1px solid #edf1ff;
-            border-radius: 30px;
-            padding: 0.75rem;
-            background-color: #f9faff;
-            box-shadow: inset 0 0 0 1px #eef2ff;
-        }
-
-        .common-ad-thumb {
-            width: 70px;
-            height: 70px;
-            border-radius: 14px;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .common-ad-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .common-ad-body {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 0.35rem;
-        }
-
-        .common-ad-body h6 {
-            margin: 0;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .common-ad-button {
-            border-radius: 50px;
-            font-weight: 600;
-            padding: 0.35rem 1.2rem;
-            border: none;
-        }
     }
 }
+
+.live-news-action-btn:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
+.live-news-indicator {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.headlines-container {
+    background-color: #ffffff;
+    border-radius: 50px;
+    padding: 2rem;
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
+}
+
+.headlines-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 1.5rem 0;
+}
+
+.headlines-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.headlines-list-item {
+    font-size: 0.95rem;
+    color: #475569;
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.5;
+}
+
+.headlines-list-item::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #4f46e5;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.headlines-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.headlines-item {
+    display: flex;
+    gap: 1rem;
+}
+
+.headlines-item-image {
+    flex-shrink: 0;
+    width: 120px;
+    height: 80px;
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.headlines-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.headlines-item-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.headlines-item-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.headlines-item-meta {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+    font-weight: 500;
+}
+
+.load-new-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: linear-gradient(135deg, #4f46e5, #2563eb);
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    padding: 0.85rem 1.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.4);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 100;
+}
+
+.load-new-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(79, 70, 229, 0.5);
+}
+
+.load-new-btn i {
+    font-size: 1.1rem;
+}
+
+@media (max-width: 992px) {
+    .news-feed-headlines-layout {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .article-details-container,
+    .live-news-feed-container,
+    .headlines-container {
+        padding: 1.5rem;
+    }
+
+    .load-new-btn {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .news-featured-section {
+        margin-top: 2rem;
+    }
+
+    .article-details-title {
+        font-size: 1.5rem;
+    }
+
+    .live-news-item,
+    .headlines-item {
+        flex-direction: column;
+    }
+
+    .live-news-item-image,
+    .headlines-item-image {
+        width: 100%;
+        height: 180px;
+    }
+
+    .load-new-btn {
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.7rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .article-details-container,
+    .live-news-feed-container,
+    .headlines-container {
+        padding: 1.25rem;
+        border-radius: 18px;
+    }
+
+    .article-details-title {
+        font-size: 1.3rem;
+    }
+
+    .live-news-feed-title,
+    .headlines-title {
+        font-size: 1.1rem;
+    }
+
+    .load-new-btn {
+        bottom: 0.75rem;
+        right: 0.75rem;
+        padding: 0.65rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* News Page Layout */
+.news-content-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    align-items: start;
+    margin-top: 2rem;
+}
+
+.news-main-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.news-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (max-width: 992px) {
+    .news-content-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Common Ads Styles (from JobsPage) */
+.jobs-common-ads-card {
+    background: white;
+    border-radius: 50px;
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 15px 30px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+.common-ads-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.common-ads-header h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.common-ads-header span {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.common-ads-header i {
+    font-size: 1.5rem;
+    color: #2563eb;
+}
+
+.common-ads-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.common-ad-item {
+    display: flex;
+    gap: 0.75rem;
+    border: 1px solid #edf1ff;
+    border-radius: 30px;
+    padding: 0.75rem;
+    background-color: #f9faff;
+    box-shadow: inset 0 0 0 1px #eef2ff;
+}
+
+.common-ad-thumb {
+    width: 70px;
+    height: 70px;
+    border-radius: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.common-ad-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.common-ad-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.35rem;
+}
+
+.common-ad-body h6 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.common-ad-button {
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 0.35rem 1.2rem;
+    border: none;
+}
+
+
 
 /* Responsive Tabs Section */
 @media (max-width: 992px) {

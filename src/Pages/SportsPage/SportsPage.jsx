@@ -1,6 +1,7 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useMemo, useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
@@ -33,6 +34,8 @@ const SportsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeRegion, setActiveRegion] = useState("All");
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const handleCategoryChange = (category) => {
     setActiveCategory(category);
@@ -91,11 +94,21 @@ const SportsPage = () => {
     return filtered;
   }, [sportsNews, activeCategory, searchTerm]);
 
+  const handleCardClick = (item) => {
+    setSelectedItem(item);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setTimeout(() => setSelectedItem(null), 300);
+  };
+
   return (
     <div className="sports-page">
       <TopHeader />
       <MainHeader
-        siteName={t('siteName') + ".IN"}
+        siteName={t('siteName')}
         tagline={t('tagline')}
       />
       <Navbar includeSearch={false} />
@@ -257,7 +270,12 @@ const SportsPage = () => {
                 </div>
                 <div className="sports-fixtures-grid">
                   {filteredFixtures.map((fixture) => (
-                    <div key={fixture.id} className="sports-fixture-card">
+                    <div 
+                      key={fixture.id} 
+                      className="sports-fixture-card"
+                      onClick={() => handleCardClick(fixture)}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <h4 className="sports-fixture-title">{fixture.title}</h4>
                       <div className="sports-fixture-details">
                         <span className="sports-fixture-date">
@@ -282,7 +300,12 @@ const SportsPage = () => {
                 </div>
                 <div className="sports-news-grid">
                   {filteredNews.map((news) => (
-                    <div key={news.id} className="sports-news-card">
+                    <div 
+                      key={news.id} 
+                      className="sports-news-card"
+                      onClick={() => handleCardClick(news)}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <h4 className="sports-news-title">{news.title}</h4>
                       <div className="sports-news-footer">
                         <span className="sports-news-posted">
@@ -361,6 +384,54 @@ const SportsPage = () => {
         siteName={t('siteName') + ".IN"}
         tagline={t('FooterTagline')}
       />
+
+      {/* Full Content Modal */}
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedItem && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedItem.title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="mb-4">
+                <div className="d-flex flex-wrap gap-2 text-muted mb-3">
+                   {selectedItem.date ? (
+                      // Fixture Meta
+                      <>
+                        <span className="d-flex align-items-center"><i className="bi bi-calendar me-1"></i>{selectedItem.date}</span>
+                        <span className="d-flex align-items-center"><i className="bi bi-clock me-1"></i>{selectedItem.time}</span>
+                        <span className="d-flex align-items-center"><i className="bi bi-geo-alt me-1"></i>{selectedItem.location}</span>
+                        <span className="d-flex align-items-center"><i className="bi bi-tag me-1"></i>{selectedItem.category}</span>
+                      </>
+                   ) : (
+                      // News Meta
+                      <>
+                        <span className="d-flex align-items-center"><i className="bi bi-clock-history me-1"></i>{selectedItem.posted}</span>
+                        <span className="d-flex align-items-center"><i className="bi bi-tag me-1"></i>{selectedItem.tag}</span>
+                      </>
+                   )}
+                </div>
+              </div>
+
+              <div className="sports-full-content">
+                 <h6 className="mb-2 text-danger">{t('FullDetails') || 'Full Details'}</h6>
+                 {selectedItem.fullContent ? (
+                    selectedItem.fullContent.split('\n\n').map((paragraph, idx) => (
+                      <p key={idx} className="text-secondary">{paragraph}</p>
+                    ))
+                 ) : (
+                   <p className="text-secondary">No additional details available.</p>
+                 )}
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                {t('Close')}
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal>
     </div>
   );
 };

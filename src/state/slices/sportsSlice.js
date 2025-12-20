@@ -54,6 +54,7 @@ const initialState = {
       time: "3:30 PM",
       location: "Municipal Ground",
       category: "Cricket",
+      fullContent: "The highly anticipated School Cricket Finals will take place this Friday at the Municipal Ground. The top two teams from the district league will battle it out for the championship trophy. \n\n Spectators are welcome to attend. Entry is free. The match will be followed by a prize distribution ceremony attended by the District Sports Officer.",
     },
     {
       id: 2,
@@ -62,6 +63,7 @@ const initialState = {
       time: "6:00 PM",
       location: "Stadium Court A",
       category: "Kabaddi",
+      fullContent: "The Zonal Semi-finals for the Kabaddi championship are scheduled for Saturday evening. Four teams remain in the hunt for the zonal title. \n\n Expect high-intensity raids and tackles as players vie for a spot in the finals. Court A at the main stadium has been prepped for the event with enhanced lighting for the evening matches.",
     },
     {
       id: 3,
@@ -70,6 +72,7 @@ const initialState = {
       time: "5:30 AM",
       location: "Beach Road",
       category: "Athletics",
+      fullContent: "The annual City 10K Marathon kicks off this Sunday at 5:30 AM from Beach Road. Over 500 runners have registered for the event, which aims to promote fitness and healthy living. \n\n Traffic diversions will be in place along the beach route from 5 AM to 9 AM. Water stations and medical aid posts will be available at every 2km mark.",
     },
     {
       id: 4,
@@ -78,6 +81,7 @@ const initialState = {
       time: "4:00 PM",
       location: "Indoor Arena",
       category: "Volleyball",
+      fullContent: "The Indoor Arena will host the Inter-school Volleyball Finals on Sunday afternoon. The girls' and boys' finals will be played back-to-back. \n\n This tournament has seen exceptional talent this year, with several players being scouted for the district team. Come and cheer for the future stars of Nellore volleyball.",
     },
   ],
 
@@ -88,24 +92,28 @@ const initialState = {
       title: "National Games: State clinches 3 golds in athletics",
       posted: "2h ago",
       tag: "Featured",
+      fullContent: "In a stunning display of speed and endurance, the state athletics team secured three gold medals at the ongoing National Games. \n\n The victories came in the 100m sprint, 400m relay, and long jump events. The athletes have dedicated their wins to their coaches and the intense training camps held in Nellore prior to the games. The Chief Minister has announced cash rewards for the medalists.",
     },
     {
       id: 2,
       title: "District volleyball trials draw record turnout",
       posted: "4h ago",
       tag: "Local",
+      fullContent: "The district-level volleyball selection trials held yesterday saw a record turnout of over 200 aspirants. Coaches were impressed by the raw talent on display, particularly from the rural belts of the district. \n\n A shortlist of 30 players will be announced tomorrow for the upcoming training camp. The selected players will represent the district in the state inter-district championship next month.",
     },
     {
       id: 3,
       title: "School cricket league announces new format",
       posted: "Yesterday",
       tag: "Update",
+      fullContent: "The organizing committee of the School Cricket League has unveiled a new format for the upcoming season. To make the league more competitive, teams will now be divided into two groups, playing a round-robin stage followed by knockouts. \n\n Additionally, a 'Super Sub' rule has been introduced to allow teams more tactical flexibility. The season is set to begin in the second week of November.",
     },
     {
       id: 4,
       title: "Nellore runner qualifies for state marathon finals",
       posted: "2d ago",
       tag: "Athletics",
+      fullContent: "Local long-distance runner, Ravi Kumar, has qualified for the State Marathon Finals after clocking a personal best time in the regional qualifiers. \n\n Ravi, who trains at the AC Stadium, finished the 42km course in 2 hours and 45 minutes. 'My goal is to finish on the podium at the state level,' he said. The finals will be held in Visakhapatnam next month.",
     },
   ],
 

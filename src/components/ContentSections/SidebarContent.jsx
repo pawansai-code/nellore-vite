@@ -9,6 +9,8 @@ const SidebarContent = () => {
   return (
     <aside className="sidebar-content">
 
+        <WeatherCard />
+
       <div className="sidebar-section">
         <h5 className="sidebar-section-title">News Lines</h5>
         <ul className="news-lines-list">
@@ -21,9 +23,6 @@ const SidebarContent = () => {
         </ul>
       </div>
       
-      <div className="sidebar-section">
-        <WeatherCard />
-      </div>
 
 
       {/* <div className="sidebar-section">

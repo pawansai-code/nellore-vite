@@ -17,6 +17,11 @@ const initialState = {
       postedDate: 'Posted Today',
       description: 'Clerical support for case records, data entry, front-desk assistance.',
       buttonType: 'apply',
+      salary: '₹25,000 / month',
+      jobType: 'Full-time',
+      experience: 'Fresher',
+      skills: ['Data Entry', 'Communication', 'MS Office'],
+      fullContent: 'The AP District Court in Nellore is hiring for the position of Junior Assistant. This role involves managing case records, performing data entry tasks, and providing front-desk assistance to visitors. \n\n Candidates must have a bachelor\'s degree in any discipline and proficiency in local languages. This is a great opportunity to start a career in the judicial support system.',
     },
     {
       id: 2,
@@ -26,6 +31,11 @@ const initialState = {
       postedDate: '2d ago',
       description: 'Assist surveys, land records, grievance redressal at mandal level.',
       buttonType: 'view',
+      salary: '₹22,000 / month',
+      jobType: 'Full-time',
+      experience: '0-1 years',
+      skills: ['Surveying', 'Record Keeping', 'Public Administration'],
+      fullContent: 'The Revenue Department is seeking a dedicated Village Revenue Officer for the Naidupeta mandal. Key responsibilities include assisting with land surveys, maintaining revenue records, and addressing public grievances. \n\n Ideal candidates should have strong organizational skills and a willingness to work at the grassroots level. Previous experience in government administration is a plus.',
     },
     {
       id: 3,
@@ -35,6 +45,11 @@ const initialState = {
       postedDate: '1d ago',
       description: 'Provide patient care, ward coordination, and basic diagnostics.',
       buttonType: 'apply',
+      salary: '₹35,000 / month',
+      jobType: 'Full-time',
+      experience: '1-3 years',
+      skills: ['Nursing', 'Patient Care', 'Emergency Response'],
+      fullContent: 'The District Hospital in Kavali requires qualified Staff Nurses to join their team. Responsibilities include providing high-quality patient care, coordinating ward activities, and performing basic diagnostic procedures. \n\n Valid nursing registration and relevant experience are mandatory. We offer a supportive work environment and opportunities for professional growth.',
     },
     {
       id: 4,
@@ -44,6 +59,11 @@ const initialState = {
       postedDate: '5d ago',
       description: 'Site supervision, BOQ prep, and vendor coordination.',
       buttonType: 'view',
+      salary: '₹45,000 / month',
+      jobType: 'Full-time',
+      experience: '2-5 years',
+      skills: ['Civil Engineering', 'Site Supervision', 'AutoCAD'],
+      fullContent: 'The Roads & Buildings (R&B) Department is looking for an Assistant Engineer (Civil) for projects in Nellore. The role entails site supervision, preparation of Bills of Quantities (BOQ), and coordination with vendors and contractors. \n\n A degree in Civil Engineering and site experience are required. This is a challenging role suitable for dynamic professionals.',
     },
   ],
   privateJobs: [
@@ -55,6 +75,11 @@ const initialState = {
       postedDate: '3+ yrs',
       description: 'Coordinate yard operations, vendor communication, and MIS reporting.',
       buttonType: 'apply',
+      salary: '₹4-6 LPA',
+      jobType: 'Full-time',
+      experience: '3+ years',
+      skills: ['Logistics', 'Supply Chain', 'Vendor Management'],
+      fullContent: 'Krishnapatnam Port is hiring a Logistics Executive to oversee yard operations and vendor communications. The candidate will also be responsible for MIS reporting and ensuring smooth logistical flows. \n\n Experience in port operations or large-scale logistics is highly desirable. We offer a competitive package and a fast-paced work environment.',
     },
     {
       id: 6,
@@ -64,6 +89,11 @@ const initialState = {
       postedDate: 'Fresher',
       description: 'Install and troubleshoot systems, respond to tickets, on-site support.',
       buttonType: 'view',
+      salary: '₹3-4 LPA',
+      jobType: 'Full-time',
+      experience: 'Fresher',
+      skills: ['Hardware Support', 'Networking', 'Troubleshooting'],
+      fullContent: 'Regional HQ in Nellore is seeking an IT Support Engineer. The job involves installing and troubleshooting computer systems, responding to support tickets, and providing on-site technical assistance. \n\n Fresh graduates with a strong understanding of computer hardware and networking are encouraged to apply. Training will be provided.',
     },
     {
       id: 7,
@@ -73,6 +103,11 @@ const initialState = {
       postedDate: 'Full-time',
       description: 'Assist customers, manage billing, and stock shelves.',
       buttonType: 'apply',
+      salary: '₹15k / month + Incentives',
+      jobType: 'Full-time',
+      experience: '0-2 years',
+      skills: ['Sales', 'Customer Service', 'Retail'],
+      fullContent: 'ElectroMart is looking for energetic Sales Associates for its Nellore branch. Responsibilities include assisting customers with product selection, managing billing, and maintaining shelf stock. \n\n Excellent communication skills and a customer-centric attitude are essential. Previous retail experience is an added advantage.',
     },
     {
       id: 8,
@@ -82,6 +117,11 @@ const initialState = {
       postedDate: '1-3 yrs',
       description: 'Conduct lab tests, maintain QA logs, ensure compliance.',
       buttonType: 'view',
+      salary: '₹3.5-5 LPA',
+      jobType: 'Full-time',
+      experience: '1-3 years',
+      skills: ['Quality Assurance', 'Lab Testing', 'Compliance'],
+      fullContent: 'A leading Food Processing Unit in Gudur requires a QA Analyst. The role involves conducting laboratory tests, maintaining detailed QA logs, and ensuring compliance with food safety standards. \n\n A degree in Food Technology or Chemistry is preferred. Attention to detail and knowledge of safety regulations are critical for this role.',
     },
   ],
   internships: [
@@ -93,6 +133,11 @@ const initialState = {
       postedDate: '6 weeks',
       description: 'Assist campaigns, content calendars, and partner outreach.',
       buttonType: 'apply',
+      salary: 'Stipend: ₹5,000 / month',
+      jobType: 'Internship',
+      experience: 'Student',
+      skills: ['Social Media', 'Content Creation', 'Marketing'],
+      fullContent: 'The Local Tourism Board is offering a Marketing Internship. Interns will assist with promotional campaigns, manage content calendars, and reach out to potential partners. \n\n This is a great opportunity for students to gain hands-on experience in tourism marketing. Creativity and good communication skills are a must.',
     },
     {
       id: 10,
@@ -102,6 +147,11 @@ const initialState = {
       postedDate: '8 weeks',
       description: 'Map civic assets and create simple dashboards for field teams.',
       buttonType: 'view',
+      salary: 'Stipend: ₹7,000 / month',
+      jobType: 'Internship',
+      experience: 'Student',
+      skills: ['GIS', 'Mapping', 'Data Analysis'],
+      fullContent: 'The Urban Planning Cell invites applications for a GIS Intern. The role involves mapping civic assets using GIS tools and creating simple dashboards for field teams. \n\n Geography or Urban Planning students with basic GIS knowledge are encouraged to apply. This internship offers valuable exposure to urban development projects.',
     },
     {
       id: 11,
@@ -111,6 +161,11 @@ const initialState = {
       postedDate: '8 weeks',
       description: 'Create reels and guides about local attractions and food.',
       buttonType: 'apply',
+      salary: 'Stipend: ₹6,000 / month',
+      jobType: 'Internship',
+      experience: 'Student',
+      skills: ['Video Editing', 'Writing', 'Travel Blogging'],
+      fullContent: 'Nelloriens Studio is looking for a Content Intern (Travel) to create engaging reels and guides about local attractions and food. \n\n Passion for travel and food, along with basic video editing skills, is required. Join us to showcase the beauty of our region to the world.',
     },
     {
       id: 12,
@@ -120,6 +175,11 @@ const initialState = {
       postedDate: '4 weeks',
       description: 'Digitize forms, maintain spreadsheets, basic QC.',
       buttonType: 'view',
+      salary: 'Unpaid',
+      jobType: 'Internship',
+      experience: 'Student',
+      skills: ['Typing', 'Excel', 'Attention to Detail'],
+      fullContent: 'The Civic Records Cell is looking for a Data Entry Intern. The primary tasks include digitizing physical forms, maintaining spreadsheets, and performing basic quality checks. \n\n This is an entry-level position suitable for students looking to gain office experience. Punctuality and accuracy are key.',
     },
   ],
   updatesFeedItems: [
@@ -306,10 +366,10 @@ const initialState = {
     sort: ['Recent', 'Popular'],
   },
   updatesQuickLinks: [
-  { id: 1, icon: 'bi-briefcase', label: 'Latest Govt Jobs' },
-  { id: 2, icon: 'bi-mortarboard', label: 'Exam Results & Schedules' },
-  { id: 3, icon: 'bi-newspaper', label: 'Top News Today' },
-  { id: 4, icon: 'bi-globe', label: 'Tourism Guides' },
+    { id: 1, icon: 'bi-briefcase', label: 'Latest Govt Jobs' },
+    { id: 2, icon: 'bi-mortarboard', label: 'Exam Results & Schedules' },
+    { id: 3, icon: 'bi-newspaper', label: 'Top News Today' },
+    { id: 4, icon: 'bi-globe', label: 'Tourism Guides' },
   ],
   updatesTrendingTags: ['#nellore', '#jobs', '#results', '#traffic', '#tourism'],
   updatesSavedItems: [
@@ -344,6 +404,8 @@ const initialState = {
       categoryLabel: 'Local',
       time: '2 hrs ago',
       filterCategory: 'local',
+      summary: 'Volunteers are gathering this Sunday for a massive coastal cleanup drive to preserve our beautiful beaches. Participation is open to all.',
+      fullContent: 'Volunteers are gathering this Sunday for a massive coastal cleanup drive to preserve our beautiful beaches. This initiative, organized by local environmental groups, aims to remove plastic waste and debris from the shoreline. \n\n Participation is open to all residents, and necessary equipment such as gloves and bags will be provided. The event kicks off at 7 AM at the main beach entrance. Local businesses have also pledged to provide refreshments for the volunteers.',
       image:
         'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?w=800&h=500&fit=crop',
     },
@@ -353,6 +415,8 @@ const initialState = {
       categoryLabel: 'Travel',
       time: '4 hrs ago',
       filterCategory: 'local',
+      summary: 'New daily flight services to Chennai and Hyderabad starting next month to boost local connectivity and support tourism.',
+      fullContent: 'Starting next month, new daily flight services to Chennai and Hyderabad will be operational. This move is expected to significantly boost local connectivity, making travel easier for business and leisure. \n\n The airport authority has confirmed that major airlines are participating in this expansion. This is a significant step towards supporting the growing tourism industry in the region, offering convenient options for travelers.',
       image:
         'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=500&fit=crop',
     },
@@ -362,6 +426,8 @@ const initialState = {
       categoryLabel: 'International',
       time: 'Today',
       filterCategory: 'international',
+      summary: 'Global markets show a positive trend following the recent economic policy announcements, with major indices closing higher.',
+      fullContent: 'Global markets have shown a strong positive trend immediately following the recent economic policy announcements. Major indices across Asia, Europe, and the Americas closed significantly higher. \n\n Analysts attribute this rally to increased investor confidence and the promise of regulatory reforms. Technology and manufacturing sectors saw the highest gains, signaling a robust outlook for the coming quarter.',
       image:
         'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=500&fit=crop',
     },
@@ -371,6 +437,8 @@ const initialState = {
       categoryLabel: 'Business',
       time: '1 hr ago',
       filterCategory: 'international',
+      summary: 'Krishnapatnam Port records highest ever monthly cargo throughput, signaling strong trade growth and operational efficiency.',
+      fullContent: 'Krishnapatnam Port has recorded its highest-ever monthly cargo throughput, a milestone that underscores the region\'s growing importance in international trade. The surge is driven by increased handling of coal, fertilizers, and containerized cargo. \n\n Port officials cited improved operational efficiency and recent infrastructure upgrades as key factors. This breaking record signals strong trade growth and boosts the local economy.',
       image:
         'https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=800&h=500&fit=crop',
     },
@@ -380,6 +448,8 @@ const initialState = {
       categoryLabel: 'Weather',
       time: 'Today',
       filterCategory: 'local',
+      summary: 'Meteorological department predicts intermittent showers across the district for the next 24 hours. Residents are advised to carry umbrellas.',
+      fullContent: 'The Meteorological department has predicted intermittent showers across the entire district for the next 24 hours. A low-pressure area forming in the Bay of Bengal is the primary cause. \n\n Residents are advised to carry umbrellas and drive carefully, as some low-lying areas might experience waterlogging. Fishermen have been warned not to venture deep into the sea until further notice.',
       image:
         'https://images.unsplash.com/photo-1501696461415-6bd6660c6742?w=800&h=500&fit=crop',
     },
@@ -389,6 +459,8 @@ const initialState = {
       categoryLabel: 'Sports',
       time: '3 hrs ago',
       filterCategory: 'international',
+      summary: 'Dates and venues for the State Volleyball qualifiers have been officially announced today. Teams are gearing up for the competition.',
+      fullContent: 'The official dates and venues for the highly anticipated State Volleyball qualifiers were announced today. The tournament will take place at the District Indoor Stadium starting next week. \n\n Teams from all over the state are gearing up for the intense competition. Selectors will be present to scout talent for the upcoming National Games, adding high stakes to every match.',
       image:
         'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&h=500&fit=crop',
     },
@@ -398,6 +470,8 @@ const initialState = {
       categoryLabel: 'Education',
       time: '5 hrs ago',
       filterCategory: 'tourism',
+      summary: 'Help desks have been established to assist students with Polytechnic results and revaluation queries near major colleges.',
+      fullContent: 'Special help desks have been established near major government and private colleges to assist students with their Polytechnic results. These desks will also handle queries regarding revaluation and supplementary exams. \n\n The initiative aims to reduce confusion and anxiety among students. Officials will be available from 9 AM to 5 PM to guide students through the necessary paperwork and online procedures.',
       image:
         'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?w=800&h=500&fit=crop',
     },
@@ -407,6 +481,8 @@ const initialState = {
       categoryLabel: 'Traffic',
       time: 'Tonight',
       filterCategory: 'tourism',
+      summary: 'Traffic diversions will be in place tonight during peak hours due to ongoing road maintenance work near the city center.',
+      fullContent: 'Motorists are advised that traffic diversions will be in place tonight during peak hours, specifically from 6 PM to 10 PM. This is due to urgent road maintenance work near the city center circle. \n\n Traffic police will be deployed to guide vehicles through alternate routes. Commuters are requested to plan their journeys accordingly and expect slight delays.',
       image:
         'https://images.unsplash.com/photo-1503785640985-f62e9378a7b6?w=800&h=500&fit=crop',
     },
@@ -416,6 +492,8 @@ const initialState = {
       categoryLabel: 'Events',
       time: 'This Week',
       filterCategory: 'tourism',
+      summary: 'The much-awaited cultural festival lineup is out, featuring top artists and traditional performances from across the state.',
+      fullContent: 'The organizers have finally released the lineup for the much-awaited annual Cultural Festival. The event will feature top artists, folk dancers, and traditional musicians from across the state. \n\n Highlights include a classical fusion concert on opening night and a grand street parade on the final day. Tickets are available online and at select venues starting tomorrow.',
       image:
         'https://images.unsplash.com/photo-1470229538611-16ba8c7ffbd7?w=800&h=500&fit=crop',
     },
@@ -725,15 +803,15 @@ const newsSlice = createSlice({
   },
 });
 
-export const { 
-  addNews, 
-  addJob, 
-  addEvent, 
-  addUpdate, 
+export const {
+  addNews,
+  addJob,
+  addEvent,
+  addUpdate,
   setNewsPage,
   setNewsLoading,
-  setJobsPage, 
-  setJobsLoading 
+  setJobsPage,
+  setJobsLoading
 } = newsSlice.actions;
 export default newsSlice.reducer;
 

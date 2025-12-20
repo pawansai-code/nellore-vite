@@ -1,9 +1,17 @@
-import { FaEnvelope, FaPhone } from 'react-icons/fa';
+import { FaChevronDown, FaEnvelope, FaPhone } from 'react-icons/fa';
+import { useDispatch, useSelector } from "react-redux";
 import useTranslation from '../../hooks/useTranslation';
+import { setLanguage } from "../../state/slices/appSlice";
 import './TopHeader.css';
 
 const TopHeader = () => {
   const { t } = useTranslation();
+  const language = useSelector((state) => state.app.language);
+  const dispatch = useDispatch();
+
+  const handleLanguageChange = (e) => {
+    dispatch(setLanguage(e.target.value));
+  };
 
   return (
     <div className="top-header">
@@ -18,6 +26,19 @@ const TopHeader = () => {
             <span>8341540001</span>
             <span>•</span>
             <span>8367600045</span>
+            <div className="language-selector">
+              <select
+                value={language}
+                onChange={handleLanguageChange}
+                className="language-dropdown"
+              >
+                <option value="English">English</option>
+                <option value="Telugu">Telugu</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Tamil">Tamil</option>
+              </select>
+              <FaChevronDown className="dropdown-arrow" />
+            </div>
           </div>
         </div>
       </div>
@@ -26,4 +47,3 @@ const TopHeader = () => {
 };
 
 export default TopHeader;
-

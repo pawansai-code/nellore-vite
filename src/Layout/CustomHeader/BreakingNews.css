@@ -1,6 +1,8 @@
 .breaking-news-container {
   background-color: #204a92;
   border-bottom: none;
+  border-radius: 50px;
+  overflow: hidden;
 }
 
 .breaking-news-container .container-fluid {
@@ -10,7 +12,7 @@
 .breaking-news-banner {
   background-color: #dc3545;
   color: white;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 0.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -18,7 +20,7 @@
   white-space: nowrap;
   flex-shrink: 0;
   border-radius: 25px;
-  margin-left: 10px;
+  margin-left: 3px;
 }
 
 .pulse-icon {

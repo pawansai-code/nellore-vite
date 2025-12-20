@@ -1,6 +1,7 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Badge, Button, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer';
@@ -8,7 +9,7 @@ import MainHeader from '../../components/MainHeader';
 import Navbar from '../../components/Navbar';
 import TopHeader from '../../components/TopHeader';
 import useTranslation from '../../hooks/useTranslation';
-import { setJobsLoading, setJobsPage } from '../../state/slices/newsSlice';
+import { setJobsLoading } from '../../state/slices/newsSlice';
 import './JobsPage.css';
 
 
@@ -50,12 +51,9 @@ const JobsPage = () => {
     date: 'All time',
   });
 
-  // State for filters that are actually applied to the list
-  const [appliedFilters, setAppliedFilters] = useState({
-    category: 'All',
-    location: 'All',
-    date: 'All time',
-  });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const [openDropdown, setOpenDropdown] = useState(null);
   const dropdownRef = useRef(null);
@@ -88,11 +86,6 @@ const JobsPage = () => {
     setOpenDropdown(openDropdown === filterType ? null : filterType);
   };
 
-  const handleApplyFilters = () => {
-    setAppliedFilters(filters);
-    // Optional: Scroll to top of results or show a toast
-  };
-
   // Helper to parse date strings like "2d ago", "Posted Today"
   const getDaysAgo = (dateStr) => {
     if (!dateStr) return Infinity;
@@ -123,51 +116,70 @@ const JobsPage = () => {
 
   const filteredJobs = useMemo(() => {
     return allJobs.filter(job => {
+      // 0. Search Filter
+      if (searchTerm.trim()) {
+        const term = searchTerm.toLowerCase();
+        const matchesSearch = 
+          job.title?.toLowerCase().includes(term) ||
+          job.company?.toLowerCase().includes(term) ||
+          job.location?.toLowerCase().includes(term);
+        
+        if (!matchesSearch) return false;
+      }
+
       // 1. Category Filter
-      if (appliedFilters.category !== 'All' && job.category !== appliedFilters.category) {
+      if (filters.category !== 'All' && job.category !== filters.category) {
         return false;
       }
 
       // 2. Location Filter
-      if (appliedFilters.location !== 'All' && job.location !== appliedFilters.location) {
+      if (filters.location !== 'All' && job.location !== filters.location) {
         return false;
       }
 
       // 3. Date Filter
-      if (appliedFilters.date !== 'All time') {
+      if (filters.date !== 'All time') {
         const daysAgo = getDaysAgo(job.postedDate);
         if (daysAgo === Infinity) return false; // Exclude non-date values when date filter is active? 
         // Or render them? Assuming if I filter for "Last 7 days", I only want recent posts.
         
-        if (appliedFilters.date === 'Last 7 days' && daysAgo > 7) return false;
-        if (appliedFilters.date === 'Last 14 days' && daysAgo > 14) return false;
-        if (appliedFilters.date === 'Last 30 days' && daysAgo > 30) return false;
+        if (filters.date === 'Last 7 days' && daysAgo > 7) return false;
+        if (filters.date === 'Last 14 days' && daysAgo > 14) return false;
+        if (filters.date === 'Last 30 days' && daysAgo > 30) return false;
       }
 
       return true;
     });
-  }, [allJobs, appliedFilters]);
+  }, [allJobs, filters, searchTerm]);
 
-  const handlePageChange = (page) => {
+  const [visibleCount, setVisibleCount] = useState(6);
+
+  // Reset visible count when filters or search change
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [filters, searchTerm]);
+
+  const displayedJobs = useMemo(() => {
+    return filteredJobs.slice(0, visibleCount);
+  }, [filteredJobs, visibleCount]);
+
+  const handleLoadMore = () => {
     dispatch(setJobsLoading(true));
+    // Simulate loading delay for better UX
     setTimeout(() => {
-      dispatch(setJobsPage(page));
+      setVisibleCount((prev) => prev + 6);
       dispatch(setJobsLoading(false));
-    }, 300);
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      handlePageChange(currentPage + 1);
-    }
+    }, 500);
   };
 
   const handleJobAction = (job, actionType) => {
-    if (actionType === 'apply') {
-      navigate(`/hub/jobs/${job.id}/apply`);
-    } else {
-      navigate(`/hub/jobs/${job.id}`);
-    }
+    setSelectedJob(job);
+    setShowModal(true);
+  };
+  
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setTimeout(() => setSelectedJob(null), 300);
   };
 
   const renderJobCard = (job) => {
@@ -280,25 +292,30 @@ const JobsPage = () => {
                   </div>
                 )}
               </div>
-            </div>
 
-            <button
-              className="btn btn-primary apply-filters-btn"
-              onClick={handleApplyFilters}
-            >
-              {t('ApplyFilters')}
-            </button>
+               {/* Search Bar */}
+               <div className="jobs-search-bar" style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', borderRadius: '50px', padding: '0.5rem 1rem', border: '1px solid #dee2e6', minWidth: '250px' }}>
+                  <i className="bi bi-search me-2 text-muted"></i>
+                  <input
+                    type="text"
+                    placeholder={t('SearchJobs') || 'Search jobs...'}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%', fontSize: '0.9rem', color: '#495057' }}
+                  />
+            </div>
           </div>
         </div>
       </div>
+    </div>
 
       <main className="jobs-main-content">
         <div className="container-fluid">
           <div className="row">
             <div className="col-lg-8">
               <div className="jobs-grid">
-                {filteredJobs.length > 0 ? (
-                  filteredJobs.map(renderJobCard)
+                {displayedJobs.length > 0 ? (
+                  displayedJobs.map(renderJobCard)
                 ) : (
                   <div className="no-jobs-found text-center py-5">
                     <h5 className="text-muted">{t('NoJobsFound')}</h5>
@@ -310,53 +327,95 @@ const JobsPage = () => {
         </div>
       </main>
 
-      {/* pagination section */}
-      <section className="jobs-pagination-section">
-        <div className="container-fluid">
-          <div className="jobs-pagination-panel">
-            <div className="pagination-controls-group">
-              <span className="pagination-status-chip">
-                {t('Page')} {currentPage} {t('Of')} {totalPages}
-              </span>
-              <div className="pagination-controls">
-                <button
-                  className="btn pagination-chip-btn"
-                  onClick={() => handlePageChange(1)}
-                  disabled={currentPage === 1}
-                >
-                  1
-                </button>
-                <button
-                  className="btn pagination-chip-btn"
-                  onClick={() => handlePageChange(2)}
-                  disabled={currentPage === 2}
-                >
-                  2
-                </button>
-                <button
-                  className="btn pagination-chip-btn"
-                  onClick={() => handlePageChange(3)}
-                  disabled={currentPage === 3}
-                >
-                  3
-                </button>
-                <button
-                  className="btn pagination-chip-btn pagination-chip-btn-primary"
-                  onClick={handleNextPage}
-                  disabled={currentPage >= totalPages || isLoading}
-                >
-                  {t('Next')}
-                </button>
-              </div>
+      {/* Load More Section */}
+      {visibleCount < filteredJobs.length && (
+        <section className="jobs-pagination-section pb-5" style={{ background: 'transparent', padding: '0 0 2rem 0' }}>
+          <div className="container-fluid">
+            <div className="d-flex justify-content-center">
+              <button 
+                className="btn btn-primary rounded-pill px-5 py-2" 
+                onClick={handleLoadMore}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Loading...
+                  </>
+                ) : (
+                  'Load More'
+                )}
+              </button>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
       
       <Footer 
         siteName={t('siteName') + ".IN"}
         tagline={t('FooterTagline')}
       />
+
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedJob && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedJob.title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="mb-4">
+                <h5 className="text-secondary mb-2">{selectedJob.company}</h5>
+                <div className="d-flex flex-wrap gap-2 text-muted mb-3">
+                  <span className="d-flex align-items-center"><i className="bi bi-geo-alt me-1"></i>{selectedJob.location}</span>
+                  <span className="d-flex align-items-center"><i className="bi bi-clock me-1"></i>{selectedJob.postedDate}</span>
+                  <span className="d-flex align-items-center"><i className="bi bi-briefcase me-1"></i>{selectedJob.jobType}</span>
+                  <span className="d-flex align-items-center"><i className="bi bi-star me-1"></i>{selectedJob.experience}</span>
+                  {selectedJob.salary && (
+                    <span className="d-flex align-items-center"><i className="bi bi-currency-rupee me-1"></i>{selectedJob.salary}</span>
+                  )}
+                </div>
+                
+                {selectedJob.skills && selectedJob.skills.length > 0 && (
+                  <div className="mb-3">
+                    {selectedJob.skills.map(skill => (
+                      <Badge bg="light" text="dark" className="me-2 mb-1 border" key={skill}>
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="job-full-content">
+                 <h6 className="mb-2">{t('JobDescription') || 'Job Description'}</h6>
+                 {selectedJob.fullContent ? (
+                    selectedJob.fullContent.split('\n\n').map((paragraph, idx) => (
+                      <p key={idx} className="text-secondary">{paragraph}</p>
+                    ))
+                 ) : (
+                   <p className="text-secondary">{selectedJob.description}</p>
+                 )}
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                {t('Close')}
+              </Button>
+              <Button 
+                variant="primary" 
+                onClick={() => {
+                  console.log("Applying for:", selectedJob.id);
+                  // Just close modal for now to simulate action completion or keep open
+                  handleCloseModal();
+                  alert("Application submitted successfully!");
+                }}
+              >
+                {t('ApplyNow') || 'Apply Now'}
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal>
     </div>
   );
 };

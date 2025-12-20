@@ -1,6 +1,7 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
@@ -34,6 +35,16 @@ const FamousstayPage = () => {
     rating: 'All',
     location: 'All'
   });
+  
+  const [visibleCount, setVisibleCount] = useState(4);
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
+  
+  const [selectedStay, setSelectedStay] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('online'); // 'online' or 'offline'
+  const [bookingStatus, setBookingStatus] = useState('idle'); // 'idle', 'processing', 'confirmed'
+
   const [openDropdown, setOpenDropdown] = useState(null);
   const dropdownRef = useRef(null);
 
@@ -143,6 +154,23 @@ const FamousstayPage = () => {
     return filtered;
   }, [topPicks, searchTerm, reduxFilters, activeFilters]);
 
+  // Reset pagination when filters search/sort change
+  useEffect(() => {
+    setVisibleCount(4);
+  }, [searchTerm, reduxFilters, activeFilters]);
+
+  const displayedStays = useMemo(() => {
+    return filteredStays.slice(0, visibleCount);
+  }, [filteredStays, visibleCount]);
+
+  const handleLoadMore = () => {
+    setIsLocalLoading(true);
+    setTimeout(() => {
+      setVisibleCount((prev) => prev + 4);
+      setIsLocalLoading(false);
+    }, 500);
+  };
+
   const handleFilterToggle = (filterKey) => {
     if (filterKey === "rating") {
       dispatch(
@@ -159,10 +187,69 @@ const FamousstayPage = () => {
     }
   };
 
+  const handleCardClick = (stay) => {
+    setSelectedStay(stay);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setTimeout(() => setSelectedStay(null), 300);
+  };
+
+  const handleCloseBookingModal = () => {
+     setShowBookingModal(false);
+     setBookingStatus('idle');
+     setPaymentMethod('online');
+  };
+
+  const handleBookingConfirm = (e) => {
+     e.preventDefault();
+     setBookingStatus('processing');
+     
+     // Simulate API call
+     setTimeout(() => {
+        setBookingStatus('confirmed');
+     }, 1500);
+  };
+
   const handleStayAction = (stay, action) => {
     console.log(`${action} for ${stay.name}`);
+    
     if (action === "Book now" || action === "Check availability") {
-      navigate(`/stays/${stay.id}/book`);
+       setSelectedStay(stay);
+       // Check if details modal is open, if so, close it? 
+       // User experience: Maybe keep details open underneath? 
+       // React-bootstrap modals stack fine.
+       setShowBookingModal(true);
+    } else if (action === "Save") {
+       // Functional Save: Persist to localStorage
+       const saved = JSON.parse(localStorage.getItem('savedStays') || '[]');
+       const isSaved = saved.some(s => s.id === stay.id);
+       
+       if (isSaved) {
+          const newSaved = saved.filter(s => s.id !== stay.id);
+          localStorage.setItem('savedStays', JSON.stringify(newSaved));
+          alert(`${stay.name} removed from your wishlist.`);
+       } else {
+          saved.push(stay);
+          localStorage.setItem('savedStays', JSON.stringify(saved));
+          alert(`${stay.name} saved to your wishlist!`);
+       }
+    } else if (action === "Share") {
+       // Functional Share: Clipboard
+       const text = `Check out ${stay.name} in Nellore! Rated ${stay.rating}/5. Located at ${stay.location}.`;
+       if (navigator.share) {
+         navigator.share({
+            title: stay.name,
+            text: text,
+            url: window.location.href
+         }).catch(err => console.log('Error sharing', err));
+       } else {
+         navigator.clipboard.writeText(text).then(() => {
+           alert("Stay details copied to clipboard!");
+         });
+       }
     }
   };
 
@@ -278,8 +365,13 @@ const FamousstayPage = () => {
                 </div>
 
                 <div className="famousstay-stays-grid">
-                  {filteredStays.map((stay) => (
-                    <div key={stay.id} className="famousstay-stay-card">
+                  {displayedStays.map((stay) => (
+                    <div 
+                      key={stay.id} 
+                      className="famousstay-stay-card"
+                      onClick={() => handleCardClick(stay)}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <div className="famousstay-stay-image">
                         <img src={stay.image} alt={stay.name} />
                         {stay.isEditorChoice && (
@@ -319,7 +411,10 @@ const FamousstayPage = () => {
                                   ? "famousstay-action-primary"
                                   : "famousstay-action-secondary"
                                 }`}
-                              onClick={() => handleStayAction(stay, action)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleStayAction(stay, action);
+                              }}
                             >
                               {t(action.replace(/\s/g, '')) || action}
                             </button>
@@ -327,8 +422,27 @@ const FamousstayPage = () => {
                         </div>
                       </div>
                     </div>
-                  ))}
+                  ))}/* ... */
                 </div>
+
+                {visibleCount < filteredStays.length && (
+                  <div className="famousstay-load-more-container">
+                    <button 
+                      className="famousstay-load-more-btn" 
+                      onClick={handleLoadMore}
+                      disabled={isLocalLoading}
+                    >
+                      {isLocalLoading ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                          Loading...
+                        </>
+                      ) : (
+                        'Load More'
+                      )}
+                    </button>
+                  </div>
+                )}
               </section>
 
               {/* Map & Nearby Section */}
@@ -472,6 +586,172 @@ const FamousstayPage = () => {
         siteName={t('siteName') + ".IN"}
         tagline={t('FooterTagline')}
       />
+
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedStay && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedStay.name}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="mb-4 text-center">
+                 <img 
+                    src={selectedStay.image} 
+                    alt={selectedStay.name} 
+                    style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: '8px' }}
+                 />
+              </div>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                 <span className="badge bg-primary fs-6">
+                    <i className="bi bi-star-fill me-1"></i>{selectedStay.rating} / 5
+                 </span>
+                 <span className="text-secondary fw-bold fs-5">
+                    ₹{selectedStay.price.toLocaleString()} <span className="fs-6 fw-normal text-muted">/ {selectedStay.priceUnit}</span>
+                 </span>
+              </div>
+              <p className="text-muted mb-3">
+                 <i className="bi bi-geo-alt-fill text-danger me-2"></i>{selectedStay.location}
+              </p>
+              
+              <div className="mb-3">
+                <h6 className="fw-bold">Amenities:</h6>
+                <div className="d-flex flex-wrap gap-2">
+                   {selectedStay.amenities.map((amenity, idx) => (
+                      <span key={idx} className="badge bg-light text-dark border">
+                        {amenity}
+                      </span>
+                   ))}
+                </div>
+              </div>
+
+              <div className="famousstay-full-content">
+                 <h5 className="mb-3 text-secondary">{t('AboutProperty') || 'About Property'}</h5>
+                 {selectedStay.fullContent ? (
+                    selectedStay.fullContent.split('\n\n').map((paragraph, idx) => (
+                      <p key={idx} className="text-secondary" style={{ lineHeight: '1.6' }}>{paragraph}</p>
+                    ))
+                 ) : (
+                   <p className="text-secondary">Explore the best hospitality in Nellore. This property offers a unique blend of comfort and convenience.</p>
+                 )}
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="outline-secondary" onClick={handleCloseModal}>
+                {t('Close')}
+              </Button>
+              <Button variant="primary" onClick={() => {
+                  handleCloseModal(); // Optional: close details
+                  handleStayAction(selectedStay, 'Book now');
+              }}>
+                {t('BookNow') || 'Book Now'}
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal>
+
+      {/* Booking Modal */}
+      <Modal show={showBookingModal} onHide={handleCloseBookingModal} centered backdrop="static">
+         {selectedStay && (
+            <>
+               <Modal.Header closeButton>
+                  <Modal.Title>{bookingStatus === 'confirmed' ? 'Booking Confirmed!' : 'Book Your Stay'}</Modal.Title>
+               </Modal.Header>
+               <Modal.Body>
+                  {bookingStatus === 'confirmed' ? (
+                     <div className="text-center py-4">
+                        <div className="mb-3">
+                           <i className="bi bi-check-circle-fill text-success" style={{ fontSize: '3rem' }}></i>
+                        </div>
+                        <h4>Thank You!</h4>
+                        <p className="text-muted">Your booking at <strong>{selectedStay.name}</strong> has been confirmed.</p>
+                        <p>Booking ID: <strong>NEL-{Math.floor(1000 + Math.random() * 9000)}</strong></p>
+                        {paymentMethod === 'offline' && (
+                           <div className="alert alert-warning mt-3">
+                              <i className="bi bi-cash-coin me-2"></i>
+                              Please pay <strong>₹{selectedStay.price}</strong> at the hotel reception upon arrival.
+                           </div>
+                        )}
+                        <p className="small text-muted mt-4">A confirmation email has been sent to your registered address.</p>
+                     </div>
+                  ) : (
+                     <form onSubmit={handleBookingConfirm}>
+                        {/* Stay Summary */}
+                        <div className="d-flex align-items-center mb-4 p-3 bg-light rounded">
+                           <img src={selectedStay.image} alt="" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px' }} className="me-3" />
+                           <div>
+                              <h6 className="mb-0">{selectedStay.name}</h6>
+                              <small className="text-muted">{selectedStay.location}</small>
+                              <div className="fw-bold text-primary">₹{selectedStay.price} <span className="fw-normal text-muted">/ night</span></div>
+                           </div>
+                        </div>
+
+                        {/* Guest Details */}
+                        <div className="row g-3 mb-3">
+                           <div className="col-md-6">
+                              <label className="form-label small text-muted">Check-in</label>
+                              <input type="date" className="form-control" required />
+                           </div>
+                           <div className="col-md-6">
+                              <label className="form-label small text-muted">Check-out</label>
+                              <input type="date" className="form-control" required />
+                           </div>
+                           <div className="col-12">
+                              <label className="form-label small text-muted">Full Name</label>
+                              <input type="text" className="form-control" placeholder="John Doe" required />
+                           </div>
+                        </div>
+
+                        {/* Payment Options */}
+                        <div className="mb-4">
+                           <label className="form-label fw-bold">Payment Method</label>
+                           
+                           <div className="border rounded p-3 mb-2" onClick={() => setPaymentMethod('online')} style={{ cursor: 'pointer', borderColor: paymentMethod === 'online' ? '#0d6efd' : '#dee2e6', backgroundColor: paymentMethod === 'online' ? '#f8f9fa' : 'white' }}>
+                              <div className="form-check">
+                                 <input className="form-check-input" type="radio" name="paymentMethod" checked={paymentMethod === 'online'} onChange={() => {}} />
+                                 <label className="form-check-label fw-bold">
+                                    Pay Online
+                                 </label>
+                                 <div className="small text-muted mt-1">
+                                    Credit/Debit Card, UPI, Net Banking
+                                 </div>
+                                 {paymentMethod === 'online' && (
+                                    <div className="mt-2 text-primary small">
+                                       <i className="bi bi-shield-lock me-1"></i> Secure Payment Gateway
+                                    </div>
+                                 )}
+                              </div>
+                           </div>
+
+                           <div className="border rounded p-3" onClick={() => setPaymentMethod('offline')} style={{ cursor: 'pointer', borderColor: paymentMethod === 'offline' ? '#0d6efd' : '#dee2e6', backgroundColor: paymentMethod === 'offline' ? '#f8f9fa' : 'white' }}>
+                              <div className="form-check">
+                                 <input className="form-check-input" type="radio" name="paymentMethod" checked={paymentMethod === 'offline'} onChange={() => {}} />
+                                 <label className="form-check-label fw-bold">
+                                    Pay at Hotel
+                                 </label>
+                                 <div className="small text-muted mt-1">
+                                    Pay cash or card when you check-in. No prepayment required.
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+
+                        <div className="d-grid">
+                           <Button variant="primary" type="submit" disabled={bookingStatus === 'processing'} size="lg">
+                              {bookingStatus === 'processing' ? 'Processing...' : (paymentMethod === 'online' ? `Pay ₹${selectedStay.price}` : 'Confirm Booking')}
+                           </Button>
+                        </div>
+                     </form>
+                  )}
+               </Modal.Body>
+               {bookingStatus === 'confirmed' && (
+                  <Modal.Footer>
+                     <Button variant="secondary" onClick={handleCloseBookingModal}>Close</Button>
+                  </Modal.Footer>
+               )}
+            </>
+         )}
+      </Modal>
     </div>
   );
 };

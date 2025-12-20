@@ -1,5 +1,5 @@
+import { lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import BreakingNews from "./components/BreakingNews";
 import { MainContentArea } from "./components/ContentSections";
 import Footer from "./components/Footer";
 // import { HeroSection, SidebarNavigation } from "./components/HomePage";
@@ -7,35 +7,43 @@ import MainHeader from "./components/MainHeader";
 import Navbar from "./components/Navbar";
 import TopHeader from "./components/TopHeader";
 import Carousel from "./Layout/CustomHeader/Carousel";
-import ArticlesPage from "./Pages/ArticlesPage/ArticlesPage.jsx";
-import EventsPage from "./Pages/EventsPage/EventsPage.jsx";
-import Famousfood from "./Pages/Famousfood/Famousfood.jsx";
-import FamousstayPage from "./Pages/FamousstayPage/FamousstayPage.jsx";
-import HistoryPage from "./Pages/HistoryPage/HistoryPage.jsx";
-import { HubHomePage } from "./Pages/HomePage/HubHomePage";
-import JobsPage from "./Pages/JobsPage";
-import NewsPage from "./Pages/NewsPage";
-import NotificationPage from "./Pages/NotificationPage/NotificationPage.jsx";
-import ResultsPage from "./Pages/ResultsPage/ResultsPage.jsx";
-import SportsPage from "./Pages/SportsPage/SportsPage.jsx";
-import UpdatesPage from "./Pages/UpdatesPage";
 import "./styles/App.css";
+
+const ArticlesPage = lazy(() =>
+  import("./Pages/ArticlesPage/ArticlesPage.jsx")
+);
+const EventsPage = lazy(() => import("./Pages/EventsPage/EventsPage.jsx"));
+const Famousfood = lazy(() => import("./Pages/Famousfood/Famousfood.jsx"));
+const FamousstayPage = lazy(() =>
+  import("./Pages/FamousstayPage/FamousstayPage.jsx")
+);
+const HistoryPage = lazy(() => import("./Pages/HistoryPage/HistoryPage.jsx"));
+const HubHomePage = lazy(() => import("./Pages/HomePage/HubHomePage"));
+const JobsPage = lazy(() => import("./Pages/JobsPage"));
+const MoviesPage = lazy(() => import("./Pages/MoviesPage/MoviesPage.jsx")); // Added
+const NewsPage = lazy(() => import("./Pages/NewsPage"));
+const NotificationPage = lazy(() =>
+  import("./Pages/NotificationPage/NotificationPage.jsx")
+);
+const ResultsPage = lazy(() => import("./Pages/ResultsPage/ResultsPage.jsx"));
+const SportsPage = lazy(() => import("./Pages/SportsPage/SportsPage.jsx"));
+const TransportPage = lazy(() =>
+  import("./Pages/TransportPage/TransportPage.jsx")
+); // Added
 
 function HomePage() {
   return (
     <div>
       <TopHeader />
-      <MainHeader
-        siteName="NELLORIENS.IN"
-        tagline="Explore, Discover, Connect"
-      />
-      <BreakingNews />
+      <MainHeader siteName="NELLORIENS" />
+
       <Navbar />
       <Carousel />
       <div className="welcome-section">
         <h1 className="welcome-title">Welcome To Nellorien</h1>
         <p className="welcome-subtitle">
-          Discover the rich heritage, vibrant culture, and endless opportunities of our beautiful city.
+          Discover the rich heritage, vibrant culture, and endless opportunities
+          of our beautiful city.
         </p>
       </div>
       {/* <main className="main-content">
@@ -53,7 +61,7 @@ function HomePage() {
       <MainContentArea />
 
       <Footer
-        siteName="NELLORIENS.IN"
+        siteName="NELLORIENS"
         tagline="Your trusted gateway to explore Nellore - connecting you with opportunities, news, and destinations."
       />
     </div>
@@ -67,8 +75,6 @@ function App() {
       <Route path="/hub" element={<HubHomePage />} />
       <Route path="/hub/jobs" element={<JobsPage />} />
       <Route path="/jobs" element={<JobsPage />} />
-      <Route path="/hub/updates" element={<UpdatesPage />} />
-      <Route path="/updates" element={<UpdatesPage />} />
       <Route path="/hub/news" element={<NewsPage />} />
       <Route path="/news" element={<NewsPage />} />
       <Route path="/hub/results" element={<ResultsPage />} />
@@ -87,6 +93,8 @@ function App() {
       <Route path="/hub/Sports" element={<SportsPage />} />
       <Route path="/articles" element={<ArticlesPage />} />
       <Route path="/hub/Articles" element={<ArticlesPage />} />
+      <Route path="/movies" element={<MoviesPage />} />
+      <Route path="/transport" element={<TransportPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

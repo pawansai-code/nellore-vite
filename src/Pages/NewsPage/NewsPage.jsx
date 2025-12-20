@@ -1,6 +1,7 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
@@ -27,6 +28,9 @@ const NewsPage = () => {
   const defaultFilter = newsFeedFilters?.[0]?.id ?? "local";
   const [activeFilter, setActiveFilter] = useState(defaultFilter);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [showFullContent, setShowFullContent] = useState(false);
 
   const filteredArticles = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -70,6 +74,26 @@ const NewsPage = () => {
   //   handlePageChange(newsPage.currentPage + 1);
   // };
 
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
+  const isLoading = isLocalLoading || newsPage.isLoading;
+
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [activeFilter, searchTerm]);
+
+  const displayedArticles = useMemo(() => {
+    return filteredArticles.slice(0, visibleCount);
+  }, [filteredArticles, visibleCount]);
+
+  const handleLoadMore = () => {
+    setIsLocalLoading(true);
+    setTimeout(() => {
+      setVisibleCount((prev) => prev + 6);
+      setIsLocalLoading(false);
+    }, 500);
+  };
+
   const handleReadFullArticle = (articleId) => {
     navigate(`/hub/news/${articleId}`);
   };
@@ -101,6 +125,26 @@ const NewsPage = () => {
     }
   };
 
+  const handleCardClick = (article) => {
+    setSelectedArticle(article);
+    setShowFullContent(false);
+    setShowModal(true);
+  };
+
+  const handleOpenFullArticle = (article) => {
+    setSelectedArticle(article);
+    setShowFullContent(true);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setTimeout(() => {
+      setSelectedArticle(null);
+      setShowFullContent(false);
+    }, 300);
+  };
+
   return (
     <div className="news-page">
       <TopHeader />
@@ -122,7 +166,25 @@ const NewsPage = () => {
                   <h2 className="news-page-heading">{t('News')}</h2>
                 </div>
               </div>
-              <div className="news-page-search">
+            </div>
+
+            <div className="news-page-tabs-row d-flex flex-wrap align-items-center gap-3 mb-4">
+              <div className="news-page-tabs d-flex flex-wrap gap-2">
+                {newsFeedFilters.map((tab) => (
+                  <button
+                    key={tab.id}
+                    className={`news-page-tab ${
+                      activeFilter === tab.id ? "active" : ""
+                    }`}
+                    onClick={() => handleFilterChange(tab.id)}
+                  >
+                    <i className={`bi ${tab.icon} me-2`}></i>
+                    {t(tab.label)}
+                  </button>
+                ))}
+              </div>
+
+              <div className="news-page-search" style={{ minWidth: '250px', marginTop: '1rem' }}>
                 <i className="bi bi-search"></i>
                 <input
                   type="text"
@@ -133,26 +195,16 @@ const NewsPage = () => {
               </div>
             </div>
 
-            <div className="news-page-tabs">
-              {newsFeedFilters.map((tab) => (
-                <button
-                  key={tab.id}
-                  className={`news-page-tab ${
-                    activeFilter === tab.id ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange(tab.id)}
-                >
-                  <i className={`bi ${tab.icon} me-2`}></i>
-                  {t(tab.label)}
-                </button>
-              ))}
-            </div>
-
               <div className="news-content-layout">
                 <div className="news-main-column">
                   <div className="news-page-grid">
-                    {filteredArticles.map((article) => (
-                      <article key={article.id} className="news-page-card">
+                    {displayedArticles.map((article) => (
+                      <article 
+                        key={article.id} 
+                        className="news-page-card" 
+                        onClick={() => handleCardClick(article)}
+                        style={{ cursor: 'pointer' }}
+                      >
                         <div className="news-page-card-image">
                           <img src={article.image} alt={article.title} />
                         </div>
@@ -163,14 +215,17 @@ const NewsPage = () => {
                           </p>
                           <button
                             className="news-page-card-btn"
-                            onClick={() => handleReadFullArticle(article.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenFullArticle(article);
+                            }}
                           >
                             {t('ReadFullArticle')}
                           </button>
                         </div>
                       </article>
                     ))}
-                    {!filteredArticles.length && (
+                    {!displayedArticles.length && (
                       <div className="news-page-empty-state">
                         <i className="bi bi-emoji-neutral"></i>
                         <p>{t('NoNewsMatches')}</p>
@@ -178,35 +233,25 @@ const NewsPage = () => {
                     )}
                   </div>
   
-                  {/* pagination section */}
-                  <div className="jobs-pagination-panel">
-                    <div className="pagination-controls-group">
-                      <span className="pagination-status-chip">
-                        {t('Page')} {newsPage.currentPage} {t('Of')} {newsPage.totalPages}
-                      </span>
-  
-                      <div className="pagination-controls">
-                        {[1, 2, 3].map((page) => (
-                          <button
-                            key={page}
-                            className="btn pagination-chip-btn"
-                            onClick={() => handlePageChange(page)}
-                            disabled={newsPage.currentPage === page}
-                          >
-                            {page}
-                          </button>
-                        ))}
-  
-                        <button
-                          className="btn pagination-chip-btn pagination-chip-btn-primary"
-                          onClick={() => handlePageChange(newsPage.currentPage + 1)}
-                          disabled={newsPage.currentPage >= newsPage.totalPages}
-                        >
-                          {t('Next')}
-                        </button>
-                      </div>
+                  {/* Load More Section */}
+                  {visibleCount < filteredArticles.length && (
+                    <div className="news-load-more-container d-flex justify-content-center py-4">
+                      <button 
+                        className="btn btn-primary rounded-pill px-5 py-2" 
+                        onClick={handleLoadMore}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Loading...
+                          </>
+                        ) : (
+                          'Load More'
+                        )}
+                      </button>
                     </div>
-                  </div>
+                  )}
                 </div>
  
                 
@@ -215,9 +260,9 @@ const NewsPage = () => {
           </section>
 
           {/* Article Details, Live News Feed, and Headlines Section */}
-          <section className="news-featured-section">
+          {/* <section className="news-featured-section"> */}
             {/* Article Details */}
-            <div className="article-details-container">
+            {/* <div className="article-details-container">
               <div className="article-details-label">{t('ArticleDetails')}</div>
               <div className="article-details-content">
                 <h2 className="article-details-title">
@@ -277,10 +322,10 @@ const NewsPage = () => {
                 <div className="live-news-indicator">
                   {t('Live')}: {liveNewsCount} {t('NewPosts')}
                 </div>
-              </div>
+              </div> */}
 
               {/* headlines section */}
-              <div className="headlines-container">
+              {/* <div className="headlines-container">
                 <h3 className="headlines-title">{t('Headlines')}</h3>
                 <ul className="headlines-list">
                   {headlines.list.map((headline, idx) => (
@@ -304,14 +349,14 @@ const NewsPage = () => {
                     </div>
                   ))}
                 </div>
-              </div>
-            </div>
+              </div> */}
+            {/* </div> */}
 
             {/* <button className="load-new-btn" onClick={handleLoadNew}>
               <i className="bi bi-arrow-clockwise me-2"></i>
               Load New
             </button> */}
-          </section>
+          {/* </section> */}
         </div>
       </main>
 
@@ -319,6 +364,51 @@ const NewsPage = () => {
         siteName={t('siteName') + ".IN"}
         tagline={t('FooterTagline')}
       />
+
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedArticle && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedArticle.title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <img
+                src={selectedArticle.image}
+                alt={selectedArticle.title}
+                className="img-fluid rounded mb-3 w-100"
+                style={{ maxHeight: '400px', objectFit: 'cover' }}
+              />
+              <div className="d-flex align-items-center mb-3 text-muted">
+                <small>{t(selectedArticle.categoryLabel)}</small>
+                <span className="mx-2">•</span>
+                <small>{selectedArticle.time}</small>
+              </div>
+              <p className="lead" style={{ fontSize: '1.1rem' }}>
+                {showFullContent && selectedArticle.fullContent 
+                  ? selectedArticle.fullContent.split('\n\n').map((paragraph, idx) => (
+                      <span key={idx} style={{ display: 'block', marginBottom: '1rem' }}>{paragraph}</span>
+                    ))
+                  : selectedArticle.summary
+                }
+              </p>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                {t('Close')}
+              </Button>
+              {!showFullContent && (
+                <Button 
+                  variant="primary" 
+                  onClick={() => setShowFullContent(true)}
+                  style={{ backgroundColor: 'var(--accent-color, #0d6efd)', borderColor: 'var(--accent-color, #0d6efd)' }}
+                >
+                  {t('ReadFullArticle')}
+                </Button>
+              )}
+            </Modal.Footer>
+          </>
+        )}
+      </Modal>
     </div>
   );
 };

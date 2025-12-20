@@ -1320,10 +1320,10 @@
 
 .jobs-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem 0.5rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
   padding: 1rem 0;
-  max-width: 800px;
+  max-width: 900px;
 }
 
 .job-card {
@@ -1338,12 +1338,13 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+  /* Enable absolute positioning for children */
+  padding-bottom: 3.5rem;
+  /* Make space for the button */
 }
 
-.job-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  transform: translateY(-2px);
-}
+/* ... existing hover styles ... */
 
 .job-title {
   font-size: 1.1rem;
@@ -1351,24 +1352,11 @@
   color: #212529;
   margin-bottom: 0.5rem;
   line-height: 1.4;
+  padding-right: 1.5rem;
+  /* Prevent text from overlapping if needed, though button is at bottom */
 }
 
-.job-meta {
-  font-size: 0.875rem;
-  color: #6c757d;
-  margin-bottom: 0.75rem;
-  line-height: 1.4;
-  font-weight: 400;
-}
-
-.job-description {
-  font-size: 0.9rem;
-  color: #495057;
-  margin-bottom: 1rem;
-  line-height: 1.5;
-  font-weight: 400;
-  flex: 1;
-}
+/* ... existing meta and description styles ... */
 
 .job-action-btn {
   padding: 0.5rem 1.25rem;
@@ -1378,7 +1366,12 @@
   transition: all 0.3s ease;
   border: none;
   cursor: pointer;
-  width: 100%;
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  width: auto;
+  /* Allow auto width instead of 100% */
+  margin-top: 0;
 }
 
 /* Responsive Filter Section */
