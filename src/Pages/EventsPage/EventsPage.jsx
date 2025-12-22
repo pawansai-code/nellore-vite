@@ -1,7 +1,9 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import CommonAds from "../../components/CommonAds/CommonAds";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
@@ -30,6 +32,7 @@ const EventsPage = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTimeFilter, setActiveTimeFilterState] = useState("This Week");
+  const [showFilterModal, setShowFilterModal] = useState(false);
   const { t } = useTranslation();
 
   /* Local Filter State */
@@ -162,89 +165,28 @@ const EventsPage = () => {
           {/* Header Section */}
           <section className="events-header">
             <div className="events-header-content">
-              <div className="events-title-section" ref={dropdownRef}>
+              <div className="events-title-section">
                 <h1 className="events-title">{t('EventsInNellore')}</h1>
-                
-                {/* Time Filter */}
-                <div className="filter-wrapper">
-                    <button 
-                        className="events-time-filter-btn"
-                        onClick={() => toggleDropdown('time')}
-                    >
-                        <i className="bi bi-calendar-event"></i> {activeLocalFilters.time === 'All' ? t('Search') : activeLocalFilters.time}
-                    </button>
-                    {openDropdown === 'time' && (
-                        <div className="filter-dropdown">
-                            {timeOptions.map(time => (
-                                <button
-                                    key={time}
-                                    className={activeLocalFilters.time === time ? 'selected' : ''}
-                                    onClick={() => handleTimeFilterChange(time)}
-                                >
-                                    {time}
-                                </button>
-                            ))}
-                        </div>
-                    )}
-                </div>
               </div>
               <div className="events-header-filters">
-                <div className="events-search-bar">
-                  <i className="bi bi-search"></i>
-                  <input
-                    type="text"
-                    placeholder={t('SearchEvents')}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <div className="events-quick-filters">
-                  {/* Location Filter */}
-                  <div className="filter-wrapper">
-                      <button 
-                        className={`events-location-btn ${activeLocalFilters.location !== 'All' ? 'active' : ''}`}
-                        onClick={() => toggleDropdown('location')}
-                      >
-                        <i className="bi bi-geo-alt"></i> 
-                        {activeLocalFilters.location === 'All' ? t('Location') : activeLocalFilters.location}
-                      </button>
-                      {openDropdown === 'location' && (
-                        <div className="filter-dropdown">
-                            {uniqueLocations.map(loc => (
-                                <button
-                                    key={loc}
-                                    className={activeLocalFilters.location === loc ? 'selected' : ''}
-                                    onClick={() => handleFilterChange('location', loc)}
-                                >
-                                    {loc}
-                                </button>
-                            ))}
-                        </div>
-                      )}
-                  </div>
-
-                  {/* Category Filter */}
-                  <div className="filter-wrapper">
-                      <button 
-                        className={`events-filter-btn ${activeLocalFilters.category !== 'All' ? 'active' : ''}`}
-                        onClick={() => toggleDropdown('category')}
-                      >
-                        <i className="bi bi-funnel"></i> 
-                        {activeLocalFilters.category === 'All' ? t('SelectCategory') : activeLocalFilters.category}
-                      </button>
-                      {openDropdown === 'category' && (
-                         <div className="filter-dropdown">
-                            {uniqueCategories.map(cat => (
-                                <button
-                                    key={cat}
-                                    className={activeLocalFilters.category === cat ? 'selected' : ''}
-                                    onClick={() => handleFilterChange('category', cat)}
-                                >
-                                    {cat}
-                                </button>
-                            ))}
-                         </div>
-                      )}
+                <div className="events-combined-search-row">
+                  <div className="events-combined-bar">
+                    <i className="bi bi-search search-icon"></i>
+                    <input
+                      type="text"
+                      placeholder={t('SearchEvents')}
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="combined-search-input"
+                    />
+                    <div className="combined-divider"></div>
+                    <button 
+                      className="combined-filter-btn"
+                      onClick={() => setShowFilterModal(true)}
+                    >
+                      <i className="bi bi-sliders"></i>
+                      <span>{t('Filters')}</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -379,182 +321,13 @@ const EventsPage = () => {
                 </div>
               </section>
 
-              {/* Filters Section */}
-              {/* Filters Section */}
-              <section className="events-filters-section">
-                <div className="events-filters-header">
-                  <h3 className="events-filters-title">{t('Filters')}</h3>
-                  <button 
-                    className="events-filters-refine"
-                    onClick={() => {
-                        handleResetFilters();
-                        const topSection = document.querySelector('.events-header');
-                        if (topSection) topSection.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                  >
-                    {t('ClearAll')}
-                  </button>
-                </div>
-                <div className="events-filters-content">
-                  <div className="events-filter-group">
-                    <label className="events-filter-label">{t('SelectCategory')}:</label>
-                    <div className="events-filter-options">
-                      {uniqueCategories.filter(c => c !== 'All').map((cat, idx) => (
-                        <button
-                          key={idx}
-                          className={`events-filter-option ${
-                            activeLocalFilters.category === cat ? "active" : ""
-                          }`}
-                          onClick={() => handleFilterChange('category', activeLocalFilters.category === cat ? 'All' : cat)}
-                        >
-                          {cat}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="events-filter-group">
-                    <label className="events-filter-label">{t('PickDates')}:</label>
-                    <div className="events-filter-options">
-                      {timeOptions.filter(t => t !== 'All').map((date, idx) => (
-                        <button
-                          key={idx}
-                          className={`events-filter-option ${
-                            activeLocalFilters.time === date ? "active" : ""
-                          }`}
-                          onClick={() => handleFilterChange('time', activeLocalFilters.time === date ? 'All' : date)}
-                        >
-                          {date}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="events-filter-group">
-                    <label className="events-filter-label">{t('Location')}:</label>
-                    <div className="events-filter-options">
-                      {uniqueLocations.filter(l => l !== 'All').map((loc, idx) => (
-                        <button
-                          key={idx}
-                          className={`events-filter-option ${
-                            activeLocalFilters.location === loc ? "active" : ""
-                          }`}
-                          onClick={() => handleFilterChange('location', activeLocalFilters.location === loc ? 'All' : loc)}
-                        >
-                          {loc}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="events-filters-actions">
-                  <button 
-                    className="events-apply-btn"
-                    onClick={() => {
-                        const topSection = document.querySelector('.events-main-content');
-                        if (topSection) topSection.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    {t('ViewResults')}
-                  </button>
-                  <button
-                    className="events-reset-btn"
-                    onClick={handleResetFilters}
-                  >
-                    {t('Reset')}
-                  </button>
-                </div>
-              </section>
+
             </div>
 
             {/* Sidebar */}
             <div className="events-sidebar">
-              {/* Today in Nellore */}
-              <section className="events-sidebar-section">
-                <h3 className="events-sidebar-title">{t('TodayInNellore')}</h3>
-                <div className="events-today-info">
-                  <div className="events-weather-info">
-                    <div className="events-info-content">
-                      <span className="events-info-label">{t('Weather')}:</span>
-                      <span className="events-info-value">
-                        {todayInfo.weather.temperature} -{" "}
-                        {todayInfo.weather.condition}
-                      </span>
-                    </div>
-                    <button className="events-info-btn">
-                      {todayInfo.weather.source}
-                    </button>
-                  </div>
-                  <div className="events-traffic-info">
-                    <div className="events-info-content">
-                      <span className="events-info-label">{t('Traffic')}:</span>
-                      <span className="events-info-value">
-                        {todayInfo.traffic.status}
-                      </span>
-                    </div>
-                    <button className="events-info-btn">
-                      {todayInfo.traffic.action}
-                    </button>
-                  </div>
-                </div>
-              </section>
-
-              {/* Top Destinations */}
-              <section className="events-sidebar-section">
-                <h3 className="events-sidebar-title">{t('TopDestinations')}</h3>
-                <div className="events-destinations-list">
-                  {topDestinations.map((destination) => (
-                    <div
-                      key={destination.id}
-                      className="events-destination-card"
-                    >
-                      <div className="events-destination-image">
-                        <img src={destination.image} alt={destination.name} />
-                      </div>
-                      <div className="events-destination-content">
-                        <h4 className="events-destination-name">
-                          {destination.name}
-                        </h4>
-                        <p className="events-destination-desc">
-                          {destination.description}
-                        </p>
-                        <button
-                          className="events-destination-btn"
-                          onClick={() =>
-                            handleDestinationAction(
-                              destination,
-                              destination.action
-                            )
-                          }
-                        >
-                          {destination.action}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
               {/* Common Ads */}
-              <section className="events-sidebar-section">
-                <h3 className="events-sidebar-title">{t('CommonAds')}</h3>
-                <div className="events-ads-list">
-                  {commonAds.map((ad) => (
-                    <div
-                      key={ad.id}
-                      className="events-ad-card"
-                      onClick={() => handleAdClick(ad)}
-                    >
-                      <div className="events-ad-image">
-                        <img src={ad.image} alt={ad.title} />
-                      </div>
-                      <div className="events-ad-content">
-                        <h4 className="events-ad-title">{ad.title}</h4>
-                        <button className="events-ad-btn">{ad.action}</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
+              <CommonAds />
             </div>
           </div>
         </div>
@@ -564,6 +337,78 @@ const EventsPage = () => {
         siteName={t('siteName') + ".IN"}
         tagline={t('FooterTagline')}
       />
+
+      {/* Filter Modal */}
+      <Modal show={showFilterModal} onHide={() => setShowFilterModal(false)} centered size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>{t('Filters')}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="events-filters-content p-0">
+             {/* Category Filter */}
+             <div className="events-filter-group mb-4">
+                  <label className="events-filter-label d-block mb-2 fw-bold">{t('SelectCategory')}:</label>
+                  <div className="d-flex flex-wrap gap-2">
+                    {uniqueCategories.map((cat, idx) => (
+                      <button
+                        key={idx}
+                        className={`btn btn-sm rounded-pill ${
+                          activeLocalFilters.category === cat ? "btn-primary" : "btn-outline-secondary"
+                        }`}
+                        onClick={() => handleFilterChange('category', cat)}
+                      >
+                        {cat === 'All' ? t('All') : cat}
+                      </button>
+                    ))}
+                  </div>
+              </div>
+
+              {/* Date Filter */}
+              <div className="events-filter-group mb-4">
+                  <label className="events-filter-label d-block mb-2 fw-bold">{t('PickDates')}:</label>
+                  <div className="d-flex flex-wrap gap-2">
+                    {timeOptions.map((date, idx) => (
+                      <button
+                        key={idx}
+                        className={`btn btn-sm rounded-pill ${
+                          activeLocalFilters.time === date ? "btn-primary" : "btn-outline-secondary"
+                        }`}
+                        onClick={() => handleFilterChange('time', date)}
+                      >
+                        {date === 'All' ? t('All') : date}
+                      </button>
+                    ))}
+                  </div>
+              </div>
+
+              {/* Location Filter */}
+              <div className="events-filter-group">
+                  <label className="events-filter-label d-block mb-2 fw-bold">{t('Location')}:</label>
+                  <div className="d-flex flex-wrap gap-2">
+                    {uniqueLocations.map((loc, idx) => (
+                      <button
+                        key={idx}
+                        className={`btn btn-sm rounded-pill ${
+                          activeLocalFilters.location === loc ? "btn-primary" : "btn-outline-secondary"
+                        }`}
+                        onClick={() => handleFilterChange('location', loc)}
+                      >
+                        {loc === 'All' ? t('All') : loc}
+                      </button>
+                    ))}
+                  </div>
+              </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleResetFilters}>
+            {t('Reset')}
+          </Button>
+          <Button variant="primary" onClick={() => setShowFilterModal(false)}>
+            {t('ViewResults')}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

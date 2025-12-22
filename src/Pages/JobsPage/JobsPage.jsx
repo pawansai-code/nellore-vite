@@ -4,12 +4,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Badge, Button, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import CommonAds from '../../components/CommonAds/CommonAds';
 import Footer from '../../components/Footer';
 import MainHeader from '../../components/MainHeader';
 import Navbar from '../../components/Navbar';
+import Pagination from '../../components/Pagination';
 import TopHeader from '../../components/TopHeader';
 import useTranslation from '../../hooks/useTranslation';
-import { setJobsLoading } from '../../state/slices/newsSlice';
 import './JobsPage.css';
 
 
@@ -19,7 +20,7 @@ const JobsPage = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { govtJobs = [], privateJobs = [], internships = [] } = useSelector((state) => state.news);
-  const { currentPage, totalPages, isLoading } = useSelector((state) => state.news.jobsPage);
+  const { totalPages, isLoading } = useSelector((state) => state.news.jobsPage);
 
   // Combine all jobs into a single array with normalized properties for filtering
   const allJobs = useMemo(() => {
@@ -152,24 +153,23 @@ const JobsPage = () => {
     });
   }, [allJobs, filters, searchTerm]);
 
-  const [visibleCount, setVisibleCount] = useState(6);
+  /* Pagination State */
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
-  // Reset visible count when filters or search change
+  // Reset page when filters or search change
   useEffect(() => {
-    setVisibleCount(6);
+    setCurrentPage(1);
   }, [filters, searchTerm]);
 
   const displayedJobs = useMemo(() => {
-    return filteredJobs.slice(0, visibleCount);
-  }, [filteredJobs, visibleCount]);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredJobs.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredJobs, currentPage]);
 
-  const handleLoadMore = () => {
-    dispatch(setJobsLoading(true));
-    // Simulate loading delay for better UX
-    setTimeout(() => {
-      setVisibleCount((prev) => prev + 6);
-      dispatch(setJobsLoading(false));
-    }, 500);
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleJobAction = (job, actionType) => {
@@ -322,34 +322,23 @@ const JobsPage = () => {
                   </div>
                 )}
               </div>
+              <Pagination 
+                 currentPage={currentPage}
+                 totalItems={filteredJobs.length}
+                 itemsPerPage={itemsPerPage}
+                 onPageChange={onPageChange}
+              />
+            </div>
+            <div className="col-lg-4">
+              <aside className="jobs-sidebar">
+                <CommonAds />
+              </aside>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Load More Section */}
-      {visibleCount < filteredJobs.length && (
-        <section className="jobs-pagination-section pb-5" style={{ background: 'transparent', padding: '0 0 2rem 0' }}>
-          <div className="container-fluid">
-            <div className="d-flex justify-content-center">
-              <button 
-                className="btn btn-primary rounded-pill px-5 py-2" 
-                onClick={handleLoadMore}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    Loading...
-                  </>
-                ) : (
-                  'Load More'
-                )}
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
+
       
       <Footer 
         siteName={t('siteName') + ".IN"}

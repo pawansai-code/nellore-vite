@@ -234,9 +234,7 @@ export function HubHomePage() {
               {renderSection("Famous/Stay", "View All", stays, (item, index) =>
                 navigate(`/hub/famousstay/${index}`)
               )}
-              {renderSection("Offers", "View All", offers, (item, index) =>
-                navigate(`/hub/offers/${index}`)
-              )}
+              {/* Offers Section Removed */}
             </div>
 
             {/* sidebar that column */}

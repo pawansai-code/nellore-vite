@@ -3,14 +3,17 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useMemo, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import CommonAds from "../../components/CommonAds/CommonAds";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
+import Pagination from "../../components/Pagination";
 import TopHeader from "../../components/TopHeader";
 import useTranslation from "../../hooks/useTranslation";
 import {
     resetSportsFilters,
     setSportsCategory,
+    setSportsNewsPage,
     setSportsRegion,
 } from "../../state/slices/sportsSlice";
 import "./SportsPage.css";
@@ -29,6 +32,7 @@ const SportsPage = () => {
     standings,
     sponsored,
     activeFilters,
+    sportsNewsPage,
   } = useSelector((state) => state.sports);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -93,6 +97,15 @@ const SportsPage = () => {
 
     return filtered;
   }, [sportsNews, activeCategory, searchTerm]);
+
+  const displayedNews = useMemo(() => {
+    const startIndex = (sportsNewsPage.currentPage - 1) * sportsNewsPage.itemsPerPage;
+    return filteredNews.slice(startIndex, startIndex + sportsNewsPage.itemsPerPage);
+  }, [filteredNews, sportsNewsPage]);
+
+  const handlePageChange = (page) => {
+    dispatch(setSportsNewsPage(page));
+  };
 
   const handleCardClick = (item) => {
     setSelectedItem(item);
@@ -299,7 +312,7 @@ const SportsPage = () => {
                   </button>
                 </div>
                 <div className="sports-news-grid">
-                  {filteredNews.map((news) => (
+                  {displayedNews.map((news) => (
                     <div 
                       key={news.id} 
                       className="sports-news-card"
@@ -316,6 +329,12 @@ const SportsPage = () => {
                     </div>
                   ))}
                 </div>
+                <Pagination 
+                   currentPage={sportsNewsPage.currentPage}
+                   totalItems={filteredNews.length}
+                   itemsPerPage={sportsNewsPage.itemsPerPage}
+                   onPageChange={handlePageChange}
+                />
               </section>
 
               <section className="sports-sidebar-section">
@@ -356,6 +375,8 @@ const SportsPage = () => {
                 </div>
               </section>
 
+              {/* Common Ads */}
+              <CommonAds />
 
               {/* Sponsored Section */}
               {/* <section className="sports-sidebar-section">

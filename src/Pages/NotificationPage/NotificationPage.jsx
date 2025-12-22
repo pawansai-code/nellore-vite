@@ -4,12 +4,14 @@ import { jsPDF } from "jspdf";
 import { useEffect, useMemo, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import CommonAds from "../../components/CommonAds/CommonAds";
 import CommonPageLayout from "../../components/CommonPageLayout";
+import Pagination from "../../components/Pagination";
 import useTranslation from "../../hooks/useTranslation";
 import {
-  addToRecentlyOpened,
-  setNotificationsLoading,
-  setNotificationsPage,
+    addToRecentlyOpened,
+    setNotificationsLoading,
+    setNotificationsPage,
 } from "../../state/slices/notificationSlice";
 import "./NotificationPage.css";
 
@@ -115,25 +117,23 @@ const NotificationPage = () => {
       dispatch(setNotificationsLoading(false));
     }, 400);
   };
-   
-  const [visibleCount, setVisibleCount] = useState(6);
-  const [isLocalLoading, setIsLocalLoading] = useState(false);
-  const isLoading = isLocalLoading || notificationsPage.isLoading;
-
+  /* Pagination State */
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+  
+  // Reset page when filters change
   useEffect(() => {
-    setVisibleCount(6);
-  }, [activeFilter, searchTerm]);
+    setCurrentPage(1);
+  }, [activeFilter, searchTerm, dateRange]);
 
   const displayedNotifications = useMemo(() => {
-    return filteredNotifications.slice(0, visibleCount);
-  }, [filteredNotifications, visibleCount]);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredNotifications.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredNotifications, currentPage]);
 
-  const handleLoadMore = () => {
-    setIsLocalLoading(true);
-    setTimeout(() => {
-      setVisibleCount((prev) => prev + 6);
-      setIsLocalLoading(false);
-    }, 500);
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNotificationAction = (notification, actionType) => {
@@ -141,8 +141,6 @@ const NotificationPage = () => {
     
     if (actionType.toLowerCase().includes('pdf') || actionType.toLowerCase().includes('download')) {
        generatePDF(notification);
-       // We can still open the modal to show what they downloaded, or just notify.
-       // Let's open the modal too so they can read it while it downloads.
        setSelectedNotification(notification);
        setShowModal(true);
     } else {
@@ -414,99 +412,19 @@ const NotificationPage = () => {
         )}
       </div>
 
-      {visibleCount < filteredNotifications.length && (
-        <div className="d-flex justify-content-center py-4 w-100">
-          <button 
-            className="btn btn-primary rounded-pill px-5 py-2" 
-            onClick={handleLoadMore}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Loading...
-              </>
-            ) : (
-              'Load More'
-            )}
-          </button>
-        </div>
-      )}
+      <Pagination 
+        currentPage={currentPage}
+        totalItems={filteredNotifications.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={onPageChange}
+      />
     </>
   );
 
   // Sidebar Content
   const sidebarContent = (
     <>
-      {/* Notification Tools Section */}
-      <div className="notification-sidebar-section">
-        <div className="notification-sidebar-header">
-          <h4 className="notification-sidebar-title">{t('NotificationTools')}</h4>
-          <a href="#" className="notification-sidebar-link">
-            {t('Tools')}
-          </a>
-        </div>
-        <div className="notification-tools-list">
-          {notificationTools.map((tool) => (
-            <div 
-              key={tool.id} 
-              className="notification-tool-item" 
-              onClick={() => handleToolClick(tool.id)}
-              style={{ cursor: 'pointer' }}
-            >
-              <i className={`bi ${tool.icon}`}></i>
-              <span>{t(tool.label) || tool.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Important Links Section */}
-      <div className="notification-sidebar-section">
-        <div className="notification-sidebar-header">
-          <h4 className="notification-sidebar-title">{t('ImportantLinks')}</h4>
-          <a href="#" className="notification-sidebar-link">
-            {t('Links')}
-          </a>
-        </div>
-        <div className="notification-links-list">
-          {importantNotificationLinks.map((link) => (
-            <a 
-              key={link.id} 
-              href={link.url} 
-              className="notification-link-item"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="bi bi-box-arrow-up-right"></i>
-              <span>{t(link.label) || link.label}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      {/* Recently Opened Section */}
-      <div className="notification-sidebar-section">
-        <div className="notification-sidebar-header">
-          <h4 className="notification-sidebar-title">{t('RecentlyOpened')}</h4>
-          <a href="#" className="notification-sidebar-link">
-            {t('You')}
-          </a>
-        </div>
-        <div className="notification-recent-list">
-          {recentlyOpened.map((item) => (
-            <div 
-              key={item.id} 
-              className="notification-recent-item"
-              onClick={() => handleRecentClick(item.id)}
-              style={{ cursor: 'pointer' }}
-            >
-              <i className="bi bi-clock-history"></i>
-              <span>{item.title}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <CommonAds />
     </>
   );
 
@@ -528,8 +446,6 @@ const NotificationPage = () => {
       onSearchChange={setSearchTerm}
       searchPlaceholder={t('SearchNotifications')}
       includeSearch={true}
-      findSectionLeft={findSectionLeft}
-      findSectionRight={findSectionRight}
       mainContent={mainContent}
       sidebarContent={sidebarContent}
       footerTagline={t('NotificationFooterTagline')}

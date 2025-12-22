@@ -10,109 +10,47 @@
 
 /* Hero Section */
 .history-hero {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  background: #fff;
-  border-radius: 20px;
-  padding: 20px;
+  padding: 10px 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  gap: 20px;
-}
-
-.history-hero-image {
-  flex: 0 0 40%;
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.history-hero-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 16px;
+  background: transparent;
+  box-shadow: none;
 }
 
 .history-hero-content {
-  flex: 1;
+  width: 100%;
+  max-width: 100%;
+}
+
+.history-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.history-icon {
+  font-size: 1.8rem;
+  color: #1a1a1a;
 }
 
 .history-hero-content h1 {
   font-size: 1.8rem;
+  /* Matched from previous standard or ResultsPage */
   font-weight: 700;
   color: #1a1a1a;
-  margin-bottom: 10px;
+  margin: 0;
 }
 
-.history-hero-content p {
+.history-subtitle {
   color: #6c757d;
-  font-size: 0.95rem;
-  margin-bottom: 20px;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+  margin-left: 0;
+  /* Align with left */
 }
 
-.history-hero-actions {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
 
-.search-bar {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 50px;
-  padding: 8px 16px;
-  flex: 1;
-  max-width: 500px;
-}
-
-.search-bar i {
-  color: #6c757d;
-  margin-right: 10px;
-}
-
-.search-bar input {
-  border: none;
-  outline: none;
-  width: 100%;
-  font-size: 0.9rem;
-  color: #333;
-}
-
-.filter-dropdown {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 50px;
-  padding: 8px 16px;
-  cursor: pointer;
-  color: #333;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.filter-dropdown i {
-  margin-right: 8px;
-  color: #6c757d;
-}
-
-.download-btn {
-  background-color: #0B66D1;
-  color: #fff;
-  border: none;
-  border-radius: 50px;
-  padding: 8px 20px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  padding: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
 
 .history-content-grid {
   display: grid;
@@ -525,7 +463,7 @@
   flex-direction: column;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   margin-bottom: 20px; */
-  /* Add margin for spacing */
+/* Add margin for spacing */
 /* }
 
 .news-page-card:hover {
@@ -639,10 +577,96 @@
   display: block;
 }
 
-/* Adjustments for responsive */
-@media (max-width: 576px) {
-  .gallery-item {
-    height: 100px;
-    border-radius: 40px;
+/* Improved Gallery Styles */
+.history-header-gallery {
+  padding: 0 20px;
+}
+
+.gallery-title {
+  font-family: 'Playfair Display', serif;
+  /* Or system serif */
+  font-size: 2.5rem;
+  color: #1a1a1a;
+  margin-bottom: 2rem;
+  position: relative;
+  display: inline-block;
+}
+
+/* Scrollable Gallery Styles */
+.gallery-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 20px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+  padding-right: 66%;
+  /* Allow last item to scroll to start */
+}
+
+.gallery-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.gallery-card.scroll-item {
+  flex: 0 0 calc(33.333% - 14px);
+  /* Show 3 items roughly */
+  scroll-snap-align: start;
+  min-width: 300px;
+  /* Fallback for small screens */
+}
+
+.gallery-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.gallery-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #d1d5db;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.gallery-dot.active {
+  background-color: #1a1a1a;
+  transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+  .gallery-card.scroll-item {
+    flex: 0 0 85%;
+    /* Show mostly 1 item on mobile */
+  }
+}
+
+.gallery-card {
+  height: 250px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.gallery-card:hover {
+  transform: translateY(-5px);
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .gallery-row {
+    grid-template-columns: 1fr;
   }
 }

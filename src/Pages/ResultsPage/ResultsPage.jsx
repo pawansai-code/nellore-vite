@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import CommonPageLayout from "../../components/CommonPageLayout";
+import Pagination from "../../components/Pagination";
 import useTranslation from "../../hooks/useTranslation";
 import {
     setResultsLoading,
@@ -232,24 +233,22 @@ const ResultsPage = () => {
     setTimeout(() => setSelectedResult(null), 300);
   };
 
-  const [visibleCount, setVisibleCount] = useState(6);
-  const [isLocalLoading, setIsLocalLoading] = useState(false);
-  const isLoading = isLocalLoading || resultsPage.isLoading;
+  /* Pagination State */
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   useEffect(() => {
-    setVisibleCount(6);
+    setCurrentPage(1);
   }, [activeFilter, filters, searchTerm]);
 
   const displayedResults = useMemo(() => {
-    return filteredResults.slice(0, visibleCount);
-  }, [filteredResults, visibleCount]);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredResults.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredResults, currentPage]);
 
-  const handleLoadMore = () => {
-    setIsLocalLoading(true);
-    setTimeout(() => {
-      setVisibleCount((prev) => prev + 6);
-      setIsLocalLoading(false);
-    }, 500);
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // ... inside ResultsPage component
@@ -301,6 +300,16 @@ const ResultsPage = () => {
   // Filters Row
   const filtersRow = (
     <>
+       <div className="results-search-bar" style={{ marginRight: 0, flex: '1 1 300px', minWidth: '200px' }}>
+          <i className="bi bi-search"></i>
+          <input
+            type="text"
+            placeholder={t('SearchResults')}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
       <div className="results-filter-dropdown">
         <label>{t('Categories')}:</label>
         <select
@@ -395,25 +404,12 @@ const ResultsPage = () => {
          </div>
       )}
 
-      {/* Load More Button inside Main Content */}
-      {visibleCount < filteredResults.length && (
-        <div className="d-flex justify-content-center py-4 w-100">
-          <button 
-            className="btn btn-primary rounded-pill px-5 py-2" 
-            onClick={handleLoadMore}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Loading...
-              </>
-            ) : (
-              'Load More'
-            )}
-          </button>
-        </div>
-      )}
+      <Pagination 
+        currentPage={currentPage}
+        totalItems={filteredResults.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 
@@ -487,15 +483,13 @@ const ResultsPage = () => {
       pageTitle={t('Results')}
       pageIcon="bi bi-mortarboard"
       pageSubtitle={t('ResultsSubtitle')}
-      filterTabs={localizedFilters}
+      filterTabs={[]}
       activeFilter={activeFilter}
       onFilterChange={handleFilterChange}
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
       searchPlaceholder={t('SearchResults')}
-      includeSearch={true}
-      findSectionLeft={findSectionLeft}
-      findSectionRight={findSectionRight}
+      includeSearch={false}
       filtersRow={filtersRow}
       mainContent={mainContent}
       sidebarContent={sidebarContent}

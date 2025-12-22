@@ -17,7 +17,7 @@ const MainHeader = ({
               <h1 className="site-title">{siteName}</h1>
             </div>
           </div>
-          <div className="flex-grow-1 ms-4" style={{ minWidth: 0 }}>
+          <div className="ms-auto" style={{ maxWidth: '900px', width: '100%' }}>
             <BreakingNews />
           </div>
         </div>

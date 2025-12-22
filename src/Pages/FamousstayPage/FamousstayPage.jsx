@@ -4,10 +4,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import CommonAds from "../../components/CommonAds/CommonAds";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import MapView from "../../components/MapView/MapView";
 import Navbar from "../../components/Navbar";
+import Pagination from '../../components/Pagination';
 import TopHeader from "../../components/TopHeader";
 import useTranslation from '../../hooks/useTranslation';
 import { updateFilters } from "../../state/slices/famousStaysSlice";
@@ -36,7 +38,9 @@ const FamousstayPage = () => {
     location: 'All'
   });
   
-  const [visibleCount, setVisibleCount] = useState(4);
+  /* Pagination State */
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
   const [isLocalLoading, setIsLocalLoading] = useState(false);
   
   const [selectedStay, setSelectedStay] = useState(null);
@@ -156,19 +160,19 @@ const FamousstayPage = () => {
 
   // Reset pagination when filters search/sort change
   useEffect(() => {
-    setVisibleCount(4);
+    setCurrentPage(1);
   }, [searchTerm, reduxFilters, activeFilters]);
 
   const displayedStays = useMemo(() => {
-    return filteredStays.slice(0, visibleCount);
-  }, [filteredStays, visibleCount]);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredStays.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredStays, currentPage]);
 
-  const handleLoadMore = () => {
-    setIsLocalLoading(true);
-    setTimeout(() => {
-      setVisibleCount((prev) => prev + 4);
-      setIsLocalLoading(false);
-    }, 500);
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll to top of list
+    const section = document.querySelector('.famousstay-top-picks');
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleFilterToggle = (filterKey) => {
@@ -285,10 +289,10 @@ const FamousstayPage = () => {
         <section className="famousstay-header-section">
           <div className="container-fluid">
             <div className="famousstay-header-container">
-              {/* Left Image */}
-              <div className="famousstay-header-image-wrapper">
+              {/* Left Image Removed */ }
+              {/* <div className="famousstay-header-image-wrapper">
                 <img src="https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=1200" alt="Famous Stays" />
-              </div>
+              </div> */}
 
               {/* Right Content */}
               <div className="famousstay-header-content-wrapper">
@@ -297,28 +301,24 @@ const FamousstayPage = () => {
                   Curated hotels, heritage stays, and budget picks — close to food streets and historic landmarks.
                 </p>
 
-                <div className="famousstay-header-action-row">
-                  {/* Search Bar */}
-                  <div className="famousstay-header-search">
-                    <i className="bi bi-search"></i>
+                <div className="famousstay-combined-search-row">
+                  <div className="famousstay-combined-bar">
+                    <i className="bi bi-search search-icon"></i>
                     <input
                       type="text"
                       placeholder="Search hotel, area, landmark"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
+                      className="combined-search-input"
                     />
-                  </div>
-
-                  {/* Actions Group */}
-                  <div className="famousstay-header-actions">
-                    {/* Filter Button */}
-                    <div className="filter-wrapper">
+                    <div className="combined-divider"></div>
+                    <div className="filter-wrapper combined-filter-wrapper">
                       <button 
-                        className="famousstay-header-filter-btn"
+                        className="combined-filter-btn"
                         onClick={() => toggleDropdown('price')} 
                       >
                         <i className="bi bi-funnel"></i>
-                        Price · Rating · Near
+                        <span>Filters</span>
                       </button>
                       {openDropdown === 'price' && (
                         <div className="filter-dropdown">
@@ -334,14 +334,6 @@ const FamousstayPage = () => {
                         </div>
                       )}
                     </div>
-
-                    {/* View City Map Button */}
-                    <button
-                      className="famousstay-header-map-btn"
-                      onClick={handleViewCityMap}
-                    >
-                      View city map
-                    </button>
                   </div>
                 </div>
               </div>
@@ -422,27 +414,15 @@ const FamousstayPage = () => {
                         </div>
                       </div>
                     </div>
-                  ))}/* ... */
+                  ))}
                 </div>
 
-                {visibleCount < filteredStays.length && (
-                  <div className="famousstay-load-more-container">
-                    <button 
-                      className="famousstay-load-more-btn" 
-                      onClick={handleLoadMore}
-                      disabled={isLocalLoading}
-                    >
-                      {isLocalLoading ? (
-                        <>
-                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                          Loading...
-                        </>
-                      ) : (
-                        'Load More'
-                      )}
-                    </button>
-                  </div>
-                )}
+                <Pagination 
+                   currentPage={currentPage}
+                   totalItems={filteredStays.length}
+                   itemsPerPage={itemsPerPage}
+                   onPageChange={onPageChange}
+                />
               </section>
 
               {/* Map & Nearby Section */}
@@ -524,59 +504,7 @@ const FamousstayPage = () => {
               </div>
 
               {/* Nearby Famous Foods */}
-              <div className="famousstay-sidebar-section">
-                <h4 className="famousstay-sidebar-title">
-                  {t('NearbyFamousFoods')}
-                </h4>
-                <div className="famousstay-foods-list">
-                  {nearbyFoods.map((food) => (
-                    <div
-                      key={food.id}
-                      className="famousstay-food-item"
-                      onClick={() => handleFoodClick(food)}
-                    >
-                      <div className="famousstay-food-image">
-                        <img src={food.image} alt={food.name} />
-                      </div>
-                      <div className="famousstay-food-content">
-                        <h5 className="famousstay-food-name">{food.name}</h5>
-                        <p className="famousstay-food-desc">
-                          {food.description}
-                        </p>
-                        <span
-                          className={`famousstay-food-label ${food.label.toLowerCase()}`}
-                        >
-                          {food.label}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Common Ads */}
-              <div className="famousstay-sidebar-section">
-                <h4 className="famousstay-sidebar-title">{t('CommonAds')}</h4>
-                <div className="famousstay-ads-list">
-                  {commonAds.map((ad) => (
-                    <div
-                      key={ad.id}
-                      className="famousstay-ad-card"
-                      onClick={() => handleAdClick(ad)}
-                    >
-                      <div className="famousstay-ad-image">
-                        <img src={ad.image} alt={ad.title} />
-                      </div>
-                      <div className="famousstay-ad-content">
-                        <h5 className="famousstay-ad-title">{ad.title}</h5>
-                        <button className="famousstay-ad-btn">
-                          {ad.actionLabel}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <CommonAds />
             </aside>
           </div>
         </div>

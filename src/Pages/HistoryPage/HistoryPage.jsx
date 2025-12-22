@@ -1,7 +1,7 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { jsPDF } from "jspdf";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import BannerImg from "../../assets/images/Banner_img.jpg";
 import HistoryImg1 from "../../assets/images/history-img1.jpg";
 import NellorePic from "../../assets/images/nellore_pic.jpg";
 import SportsImg from "../../assets/images/sports-hero.jpg";
+import CommonAds from "../../components/CommonAds/CommonAds";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
@@ -20,7 +21,59 @@ const HistoryPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { commonAds, newsFeedArticles } = useSelector((state) => state.news);
+  const { commonAds } = useSelector((state) => state.news);
+  /* Gallery State */
+  const [activeDot, setActiveDot] = useState(0);
+  const galleryRef = useRef(null);
+
+  const galleryImages = [
+    { src: HistoryImg1, id: 1 },
+    { src: NellorePic, id: 2 },
+    { src: BannerImg, id: 3 },
+    { src: SportsImg, id: 4 },
+    { src: HistoryImg1, id: 5 },
+
+  ];
+
+  /* Auto Scroll Effect */
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const nextIndex = (activeDot + 1) % galleryImages.length;
+      scrollToIndex(nextIndex);
+    }, 4000); // 4 seconds for better UX
+
+    return () => clearInterval(interval);
+  }, [activeDot, galleryImages.length]);
+
+  /* Gallery Logic */
+  const handleScroll = () => {
+    if (galleryRef.current && galleryRef.current.firstChild) {
+      const scrollLeft = galleryRef.current.scrollLeft;
+      const itemWidth = galleryRef.current.firstChild.offsetWidth; 
+      const gap = 20;
+      const totalItemWidth = itemWidth + gap;
+      
+      const newIndex = Math.round(scrollLeft / totalItemWidth);
+      // Ensure we don't go out of bounds
+      const clampedIndex = Math.max(0, Math.min(newIndex, galleryImages.length - 1));
+      setActiveDot(clampedIndex);
+    }
+  };
+
+  const scrollToIndex = (index) => {
+      if (galleryRef.current && galleryRef.current.firstChild) {
+          const itemWidth = galleryRef.current.firstChild.offsetWidth;
+          const gap = 20;
+          const totalItemWidth = itemWidth + gap;
+          
+          galleryRef.current.scrollTo({
+              left: index * totalItemWidth,
+              behavior: 'smooth'
+          });
+          setActiveDot(index);
+      }
+  };
+
 
   const timelineData = [
     {
@@ -247,34 +300,47 @@ const HistoryPage = () => {
       <main className="history-page-main">
         {/* hero section */}
         <section className="history-hero">
-          <div className="history-hero-image">
-            <img src="yet to do " alt="Nellore Landscape" />
-          </div>
-          <div className="history-hero-content">
-            <h1>{t('NelloreHistory')}</h1>
-            <p>
+          <div className="history-hero-content mr-2">
+             <div className="history-title-wrapper">
+                <i className="bi bi-hourglass-split history-icon"></i>
+                <h1>{t('NelloreHistory')}</h1>
+             </div>
+            <p className="history-subtitle">
               {t('HistoryTagline')}
             </p>
-            <div className="history-hero-actions">
-              <div className="search-bar">
-                <i className="bi bi-search"></i>
-                <input
-                  type="text"
-                  placeholder={t('SearchRulers')}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              {/* <div className="filter-dropdown">
-                  <i className="bi bi-funnel"></i>
-                  <span>Dynasty · Culture · Trade</span>
-                </div> */}
-              <button className="download-btn" onClick={generateGuidePDF}>
-                <i className="bi bi-download me-2"></i>
-                {t('DownloadGuide')}
-              </button>
-            </div>
           </div>
+        </section>
+
+        {/* Improved Image Gallery Section - Scrollable */}
+        <section className="container-fluid mb-4">
+           <div className="history-header-gallery">
+              <div className="gallery-header text-center mb-4">
+                 <h2 className="gallery-title">Gallery</h2>
+              </div>
+              
+              <div 
+                className="gallery-scroll-container" 
+                ref={galleryRef}
+                onScroll={handleScroll}
+              >
+                 {galleryImages.map((img, idx) => (
+                     <div key={img.id + '-' + idx} className="gallery-card scroll-item">
+                        <img src={img.src} alt={`History Gallery ${idx + 1}`} />
+                     </div>
+                 ))}
+              </div>
+
+              {/* Dots Navigation */}
+              <div className="gallery-dots">
+                 {galleryImages.map((_, idx) => (
+                    <span 
+                      key={idx} 
+                      className={`gallery-dot ${activeDot === idx ? 'active' : ''}`}
+                      onClick={() => scrollToIndex(idx)}
+                    ></span>
+                 ))}
+              </div>
+           </div>
         </section>
 
         <div className="container-fluid">
@@ -348,28 +414,7 @@ const HistoryPage = () => {
                 </div>
               </div>
 
-              {/* Photo Gallery Section */}
-              <div className="photo-gallery-section">
-                <div className="section-header">
-                  <h3>{t('PhotoGallery')}</h3>
-                  <span className="badge-visuals">{t('Visuals')}</span>
-                </div>
-                <hr />
-                <div className="gallery-list">
-                  <div className="gallery-item">
-                    <img src={HistoryImg1} alt="Nellore History 1" />
-                  </div>
-                  <div className="gallery-item">
-                    <img src={NellorePic} alt="Nellore History 2" />
-                  </div>
-                  <div className="gallery-item">
-                    <img src={BannerImg} alt="Nellore History 3" />
-                  </div>
-                  <div className="gallery-item">
-                    <img src={SportsImg} alt="Nellore History 4" />
-                  </div>
-                </div>
-              </div>
+
 
               {/* Latest News Section */}
               {/* <div className="history-news-section">
@@ -410,75 +455,9 @@ const HistoryPage = () => {
 
             {/* right side sidebar */}
             <div className="history-sidebar">
-              {/* quick facts */}
-              <div className="sidebar-card">
-                <h3>{t('QuickFacts')}</h3>
-                <div className="fact-list">
-                  {quickFacts.map((fact, idx) => (
-                    <div key={idx} className="fact-item">
-                      <div className="fact-icon">
-                        <i className={`bi ${fact.icon}`}></i>
-                      </div>
-                      <div className="fact-details">
-                        <h4>{t(fact.title)}</h4>
-                        <p>{t(fact.desc)}</p>
-                      </div>
-                      <span className="fact-tag">{fact.tag}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* recommended reads section */}
-              <div className="sidebar-card">
-                <h3>{t('RecommendedReads')}</h3>
-                <div className="read-list">
-                  {recommendedReads.map((read, idx) => (
-                    <div key={idx} className="read-item">
-                      <div className="read-icon">
-                        <i className={`bi ${read.icon}`}></i>
-                      </div>
-                      <div className="read-details">
-                        <h4>{t(read.title)}</h4>
-                        <p>{t(read.desc)}</p>
-                      </div>
-                      <span className="read-tag">{read.tag}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* common ads section */}
-              <div className="jobs-common-ads-card">
-                <div className="common-ads-header">
-                  <div>
-                    <h5>{t('CommonAds')}</h5>
-                    <span>{t('Promoted')}</span>
-                  </div>
-                  <i className="bi bi-megaphone"></i>
-                </div>
-                <div className="common-ads-list">
-                  {(commonAds || []).map((ad) => (
-                    <div key={ad.id} className="common-ad-item">
-                      <div className="common-ad-thumb">
-                        <img src={ad.image} alt={ad.title} />
-                      </div>
-                      <div className="common-ad-body">
-                        <h6>{ad.title}</h6>
-                        <button
-                          className={`btn btn-sm common-ad-button ${
-                            ad.buttonColor === "blue"
-                              ? "btn-primary"
-                              : "btn-outline-secondary"
-                          }`}
-                        >
-                          {t(ad.buttonText)}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              
+              {/* Common Ads section */}
+              <CommonAds />
             </div>
           </div>
         </div>

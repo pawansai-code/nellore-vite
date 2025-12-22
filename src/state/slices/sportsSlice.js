@@ -115,7 +115,83 @@ const initialState = {
       tag: "Athletics",
       fullContent: "Local long-distance runner, Ravi Kumar, has qualified for the State Marathon Finals after clocking a personal best time in the regional qualifiers. \n\n Ravi, who trains at the AC Stadium, finished the 42km course in 2 hours and 45 minutes. 'My goal is to finish on the podium at the state level,' he said. The finals will be held in Visakhapatnam next month.",
     },
+    {
+      id: 5,
+      title: "Kabaddi: Nellore City team announced",
+      posted: "3d ago",
+      tag: "Kabaddi",
+      fullContent: "The official squad for the Nellore City Kabaddi team was announced today by the district association. The team features a mix of experienced raiders and young defenders. \n\n The squad will be led by veteran captain, P. Suresh. They are set to play their first match of the season against Tirupati next week.",
+    },
+    {
+      id: 6,
+      title: "New Tennis Academy opens in Magunta Layout",
+      posted: "4d ago",
+      tag: "Tennis",
+      fullContent: "A state-of-the-art Tennis Academy was inaugurated in Magunta Layout today. The facility boasts 4 synthetic courts and floodlights for night play. \n\n 'We want to produce national-level players from Nellore,' said the head coach during the opening ceremony. Registration for summer camps is now open.",
+    },
+    {
+      id: 7,
+      title: "District Badminton Championship: Under-15 results",
+      posted: "5d ago",
+      tag: "Badminton",
+      fullContent: "The Under-15 District Badminton Championship concluded with thrilling finals. In the boys' singles, K. Arjun defeated M. Rohit in straight sets. \n\n The girls' singles title was clinched by S. Priya. The winners will represent the district in the upcoming state zonal tournament.",
+    },
+    {
+      id: 8,
+      title: "Football: AC Subba Reddy Stadium to get turf upgrade",
+      posted: "1w ago",
+      tag: "Football",
+      fullContent: "The iconic AC Subba Reddy Stadium is set for a major upgrade. The sports authority has sanctioned funds to lay a new international-standard artificial turf. \n\n Work is expected to begin next month and completed within 3 months. This move will allow the stadium to host national-level football matches.",
+    },
+    {
+      id: 9,
+      title: "Swimming: Summer camp registrations full",
+      posted: "1w ago",
+      tag: "Swimming",
+      fullContent: "The annual summer swimming camp at the municipal pool has seen an overwhelming response, with all slots getting booked within 2 days. \n\n Organizers are now considering adding an extra batch in the evenings to accommodate the high demand. The camp focuses on teaching life-saving skills and competitive swimming strokes.",
+    },
+    {
+      id: 10,
+      title: "Cricket: Local talent scouted for IPL trials",
+      posted: "2w ago",
+      tag: "Cricket",
+      fullContent: "Three young cricketers from the district league have been invited for IPL trials by a major franchise. This is a historic moment for Nellore cricket. \n\n The players - a fast bowler, a spinner, and a wicket-keeper batsman - impressed scouts during the recent zonal T20 tournament.",
+    },
+    {
+      id: 11,
+      title: "Chess: Grandmaster simulation at Town Hall",
+      posted: "2w ago",
+      tag: "Chess",
+      fullContent: "A Grandmaster simultaneous exhibition match will be held at the Town Hall this Sunday. Local chess enthusiasts will get a chance to play against a visiting Grandmaster. \n\n The event is organized to promote chess among school children. Spectator entry is free.",
+    },
+    {
+      id: 12,
+      title: "Hockey: District team selection trials",
+      posted: "3w ago",
+      tag: "Hockey",
+      fullContent: "Selection trials for the District Hockey Team (Men & Women) will be held at the Police Ground next Saturday. Players aged 18-25 are eligible to participate. \n\n Participants must bring their own kit and age proof. The selected team will go on a 2-week training camp before the season starts.",
+    },
+    {
+      id: 13,
+      title: "Cycling: 'Pedal for Peace' rally on Sunday",
+      posted: "3w ago",
+      tag: "Cycling",
+      fullContent: "The 'Pedal for Peace' cycling rally is scheduled for this Sunday morning. The 20km ride will start from Gandhi Statue and end at the river front. \n\n Over 200 cyclists have already registered. The event aims to promote cycling as a healthy and eco-friendly mode of transport.",
+    },
+    {
+      id: 14,
+      title: "Basketball: College championship dates",
+      posted: "1mo ago",
+      tag: "Basketball",
+      fullContent: "The Inter-Collegiate Basketball Championship will begin from the 15th of next month. Determining the best college team in the district is the goal. \n\n Reigning champions VR College are favorites to retain the title, but strong competition is expected from Narayana Engineering College.",
+    },
   ],
+
+  // Pagination State for Sports News
+  sportsNewsPage: {
+    currentPage: 1,
+    itemsPerPage: 4,
+  },
 
   // News Lines
   newsLines: [
@@ -194,11 +270,15 @@ const sportsSlice = createSlice({
         region: "All",
       };
     },
+    setSportsNewsPage: (state, action) => {
+      state.sportsNewsPage.currentPage = action.payload;
+    },
   },
 });
 
 export const setSportsCategory = sportsSlice.actions.setActiveCategory;
 export const setSportsRegion = sportsSlice.actions.setActiveRegion;
 export const resetSportsFilters = sportsSlice.actions.resetFilters;
+export const setSportsNewsPage = sportsSlice.actions.setSportsNewsPage;
 
 export default sportsSlice.reducer;

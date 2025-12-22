@@ -99,9 +99,41 @@
   .breaking-news-banner {
     width: 100%;
     justify-content: center;
+    border-radius: 25px 25px 0 0;
+    margin-left: 0;
   }
 
   .news-ticker {
     width: 100%;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .breaking-news-container {
+    border-radius: 15px;
+    margin-top: 10px;
+  }
+
+  .breaking-news-banner {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 15px 15px 0 0;
+  }
+
+  .breaking-news-text {
+    font-size: 0.8rem;
+  }
+
+  .pulse-icon {
+    font-size: 0.8rem;
+  }
+
+  .news-ticker {
+    padding: 0.5rem;
+  }
+
+  .news-item {
+    font-size: 0.8rem;
   }
 }

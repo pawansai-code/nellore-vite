@@ -4,9 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import CommonAds from "../../components/CommonAds/CommonAds";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
+import Pagination from "../../components/Pagination";
 import TopHeader from "../../components/TopHeader";
 import useTranslation from "../../hooks/useTranslation";
 import { setNewsLoading, setNewsPage } from "../../state/slices/newsSlice";
@@ -52,7 +54,7 @@ const NewsPage = () => {
     setSearchTerm("");
   };
 
-  const commonAds = useSelector((state) => state.ads?.commonAds) || [];
+
 
   const handlePageChange = (pageNumber) => {
     if (
@@ -74,24 +76,23 @@ const NewsPage = () => {
   //   handlePageChange(newsPage.currentPage + 1);
   // };
 
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
   const [isLocalLoading, setIsLocalLoading] = useState(false);
   const isLoading = isLocalLoading || newsPage.isLoading;
 
   useEffect(() => {
-    setVisibleCount(6);
+    setCurrentPage(1);
   }, [activeFilter, searchTerm]);
 
   const displayedArticles = useMemo(() => {
-    return filteredArticles.slice(0, visibleCount);
-  }, [filteredArticles, visibleCount]);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredArticles.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredArticles, currentPage]);
 
-  const handleLoadMore = () => {
-    setIsLocalLoading(true);
-    setTimeout(() => {
-      setVisibleCount((prev) => prev + 6);
-      setIsLocalLoading(false);
-    }, 500);
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleReadFullArticle = (articleId) => {
@@ -234,27 +235,18 @@ const NewsPage = () => {
                   </div>
   
                   {/* Load More Section */}
-                  {visibleCount < filteredArticles.length && (
-                    <div className="news-load-more-container d-flex justify-content-center py-4">
-                      <button 
-                        className="btn btn-primary rounded-pill px-5 py-2" 
-                        onClick={handleLoadMore}
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <>
-                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                            Loading...
-                          </>
-                        ) : (
-                          'Load More'
-                        )}
-                      </button>
-                    </div>
-                  )}
+                  {/* Pagination Section */}
+                  <Pagination 
+                    currentPage={currentPage}
+                    totalItems={filteredArticles.length}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={onPageChange}
+                  />
                 </div>
- 
-                
+
+                <div className="news-sidebar">
+                  <CommonAds />
+                </div>
               </div>
 
           </section>

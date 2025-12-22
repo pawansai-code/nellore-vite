@@ -13,18 +13,20 @@
 
 /* Hero Section */
 /* Redesigned Hero Header */
+/* Redesigned Hero Header */
 .famousstay-header-section {
-  padding: 10px 0;
-  background-color: #ffffff;
+  padding: 20px 0;
+  background-color: transparent;
+  /* Cleaner look */
   box-sizing: border-box;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); Removed for cleaner look */
 }
 
 .famousstay-header-container {
-  display: flex;
-  align-items: center;
-  gap: 40px;
-  max-width: 1300px;
+  display: block;
+  /* No longer needing flex for side-by-side */
+  max-width: 100%;
+  /* Use full container width */
   margin: 0 auto;
 }
 
@@ -67,75 +69,88 @@
   line-height: 1.5;
 }
 
-/* Action Row */
-.famousstay-header-action-row {
+/* Combined Search Bar Logic */
+.famousstay-combined-search-row {
+  margin-top: 2rem;
+  max-width: 600px;
+}
+
+.famousstay-combined-bar {
   display: flex;
   align-items: center;
-  gap: 15px;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-.famousstay-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-}
-
-/* Search Bar */
-.famousstay-header-search {
-  position: relative;
-  width: 320px;
-}
-
-.famousstay-header-search i {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #94a3b8;
-  font-size: 1rem;
-}
-
-.famousstay-header-search input {
-  width: 100%;
-  padding: 10px 15px 10px 40px;
+  background-color: white;
   border: 1px solid #e2e8f0;
   border-radius: 50px;
+  padding: 8px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.famousstay-combined-bar:hover,
+.famousstay-combined-bar:focus-within {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.famousstay-combined-bar .search-icon {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  margin-right: 12px;
+}
+
+.combined-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px 0;
   font-size: 0.95rem;
   color: #334155;
-  background-color: #fff;
-}
-
-.famousstay-header-search input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  min-width: 0;
 }
 
-/* Filter Button */
-.famousstay-header-filter-btn {
+.combined-divider {
+  width: 1px;
+  height: 24px;
+  background-color: #e2e8f0;
+  margin: 0 12px;
+}
+
+.combined-filter-wrapper {
+  position: relative;
+}
+
+.combined-filter-btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
-  border: 1px solid #e2e8f0;
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
   border-radius: 50px;
-  background-color: #fff;
-  color: #334155;
   font-weight: 600;
-  font-size: 0.95rem;
+  color: #475569;
   cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.9rem;
 }
 
-.famousstay-header-filter-btn i {
-  color: #94a3b8;
+.combined-filter-btn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
 }
 
-.famousstay-header-filter-btn:hover {
-  background-color: #f8fafc;
-  border-color: #cbd5e1;
+.combined-filter-btn i {
+  color: #0B66D1;
+}
+
+/* Ensure dropdown still works */
+.combined-filter-wrapper .filter-dropdown {
+  right: 0;
+  left: auto;
+  top: calc(100% + 10px);
+  width: 200px;
 }
 
 /* Filter Dropdown & Wrapper */

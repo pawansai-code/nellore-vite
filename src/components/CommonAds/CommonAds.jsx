@@ -2,10 +2,10 @@ import { useSelector } from 'react-redux';
 import './CommonAds.css';
 
 const CommonAds = () => {
-  const { commonAds, sponsored } = useSelector((state) => state.commonAds);
+  const { commonAds, sponsored } = useSelector((state) => state.news);
 
   return (
-    <div className="sidebar-section">
+    <div className="sidebar-section common-ads-section">
         <h5 className="sidebar-section-title">Common Ads</h5>
         <div className="ad-cards">
           {commonAds.map((ad) => (

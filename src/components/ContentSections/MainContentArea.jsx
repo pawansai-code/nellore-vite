@@ -1,10 +1,9 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setSelectedCategory } from '../../state/slices/homepageSlice';
 import ContentSection from './ContentSection';
-import SidebarContent from './SidebarContent';
 import './MainContentArea.css';
+import SidebarContent from './SidebarContent';
 
   const MainContentArea = () => {
   const navigate = useNavigate();
@@ -105,7 +104,7 @@ import './MainContentArea.css';
           </div>
 
           <div className="col-lg-4">
-            <SidebarContent />
+            <SidebarContent includeAds={true} />
           </div>
         </div>
       </div>

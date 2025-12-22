@@ -3,9 +3,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import CommonAds from "../../components/CommonAds/CommonAds";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
+import Pagination from '../../components/Pagination';
 import TopHeader from "../../components/TopHeader";
 import useTranslation from '../../hooks/useTranslation';
 import "./Famousfood.css";
@@ -35,9 +37,9 @@ const Famousfood = () => {
     location: 'All',
   });
 
-  const [visibleCount, setVisibleCount] = useState(6);
-  const [isLocalLoading, setIsLocalLoading] = useState(false);
-
+  /* Pagination State */
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
   const [openDropdown, setOpenDropdown] = useState(null);
   const dropdownRef = useRef(null);
 
@@ -63,7 +65,7 @@ const Famousfood = () => {
 
   // Reset pagination when filters or search change
   useEffect(() => {
-    setVisibleCount(6);
+    setCurrentPage(1);
   }, [filters, searchTerm]);
 
   useEffect(() => {
@@ -121,15 +123,14 @@ const Famousfood = () => {
   }, [allDishes, filters, searchTerm]);
 
   const displayedDishes = useMemo(() => {
-    return filteredDishes.slice(0, visibleCount);
-  }, [filteredDishes, visibleCount]);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredDishes.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredDishes, currentPage]);
 
-  const handleLoadMore = () => {
-    setIsLocalLoading(true);
-    setTimeout(() => {
-      setVisibleCount((prev) => prev + 6);
-      setIsLocalLoading(false);
-    }, 500);
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+    const section = document.querySelector('.famousfood-signature-dishes');
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleDishAction = (dish, action) => {
@@ -313,58 +314,18 @@ const Famousfood = () => {
                   ))}
                 </div>
 
-                {visibleCount < filteredDishes.length && (
-                  <div className="famousfood-load-more-container">
-                    <button 
-                      className="famousfood-load-more-btn" 
-                      onClick={handleLoadMore}
-                      disabled={isLocalLoading}
-                    >
-                      {isLocalLoading ? (
-                        <>
-                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                          {t('Loading') || 'Loading...'}
-                        </>
-                      ) : (
-                        t('LoadMore') || 'Load More'
-                      )}
-                    </button>
-                  </div>
-                )}
+                <Pagination 
+                   currentPage={currentPage}
+                   totalItems={filteredDishes.length}
+                   itemsPerPage={itemsPerPage}
+                   onPageChange={onPageChange}
+                />
               </section>
             </div>
 
-            {/* Sidebar */}
+              {/* Sidebar */}
             <aside className="famousfood-sidebar">
-              {/* Today's Specials */}
-              <div className="famousfood-sidebar-section">
-                <h4 className="famousfood-sidebar-title">{t('TodaysSpecials')}</h4>
-                <div className="famousfood-specials-list">
-                  {todaysSpecials.map((special) => (
-                    <div
-                      key={special.id}
-                      className="famousfood-special-item"
-                      onClick={() => handleSpecialClick(special)}
-                    >
-                      <i className={`bi ${special.icon}`}></i>
-                      <div className="famousfood-special-content">
-                        <h5 className="famousfood-special-name">
-                          {special.name}
-                        </h5>
-                        <p className="famousfood-special-details">
-                          {special.details}
-                        </p>
-                        <span
-                          className={`famousfood-special-label ${special.label.toLowerCase()}`}
-                        >
-                          {special.label}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
+              
               {/* Top Rated Spots */}
               <div className="famousfood-sidebar-section">
                 <h4 className="famousfood-sidebar-title">{t('TopRatedSpots')}</h4>
@@ -392,113 +353,10 @@ const Famousfood = () => {
               </div>
 
               {/* Common Ads */}
-              <div className="famousfood-sidebar-section">
-                <h4 className="famousfood-sidebar-title">{t('CommonAds')}</h4>
-                <div className="famousfood-ads-list">
-                  {commonAds.map((ad) => (
-                    <div
-                      key={ad.id}
-                      className="famousfood-ad-card"
-                      onClick={() => handleAdClick(ad)}
-                    >
-                      <div className="famousfood-ad-image">
-                        <img src={ad.image} alt={ad.title} />
-                      </div>
-                      <div className="famousfood-ad-content">
-                        {ad.subtitle && (
-                          <p className="famousfood-ad-subtitle">
-                            {ad.subtitle}
-                          </p>
-                        )}
-                        <h5 className="famousfood-ad-title">{ad.title}</h5>
-                        <button className="famousfood-ad-btn">
-                          {ad.actionLabel}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <CommonAds />
             </aside>
           </div>
 
-          {/* Editor's Picks Section */}
-          <section className="famousfood-editors-picks-section">
-            <div className="famousfood-editors-picks-card">
-              <div className="famousfood-card-header">
-                <h2 className="famousfood-card-title">{t('EditorsPicks')}</h2>
-                <span className="famousfood-card-badge trusted">{t('Trusted')}</span>
-              </div>
-              <div className="famousfood-editors-picks-list">
-                {editorsPicks.map((pick) => (
-                  <div
-                    key={pick.id}
-                    className="famousfood-editor-pick-item"
-                    onClick={() =>
-                      handleEditorPickClick(pick, pick.actionLabel)
-                    }
-                  >
-                    <i className={`bi ${pick.icon}`}></i>
-                    <div className="famousfood-editor-pick-content">
-                      <h3 className="famousfood-editor-pick-title">
-                        {pick.title}
-                      </h3>
-                      <p className="famousfood-editor-pick-subtitle">
-                        {pick.subtitle}
-                      </p>
-                    </div>
-                    <button className="famousfood-editor-pick-btn">
-                      {pick.actionLabel}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Plan Your Food Tour Section */}
-          <section className="famousfood-tour-plan-section">
-            <div className="famousfood-tour-plan-card">
-              <div className="famousfood-card-header">
-                <h2 className="famousfood-card-title">{t('PlanYourFoodTour')}</h2>
-                <span className="famousfood-card-badge weekend">{t('Weekend')}</span>
-              </div>
-              <div className="famousfood-tour-plan-inputs">
-                <div className="famousfood-tour-input-field">
-                  <i className="bi bi-calendar3"></i>
-                  <input
-                    type="text"
-                    placeholder={t('PickDates')}
-                    value={tourDate}
-                    onChange={(e) => setTourDate(e.target.value)}
-                  />
-                </div>
-                <div className="famousfood-tour-input-field">
-                  <i className="bi bi-people"></i>
-                  <input
-                    type="text"
-                    placeholder={t('PeopleCount')}
-                    value={peopleCount}
-                    onChange={(e) => setPeopleCount(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="famousfood-tour-plan-actions">
-                <button
-                  className="famousfood-tour-create-btn"
-                  onClick={handleCreateItinerary}
-                >
-                  {t('CreateItinerary')}
-                </button>
-                <button
-                  className="famousfood-tour-share-btn"
-                  onClick={handleShare}
-                >
-                  {t('Share')}
-                </button>
-              </div>
-            </div>
-          </section>
         </div>  
       </main>
 
