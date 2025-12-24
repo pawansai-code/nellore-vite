@@ -41,7 +41,6 @@ const FamousstayPage = () => {
   /* Pagination State */
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
-  const [isLocalLoading, setIsLocalLoading] = useState(false);
   
   const [selectedStay, setSelectedStay] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -254,23 +253,6 @@ const FamousstayPage = () => {
            alert("Stay details copied to clipboard!");
          });
        }
-    }
-  };
-
-  const handleFoodClick = (food) => {
-    console.log("Navigate to:", food.name);
-    navigate(`/food/${food.id}`);
-  };
-
-  const handleAdClick = (ad) => {
-    console.log("Ad clicked:", ad.title);
-  };
-
-  const handleViewCityMap = () => {
-    console.log("View city map clicked");
-    const mapSection = document.querySelector('.famousstay-map-section');
-    if (mapSection) {
-      mapSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 

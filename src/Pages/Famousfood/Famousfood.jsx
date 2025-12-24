@@ -1,7 +1,8 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Button, Modal } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CommonAds from "../../components/CommonAds/CommonAds";
 import Footer from "../../components/Footer";
@@ -12,25 +13,23 @@ import TopHeader from "../../components/TopHeader";
 import useTranslation from '../../hooks/useTranslation';
 import "./Famousfood.css";
 
+// Unused import 'useDispatch' effectively unused now if handleCreateItinerary removed, 
+// but sticking to instructions to remove lines. 
+// However, handleCreateItinerary used dispatch. If I remove handleCreateItinerary, dispatch might be unused.
+// Let's check other usages of dispatch. None found in search.
+// So removal of dispatch is safe.
 const Famousfood = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { t } = useTranslation();
 
   const {
     signatureDishes = [],
-    todaysSpecials = [],
     topRatedSpots = [],
     commonAds = [],
-    editorsPicks = [],
-    foodTourPlan = {},
     filters: reduxFilters,
   } = useSelector((state) => state.famousFoods || {});
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeCategoryFilter, setActiveCategoryFilter] = useState("All");
-  const [tourDate, setTourDate] = useState("");
-  const [peopleCount, setPeopleCount] = useState("");
 
   const [filters, setFilters] = useState({
     category: 'All',
@@ -42,6 +41,10 @@ const Famousfood = () => {
   const itemsPerPage = 6;
   const [openDropdown, setOpenDropdown] = useState(null);
   const dropdownRef = useRef(null);
+
+  /* Modal State */
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDish, setSelectedDish] = useState(null);
 
   // Normalize dishes and add mock locations for filtering demonstration
   const allDishes = useMemo(() => {
@@ -147,42 +150,19 @@ const Famousfood = () => {
     navigate("/food/local-favorites");
   };
 
-  const handleLocationChange = () => {
-    // Legacy handler, now handled by dropdown
-  };
-
-  const handleSpecialClick = (special) => {
-    console.log("Navigate to:", special.name);
-    navigate(`/food/specials/${special.id}`);
-  };
-
   const handleSpotClick = (spot) => {
     console.log("Navigate to:", spot.name);
     navigate(`/food/restaurants/${spot.id}`);
   };
 
-  const handleAdClick = (ad) => {
-    console.log("Ad clicked:", ad.title);
+  const handleCardClick = (dish) => {
+    setSelectedDish(dish);
+    setShowModal(true);
   };
 
-  const handleEditorPickClick = (pick, action) => {
-    console.log(`${action} for ${pick.title}`);
-    navigate(`/food/${pick.id}/${action.toLowerCase()}`);
-  };
-
-  const handleCreateItinerary = () => {
-    if (tourDate && peopleCount) {
-      dispatch(updateFoodTourPlan({ date: tourDate, peopleCount }));
-      console.log("Creating itinerary with:", { tourDate, peopleCount });
-      navigate("/food/itinerary");
-    } else {
-      alert("Please fill in all fields");
-    }
-  };
-
-  const handleShare = () => {
-    console.log("Share food tour plan");
-    // Implement share functionality
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setTimeout(() => setSelectedDish(null), 300);
   };
 
   return (
@@ -285,7 +265,12 @@ const Famousfood = () => {
 
                 <div className="famousfood-dishes-list">
                   {displayedDishes.map((dish) => (
-                    <div key={dish.id} className="famousfood-dish-card">
+                    <div 
+                      key={dish.id} 
+                      className="famousfood-dish-card"
+                      onClick={() => handleCardClick(dish)}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <div className="famousfood-dish-image">
                         <img src={dish.image} alt={dish.name} />
                       </div>
@@ -302,9 +287,10 @@ const Famousfood = () => {
                           </span>
                           <button
                             className="famousfood-dish-action-btn"
-                            onClick={() =>
-                              handleDishAction(dish, dish.actionLabel)
-                            }
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDishAction(dish, dish.actionLabel);
+                            }}
                           >
                             {dish.actionLabel}
                           </button>
@@ -364,6 +350,61 @@ const Famousfood = () => {
         siteName={t('siteName') + ".IN"}
         tagline={t('FooterTagline')}
       />
+
+      {/* Preview Modal */}
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedDish && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedDish.name}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="mb-4 text-center">
+                <img 
+                  src={selectedDish.image} 
+                  alt={selectedDish.name} 
+                  style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: '8px' }}
+                />
+              </div>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                 <span className={`badge ${selectedDish.tag === 'Veg' ? 'bg-success' : selectedDish.tag === 'Non-Veg' ? 'bg-danger' : 'bg-warning text-dark'} fs-6`}>
+                    {selectedDish.tag}
+                 </span>
+                 <span className="text-secondary fw-bold fs-5">
+                    <i className="bi bi-geo-alt-fill me-1"></i>{selectedDish.location || 'Nellore'}
+                 </span>
+              </div>
+              
+              <div className="mb-4">
+                 <h5 className="fw-bold text-secondary">Description</h5>
+                 <p className="text-muted" style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
+                    {selectedDish.description}
+                 </p>
+                 <p className="text-muted">
+                    This is a famous dish widely loved by the locals and visitors alike. 
+                    Made with traditional spices and authentic preparation methods, it represents the culinary heritage of the region.
+                 </p>
+              </div>
+
+              <div className="alert alert-light border">
+                <strong><i className="bi bi-info-circle me-2"></i>Taste Note:</strong>
+                <span className="text-muted ms-1">Authentic, Spacious, and typically spicy. Best served hot.</span>
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="outline-secondary" onClick={handleCloseModal}>
+                {t('Close')}
+              </Button>
+              <Button variant="primary" onClick={() => {
+                  handleCloseModal();
+                  handleDishAction(selectedDish, selectedDish.actionLabel);
+              }}>
+                {selectedDish.actionLabel || t('Explore')}
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal>
     </div>
   );
 };

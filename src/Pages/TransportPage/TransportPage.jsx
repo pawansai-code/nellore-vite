@@ -1,9 +1,10 @@
 
 import { useReducer, useState } from 'react';
+import CommonAds from '../../components/CommonAds/CommonAds';
 import CommonPageLayout from '../../components/CommonPageLayout';
 import Pagination from '../../components/Pagination';
 import useTranslation from '../../hooks/useTranslation';
-import LiveTrackingModal from './LiveTrackingModal'; // New Import
+import LiveTrackingModal from './LiveTrackingModal';
 import TransportCard from './TransportCard';
 import { transportData } from './transportData';
 import TransportFilters from './TransportFilters';
@@ -301,6 +302,9 @@ const TransportPage = () => {
     );
   };
 
+  // Sidebar Content with Common Ads
+  const sidebarContent = <CommonAds />;
+
   const mainContent = (
     <div className="transport-page-container">
       
@@ -319,7 +323,7 @@ const TransportPage = () => {
         state.hasSearched && (
            <div className="row">
               {/* Sidebar Filters */}
-              <div className="col-lg-3 d-none d-lg-block">
+              <div className="col-lg-4 col-12 order-2 order-lg-1 mb-4 mb-lg-0"> 
                  <TransportFilters 
                     filters={state.filters} 
                     onFilterChange={handleFilterChange}
@@ -327,7 +331,7 @@ const TransportPage = () => {
               </div>
 
               {/* Result Cards */}
-              <div className="col-lg-9">
+              <div className="col-lg-8 col-12 order-1 order-lg-2">
                  
                  {/* Top Transport Mode Tabs */}
                  <div className="transport-mode-tabs">
@@ -425,6 +429,7 @@ const TransportPage = () => {
       pageSubtitle="Navigate Nellore with ease - Buses, Trains, and Metro"
       pageIcon="bi bi-bus-front"
       mainContent={mainContent}
+      sidebarContent={sidebarContent}
     />
   );
 };

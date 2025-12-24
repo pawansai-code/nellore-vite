@@ -1,10 +1,7 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { jsPDF } from "jspdf";
 import { useEffect, useRef, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import BannerImg from "../../assets/images/Banner_img.jpg";
 import HistoryImg1 from "../../assets/images/history-img1.jpg";
 import NellorePic from "../../assets/images/nellore_pic.jpg";
@@ -18,10 +15,7 @@ import useTranslation from "../../hooks/useTranslation";
 import "./HistoryPage.css";
 
 const HistoryPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
   const { t } = useTranslation();
-  const { commonAds } = useSelector((state) => state.news);
   /* Gallery State */
   const [activeDot, setActiveDot] = useState(0);
   const galleryRef = useRef(null);
@@ -145,21 +139,7 @@ const HistoryPage = () => {
       desc: "CultureDesc",
       tag: "Heritage",
     },
-  ];
 
-  const recommendedReads = [
-    {
-      icon: "bi-file-earmark-pdf",
-      title: "GazetteerExcerpts",
-      desc: "GazetteerDesc",
-      tag: "PDF",
-    },
-    {
-      icon: "bi-book",
-      title: "LocalChronicles",
-      desc: "LocalChroniclesDesc",
-      tag: "Book",
-    },
   ];
 
   const landmarks = [
@@ -202,91 +182,7 @@ const HistoryPage = () => {
     setTimeout(() => setSelectedItem(null), 300);
   };
 
-  const generateGuidePDF = () => {
-    const doc = new jsPDF();
-    
-    // Cover Page
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(26);
-    doc.setTextColor(139, 69, 19); // SaddleBrown
-    doc.text("Nellore History Guide", 105, 50, { align: "center" });
-    
-    doc.setFontSize(14);
-    doc.setTextColor(0);
-    doc.text("A Journey Through Time", 105, 65, { align: "center" });
-    
-    doc.setLineWidth(1);
-    doc.line(20, 75, 190, 75);
 
-    // Timelines
-    let yPos = 90;
-    doc.setFontSize(18);
-    doc.setTextColor(139, 69, 19);
-    doc.text("Historical Timeline", 20, yPos);
-    yPos += 15;
-
-    timelineData.forEach((item, index) => {
-        // Page check
-        if (yPos > 250) {
-            doc.addPage();
-            yPos = 30;
-        }
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.setTextColor(0);
-        doc.text(`${index + 1}. ${t(item.title) || item.title}`, 20, yPos);
-        yPos += 8;
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
-        doc.setTextColor(80);
-        doc.text(`Era: ${item.tags[0]}`, 20, yPos);
-        yPos += 8;
-
-        doc.setTextColor(0);
-        doc.setFontSize(12);
-        const fullText = item.fullContent || item.description || "";
-        const cleanText = fullText.replace(/\n\n/g, " "); // Flatten for summary
-        const splitContent = doc.splitTextToSize(cleanText, 170);
-        doc.text(splitContent, 20, yPos);
-        
-        yPos += (splitContent.length * 7) + 15;
-    });
-
-    // Quick Facts
-    doc.addPage();
-    yPos = 30;
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(18);
-    doc.setTextColor(139, 69, 19);
-    doc.text("Quick Facts", 20, yPos);
-    yPos += 15;
-
-    quickFacts.forEach(fact => {
-         doc.setFont("helvetica", "bold");
-         doc.setFontSize(12);
-         doc.setTextColor(0);
-         doc.text(t(fact.title) || fact.title, 20, yPos);
-         
-         doc.setFont("helvetica", "normal");
-         const desc = t(fact.desc) || fact.desc;
-         doc.text(`- ${desc}`, 20, yPos + 6);
-         
-         yPos += 15;
-    });
-    
-    // Footer
-    doc.setFontSize(10);
-    doc.setTextColor(150);
-    const pageCount = doc.internal.getNumberOfPages();
-    for(let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.text(`Page ${i} of ${pageCount} - Nellorien Hub`, 105, 290, { align: "center" });
-    }
-    
-    doc.save("Nellore_History_Guide.pdf");
-  };
 
   return (
     <div className="history-page">
@@ -299,6 +195,7 @@ const HistoryPage = () => {
 
       <main className="history-page-main">
         {/* hero section */}
+        <div className="container-fluid">
         <section className="history-hero">
           <div className="history-hero-content mr-2">
              <div className="history-title-wrapper">
@@ -310,12 +207,13 @@ const HistoryPage = () => {
             </p>
           </div>
         </section>
+        </div>
 
         {/* Improved Image Gallery Section - Scrollable */}
         <section className="container-fluid mb-4">
            <div className="history-header-gallery">
               <div className="gallery-header text-center mb-4">
-                 <h2 className="gallery-title">Gallery</h2>
+                 <h2 className="gallery-title">Nellore Chronicle</h2>
               </div>
               
               <div 

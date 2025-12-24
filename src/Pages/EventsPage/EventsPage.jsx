@@ -9,7 +9,7 @@ import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
 import TopHeader from "../../components/TopHeader";
 import useTranslation from "../../hooks/useTranslation";
-import { resetFilters, setEventsTimeFilter } from "../../state/slices/eventsSlice";
+import { resetFilters } from "../../state/slices/eventsSlice";
 import "./EventsPage.css";
 
 const EventsPage = () => {
@@ -21,17 +21,11 @@ const EventsPage = () => {
     featuredEvents,
     upcomingEvents,
     planAheadEvents,
-    todayInfo,
-    topDestinations,
-    commonAds,
-    filterCategories,
-    filterDates,
     filterLocations,
     activeFilters,
   } = useSelector((state) => state.events);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTimeFilter, setActiveTimeFilterState] = useState("This Week");
   const [showFilterModal, setShowFilterModal] = useState(false);
   const { t } = useTranslation();
 
@@ -87,11 +81,6 @@ const EventsPage = () => {
     setOpenDropdown(null);
   };
 
-  const handleTimeFilterChange = (filterLabel) => {
-    handleFilterChange('time', filterLabel);
-    dispatch(setEventsTimeFilter(filterLabel));
-  };
-
   const handleResetFilters = () => {
     dispatch(resetFilters());
     setActiveLocalFilters({ category: 'All', location: 'All', time: 'All' });
@@ -99,14 +88,6 @@ const EventsPage = () => {
 
   const handleEventAction = (event, actionType) => {
     console.log(`Action: ${actionType} for event: ${event.title}`);
-  };
-
-  const handleDestinationAction = (destination, actionType) => {
-    console.log(`Action: ${actionType} for destination: ${destination.name}`);
-  };
-
-  const handleAdClick = (ad) => {
-    console.log("Ad clicked:", ad.title);
   };
 
   const filteredEvents = useMemo(() => {

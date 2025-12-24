@@ -20,7 +20,7 @@ const JobsPage = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { govtJobs = [], privateJobs = [], internships = [] } = useSelector((state) => state.news);
-  const { totalPages, isLoading } = useSelector((state) => state.news.jobsPage);
+
 
   // Combine all jobs into a single array with normalized properties for filtering
   const allJobs = useMemo(() => {

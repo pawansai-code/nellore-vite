@@ -11,7 +11,6 @@ import Navbar from "../../components/Navbar";
 import Pagination from "../../components/Pagination";
 import TopHeader from "../../components/TopHeader";
 import useTranslation from "../../hooks/useTranslation";
-import { setNewsLoading, setNewsPage } from "../../state/slices/newsSlice";
 import "./NewsPage.css";
 
 const NewsPage = () => {
@@ -22,10 +21,6 @@ const NewsPage = () => {
     newsFeedArticles,
     newsFeedFilters,
     newsPage,
-    featuredArticle,
-    liveNewsFeed,
-    headlines,
-    liveNewsCount,
   } = useSelector((state) => state.news);
   const defaultFilter = newsFeedFilters?.[0]?.id ?? "local";
   const [activeFilter, setActiveFilter] = useState(defaultFilter);
@@ -56,25 +51,7 @@ const NewsPage = () => {
 
 
 
-  const handlePageChange = (pageNumber) => {
-    if (
-      pageNumber === newsPage.currentPage ||
-      pageNumber < 1 ||
-      pageNumber > newsPage.totalPages
-    ) {
-      return;
-    }
-    dispatch(setNewsLoading(true));
-    setTimeout(() => {
-      dispatch(setNewsPage(pageNumber));
-      dispatch(setNewsLoading(false));
-    }, 400);
-  };
 
-  // const handleLoadMore = () => {
-  //   if (newsPage.currentPage >= newsPage.totalPages) return;
-  //   handlePageChange(newsPage.currentPage + 1);
-  // };
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -95,36 +72,7 @@ const NewsPage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleReadFullArticle = (articleId) => {
-    navigate(`/hub/news/${articleId}`);
-  };
 
-  const handleLoadNew = () => {
-    // load new
-    dispatch(setNewsLoading(true));
-    setTimeout(() => {
-      dispatch(setNewsPage(1));
-      dispatch(setNewsLoading(false));
-    }, 400);
-  };
-
-  const handleArticleImageClick = () => {
-    handleReadFullArticle(featuredArticle.id);
-  };
-
-  const handleLiveNewsAction = (action, articleId) => {
-    if (action === "Open") {
-      handleReadFullArticle(articleId);
-    } else if (action === "Share") {
-      console.log("Share article:", articleId);
-    } else if (action === "Save") {
-      console.log("Save article:", articleId);
-    } else if (action === "Discuss") {
-      console.log("Discuss article:", articleId);
-    } else if (action === "Source") {
-      console.log("View source for article:", articleId);
-    }
-  };
 
   const handleCardClick = (article) => {
     setSelectedArticle(article);

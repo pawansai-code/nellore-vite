@@ -229,6 +229,11 @@
 }
 
 @media (max-width: 576px) {
+  .common-sidebar {
+    order: 1 !important;
+    /* Force sidebar to bottom on mobile */
+  }
+
   .common-filter-tabs {
     width: 100%;
     justify-content: center;

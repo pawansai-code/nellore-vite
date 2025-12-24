@@ -203,7 +203,7 @@ const MoviesPage = () => {
           {/* Recommended Movies Section */}
           <section className="movies-recommended-section">
             <div className="movies-section-heading">
-              <h2 className="movies-heading-title">Recommended Movies</h2>
+              <h2 className="movies-heading-title"><i className="bi bi-film me-2 text-danger"></i>Movies</h2>
             </div>
 
             <div className="row">
@@ -238,7 +238,7 @@ const MoviesPage = () => {
                 />
               </div>
 
-              {/* Common Ads Column */}
+              {/* Sidebar Column */}
               <div className="col-lg-3">
                 <div className="common-ads-container">
                   <CommonAds />

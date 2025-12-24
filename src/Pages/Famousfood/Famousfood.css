@@ -951,6 +951,10 @@
     font-size: 0.8rem;
     padding: 0.4rem 0.8rem;
   }
+
+  .famousfood-sidebar {
+    order: 1 !important;
+  }
 }
 
 /* Pagination / Load More Button */

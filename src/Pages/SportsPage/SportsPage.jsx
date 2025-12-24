@@ -11,10 +11,9 @@ import Pagination from "../../components/Pagination";
 import TopHeader from "../../components/TopHeader";
 import useTranslation from "../../hooks/useTranslation";
 import {
-    resetSportsFilters,
     setSportsCategory,
     setSportsNewsPage,
-    setSportsRegion,
+    setSportsRegion
 } from "../../state/slices/sportsSlice";
 import "./SportsPage.css";
 
@@ -30,7 +29,6 @@ const SportsPage = () => {
     sportsNews,
     newsLines,
     standings,
-    sponsored,
     activeFilters,
     sportsNewsPage,
   } = useSelector((state) => state.sports);
@@ -51,11 +49,7 @@ const SportsPage = () => {
     dispatch(setSportsRegion(region));
   };
 
-  const handleResetFilters = () => {
-    dispatch(resetSportsFilters());
-    setActiveCategory("All");
-    setActiveRegion("All");
-  };
+
 
   const filteredFixtures = useMemo(() => {
     let filtered = [...upcomingFixtures];

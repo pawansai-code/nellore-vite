@@ -981,4 +981,8 @@
   .events-card-image {
     height: 160px;
   }
+
+  .events-sidebar {
+    order: 1 !important;
+  }
 }

@@ -896,6 +896,10 @@
   .famousstay-stay-rating {
     margin-bottom: 0.25rem;
   }
+
+  .famousstay-sidebar {
+    order: 1 !important;
+  }
 }
 
 /* Pagination / Load More Button */

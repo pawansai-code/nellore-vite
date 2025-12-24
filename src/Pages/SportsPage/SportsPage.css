@@ -572,7 +572,8 @@
   }
 
   .sports-sidebar {
-    order: -1;
+    /* order: -1; Removed to separate sidebar to bottom */
+    margin-top: 2rem;
   }
 
   .sports-filters-section {
