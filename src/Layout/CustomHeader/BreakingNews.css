@@ -62,7 +62,7 @@
 .ticker-content {
   display: inline-flex;
   white-space: nowrap;
-  animation: slide 30s linear infinite;
+  animation: slide 60s linear infinite;
   will-change: transform;
 }
 
@@ -91,9 +91,15 @@
   color: white;
 }
 
+
+.breaking-news-container .d-flex {
+  align-items: center;
+}
+
 @media (max-width: 768px) {
   .breaking-news-container .d-flex {
     flex-direction: column;
+    align-items: stretch;
   }
 
   .breaking-news-banner {
