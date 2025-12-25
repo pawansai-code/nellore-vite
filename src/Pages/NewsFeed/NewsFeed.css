@@ -320,3 +320,10 @@
     justify-content: center;
   }
 }
+
+@media (max-width: 576px) {
+  .news-feed-card-btn {
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+  }
+}
