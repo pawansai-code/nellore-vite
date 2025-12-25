@@ -87,4 +87,10 @@
     /* Or center if desired, but user screenshot has left aligned */
     width: 100%;
   }
+
+  .main-header .container-fluid {
+    padding-left: 15px;
+    /* Add padding to prevent sticking to left */
+    padding-right: 15px;
+  }
 }
