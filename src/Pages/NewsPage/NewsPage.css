@@ -727,6 +727,12 @@
     .headlines-title {
         font-size: 1.1rem;
     }
+
+    .news-page-card-btn {
+        padding: 0.4rem 1rem;
+        padding-right: 1rem;
+        font-size: 0.85rem;
+    }
 }
 
 .live-news-action-btn:hover {
