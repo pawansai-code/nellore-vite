@@ -179,11 +179,15 @@
 
 @media (max-width: 992px) {
   .common-content-wrapper {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
   }
 
   .common-sidebar {
-    order: -1;
+    width: 100%;
+    order: 1;
+    /* Ensure sidebar is below content */
   }
 
   .common-nav-filters {
@@ -231,7 +235,6 @@
 @media (max-width: 576px) {
   .common-sidebar {
     order: 1 !important;
-    /* Force sidebar to bottom on mobile */
   }
 
   .common-filter-tabs {
