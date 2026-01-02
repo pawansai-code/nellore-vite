@@ -1,4 +1,37 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { BASE_URL } from '../../services/config';
+
+export const fetchResults = createAsyncThunk('results/fetchResults', async (_, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/results-getResults`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+    if (!response.ok) throw new Error('Failed to fetch results');
+    const data = await response.json();
+    console.log("✅ Results API Success:", data);
+    return data;
+  } catch (error) {
+    console.error("❌ Results API Error:", error.message);
+    return rejectWithValue(error.message);
+  }
+});
+
+export const createResult = createAsyncThunk('results/createResult', async (newResult, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/results-createResult`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newResult)
+    });
+    if (!response.ok) throw new Error('Failed to create result');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
 
 const initialState = {
   resultsFilters: [
@@ -8,268 +41,9 @@ const initialState = {
     { id: 4, label: 'Govt Exams' },
     { id: 5, label: 'Medical' },
   ],
-  resultsList: [
-    {
-      id: 1,
-      title: 'Polytechnic Semester Results - Oct 2025',
-      category: 'Universities',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['State Board', 'Published 2h ago', 'AP'],
-      passPercentage: '72.4',
-      description: 'Revaluation window from Oct 29-Nov 2. Help desks available at regional centers.',
-      actions: ['View', 'Download PDF'],
-      publishedDate: '2025-10-27',
-      fullContent: 'The State Board of Technical Education and Training (SBTET), Andhra Pradesh, has declared the Polytechnic Semester Results for examinations held in October 2025. \n\n The overall pass percentage is 72.4%. Students can check their results using their PIN numbers on the official portal. Applications for revaluation and recounting will be accepted online from October 29th to November 2nd. Help desks have been set up at all government polytechnic colleges to assist students.',
-    },
-    {
-      id: 2,
-      title: 'Group-IV Merit List (Provisional)',
-      category: 'Govt Exams',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Govt Exams', 'Today', 'District'],
-      description: 'Roll numbers shortlisted for certificate verification phase 1.',
-      actions: ['Open', 'Cutoff'],
-      publishedDate: '2025-10-27',
-      fullContent: 'The AP Public Service Commission has released the provisional merit list for the Group-IV services recruitment exam. The list contains the roll numbers of candidates shortlisted for Phase 1 of certificate verification. \n\n Candidates are advised to check their roll numbers and download the verification schedule. The cutoff marks for various categories have also been published alongside the merit list. Original certificates must be produced during verification.',
-    },
-    {
-      id: 3,
-      title: 'NEET Counselling Round 2 Seat Allotment',
-      category: 'Medical',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Medical', 'Updated 1h', 'State'],
-      description: 'Download allotment list and report to institutes before Nov 3.',
-      actions: ['Allotment', 'Instructions'],
-      publishedDate: '2025-10-27',
-      fullContent: 'The seat allotment list for the second round of NEET UG counselling for state quota seats has been released. Candidates can now download their allotment letters from the official medical counselling website. \n\n All allotted candidates must report to their respective colleges on or before November 3rd, 2025, with all necessary documents and fees. Failure to report will result in forfeiture of the seat.',
-    },
-    {
-      id: 4,
-      title: 'SSC Supply Results - September 2025',
-      category: 'Schools',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Schools', 'Released', 'AP SSC'],
-      description: 'Enter 10-digit hall ticket number to view detailed marks memo.',
-      actions: ['Check', 'Marks Memo'],
-      publishedDate: '2025-10-26',
-      fullContent: 'The Board of Secondary Education, Andhra Pradesh (BSEAP), has announced the results for the SSC Advanced Supplementary Examinations held in September 2025. \n\n Students can view their subject-wise marks by entering their 10-digit hall ticket number on the official results portal. The digital marks memo is valid for immediate admission purposes until the original certificates are issued.',
-    },
-    {
-      id: 5,
-      title: 'Diploma Revaluation Results - Aug 2025',
-      category: 'Universities',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Revaluation', 'Now Live', 'AP SBTET'],
-      description: 'Search by Pin/Reg No. Changes, if any, reflect in new consolidated marks.',
-      actions: ['Search', 'Notification'],
-      publishedDate: '2025-10-25',
-      fullContent: 'The results for Diploma Revaluation for examinations conducted in August 2025 are now live. Students who applied for revaluation can check if there are any changes in their marks by searching with their PIN or Registration Number. \n\n Any changes in marks will be reflected in the new consolidated marks memo, which will be dispatched to the respective colleges within 15 days.',
-    },
-    {
-      id: 6,
-      title: 'Intermediate 1st Year Results - March 2025',
-      category: 'Schools',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Schools', 'Published 3h ago', 'AP BIE'],
-      passPercentage: '68.2',
-      description: 'Results declared for all streams. Download mark sheets from official portal.',
-      actions: ['View', 'Download PDF'],
-      publishedDate: '2025-10-27',
-      fullContent: 'The Board of Intermediate Education, Andhra Pradesh (BIEAP), has declared the 1st Year Intermediate Results for the academic year 2024-25. The overall pass percentage for the general stream stands at 68.2%. \n\n Results for Vocational, General, and Bridge courses have been released simultaneously. Students can download their short memos from the BIEAP website. The revaluation schedule has also been notified.',
-    },
-    {
-      id: 7,
-      title: 'APPSC Group-2 Mains Results',
-      category: 'Govt Exams',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Govt Exams', 'Yesterday', 'State'],
-      description: 'Merit list published. Document verification schedule to be announced soon.',
-      actions: ['View Result', 'Merit List'],
-      publishedDate: '2025-10-26',
-      fullContent: 'The APPSC has published the results for the Group-2 Mains examination. The list of candidates provisionally selected for the next stage of the recruitment process is now available on the commission\'s website. \n\n The schedule for document verification and computer proficiency test (CPT) will be announced shortly. Candidates are advised to keep their hall tickets and original documents ready.',
-    },
-    {
-      id: 8,
-      title: 'Engineering 2nd Year Results - June 2025',
-      category: 'Universities',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Universities', 'Published 5h ago', 'JNTU'],
-      passPercentage: '75.8',
-      description: 'Regular and supply exam results available. Revaluation applications open.',
-      actions: ['Check Result', 'Revaluation'],
-      publishedDate: '2025-10-27',
-      fullContent: 'JNTU has released the results for B.Tech 2nd Year Regular and Supplementary examinations held in June 2025. The pass percentage for this semester is recorded at 75.8%. \n\n Students can check their detailed results by logging into the student portal. The window for applying for revaluation and challenge valuation opens tomorrow and will remain open for one week.',
-    },
-    {
-      id: 9,
-      title: 'AP Police Constable Prelims Results',
-      category: 'Govt Exams',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Recruitment', 'Police', 'SLPRB'],
-      description: 'Qualified candidates list for Physical Efficiency Test (PET).',
-      actions: ['Check List', 'PET Details'],
-      publishedDate: '2025-10-24',
-      fullContent: 'The State Level Police Recruitment Board (SLPRB) has declared the results of the Preliminary Written Test for the post of Police Constables. 1,05,000 candidates have qualified for the next stage. \n\n The Physical Efficiency Test (PET) and Physical Measurement Test (PMT) will commence tentatively from the third week of November. Download the hall tickets for PET from the official website starting next Monday.',
-    },
-    {
-      id: 10,
-      title: 'Inter 2nd Year Vocational Results',
-      category: 'Schools',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Vocational', 'Results', 'BIEAP'],
-      passPercentage: '65.4',
-      description: 'General and Vocational bridge course results announced.',
-      actions: ['View Memo', 'Apply Recounting'],
-      publishedDate: '2025-10-24',
-      fullContent: 'The Board of Intermediate Education has released the results for 2nd Year Vocational courses. The pass percentage stands at 65.4%. \n\n Students can apply for recounting or supply of scanned copy of valued answer scripts through the BIEAP website. The last date for payment of fees for these services is November 5th.',
-    },
-    {
-      id: 11,
-      title: 'Dr. NTR University PhD Entrance Results',
-      category: 'Medical',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['PhD', 'Entrance', 'Medical'],
-      description: 'Rank cards for PhD Ecology and Medical Sciences available.',
-      actions: ['Download Rank Card'],
-      publishedDate: '2025-10-23',
-      fullContent: 'Dr. NTR University of Health Sciences has released the rank cards for the PhD Entrance Examination 2024-25. Candidates can download their rank cards using their hall ticket number and date of birth. \n\n The schedule for interviews and presentation of research proposals will be communicated to qualified candidates via email.',
-    },
-    {
-      id: 12,
-      title: 'DSC 2025 Teacher Recruitment Merit List',
-      category: 'Govt Exams',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['DSC', 'Teachers', 'Mega DSC'],
-      description: 'District-wise provisional merit lists for SGT and SA posts.',
-      actions: ['View District List', 'Objections'],
-      publishedDate: '2025-10-22',
-      fullContent: 'The Provisional Merit Lists for the District Selection Committee (DSC) Teacher Recruitment 2025 have been released district-wise. \n\n Candidates can check their ranking and submit objections, if any, regarding the calculation of TET weightage or academic marks through the grievance portal within 3 days. Final selection lists will be published after resolving all grievances.',
-    },
-    {
-      id: 13,
-      title: 'TET (Teacher Eligibility Test) Results 2025',
-      category: 'Govt Exams',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['TET', 'Qualifying', 'Education'],
-      passPercentage: '58.2',
-      description: 'Check Paper-1 and Paper-2 qualification status and marks.',
-      actions: ['Marks Memo', 'Pass Certificate'],
-      publishedDate: '2025-10-21',
-      fullContent: 'The Department of School Education has released the results of AP TET 2025. Out of 3.5 lakh candidates, 58.2% have qualified. \n\n The TET certificate is now valid for a lifetime. Candidates can download their marks memo. Those who qualified are eligible to apply for the upcoming DSC recruitment.',
-    },
-    {
-      id: 14,
-      title: 'Degree 4th Semester Results (All Universities)',
-      category: 'Universities',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Degree', 'UG', 'Semester'],
-      passPercentage: '70.1',
-      description: 'Consolidated results for BA, B.Com, B.Sc students.',
-      actions: ['Check Result', 'Reval'],
-      publishedDate: '2025-10-20',
-      fullContent: 'The AP State Council of Higher Education (APSCHE) has coordinated the release of 4th Semester Degree results for all affiliated universities in the state. \n\n Students can check their results on the respective university portals or the common APSCHE student services portal. Revaluation dates vary by university; please check specific notifications.',
-    },
-    {
-      id: 15,
-      title: 'Lawcet 2025 Seat Allotment Phase 1',
-      category: 'Universities',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Law', 'Admissions', 'LAWCET'],
-      description: 'College-wise allotment list for LLB (3/5 Years) and LLM.',
-      actions: ['Download Order', 'College Login'],
-      publishedDate: '2025-10-20',
-      fullContent: 'Phase 1 seat allotment for AP Lawcet 2025 has been released. Candidates allotted seats in law colleges across the state must report to the college and submit their joining report online. \n\n Classwork for the first year of the law course is expected to begin from November 1st.',
-    },
-    {
-      id: 16,
-      title: 'ICET Counselling Final Phase Results',
-      category: 'Universities',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['MBA', 'MCA', 'Admissions'],
-      description: 'Final seat allotment for MBA and MCA courses release.',
-      actions: ['Allotment Order', 'Self Reporting'],
-      publishedDate: '2025-10-19',
-      fullContent: 'The final phase of seat allotment for AP ICET 2025 admissions into MBA and MCA programmes is out. \n\n This is the last round of counselling. Candidates who haven\'t secured a seat or wish to retain their current allotment must self-report online immediately to confirm their admission status.',
-    },
-    {
-      id: 17,
-      title: 'Nursing & Paramedical Results 2025',
-      category: 'Medical',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Nursing', 'Paramedical', 'Results'],
-      passPercentage: '88.5',
-      description: 'B.Sc Nursing 1st Year annual exam results declared.',
-      actions: ['View Results', 'Download PDF'],
-      publishedDate: '2025-10-18',
-      fullContent: 'Dr. NTR University has declared the annual examination results for 1st Year B.Sc Nursing and various paramedical diploma courses. \n\n The overall pass percentage is high at 88.5%. Marks memos will be sent to the respective college principals. Students can view provisional results online.',
-    },
-    {
-      id: 18,
-      title: 'Open School (APOSS) SSC Results',
-      category: 'Schools',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Open School', 'Distance', 'SSC'],
-      passPercentage: '52.0',
-      description: 'Results for open school learners declared for October session.',
-      actions: ['Check Marks', 'Pass Cert'],
-      publishedDate: '2025-10-17',
-      fullContent: 'The Andhra Pradesh Open School Society (APOSS) has announced the results for SSC and Intermediate learners who appeared for the October 2025 exams. \n\n Learners can check their results on the APOSS website. Original pass certificates will be distributed through the accredited study centers.',
-    },
-    {
-      id: 19,
-      title: 'Gram Sachivalayam Dept Exams Results',
-      category: 'Govt Exams',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Dept Exams', 'Employees', 'Promotion'],
-      description: 'Departmental test results for probation declaration.',
-      actions: ['Check Result'],
-      publishedDate: '2025-10-16',
-      fullContent: 'The APPSC has released the results of the Departmental Tests held for Gram Ward Sachivalayam employees for the purpose of probation declaration and promotion. \n\n Employees can check their pass status using their Hall Ticket number. This clears the way for the confirmation of services for thousands of employees.',
-    },
-    {
-      id: 20,
-      title: 'Agriculture Diploma Admission List',
-      category: 'Universities',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['Agriculture', 'Diploma', 'ANGRAU'],
-      description: 'First list of selected candidates for Agri Polytechnic.',
-      actions: ['Selection List', 'Instructions'],
-      publishedDate: '2025-10-15',
-      fullContent: 'ANGRAU has released the first selection list for admissions into 2-year and 3-year Agriculture Diploma courses based on SSC merit/grades. \n\n Selected candidates must attend counseling at the designated regional centers with all original certificates.',
-    },
-    {
-      id: 21,
-      title: 'PGECET (M.Tech/M.Pharma) Rank Cards',
-      category: 'Universities',
-      board: 'AP',
-      session: '2024-25',
-      tags: ['PG', 'MTech', 'Counselling'],
-      description: 'Download rank cards for PG Engineering admissions.',
-      actions: ['Download', 'Web Options'],
-      publishedDate: '2025-10-14',
-      fullContent: 'Rank cards for AP PGECET 2025 are now available for download. Counselling for M.Tech and M.Pharmacy admissions in state colleges will commence shortly. \n\n Candidates are advised to keep their income and caste certificates updated for feee reimbursement eligibility.',
-    }
-  ],
+  resultsList: [],
+  status: 'idle', // idle | loading | succeeded | failed
+  error: null,
   resultsPage: {
     currentPage: 1,
     totalPages: 9,
@@ -313,6 +87,39 @@ const resultsSlice = createSlice({
       state.recentlyViewed = state.recentlyViewed.slice(0, 5);
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchResults.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchResults.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        let items = [];
+        if (Array.isArray(action.payload)) {
+          items = action.payload;
+        } else if (action.payload && Array.isArray(action.payload.data)) {
+          items = action.payload.data;
+        }
+
+        // Ensure serialization of dates if needed or mapping properties
+        state.resultsList = items.map(item => ({
+          ...item,
+          // Ensure id is present or mapped if different from backend
+          id: item.id || Math.random().toString(36).substr(2, 9),
+        }));
+      })
+      .addCase(fetchResults.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(createResult.fulfilled, (state, action) => {
+        // improvements: fetch results again to ensure fresh state
+        // For now, optimistic update or just simple append if structure matches
+        if (action.payload && typeof action.payload === 'object') {
+          state.resultsList.unshift(action.payload);
+        }
+      });
+  }
 });
 
 export const {

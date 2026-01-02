@@ -12,7 +12,7 @@ import Navbar from "../../components/Navbar";
 import Pagination from '../../components/Pagination';
 import TopHeader from "../../components/TopHeader";
 import useTranslation from '../../hooks/useTranslation';
-import { updateFilters } from "../../state/slices/famousStaysSlice";
+import { fetchFamousStays, updateFilters } from "../../state/slices/famousStaysSlice";
 import "./FamousstayPage.css";
 
 const FamousstayPage = () => {
@@ -27,7 +27,16 @@ const FamousstayPage = () => {
     commonAds = [],
     mapNearbyFilters = [],
     filters: reduxFilters,
+    status,
+    error
   } = useSelector((state) => state.famousStays || {});
+
+  useEffect(() => {
+    // Only fetch if data is empty or status is idle
+    if (status === 'idle' || (topPicks.length === 0 && status !== 'failed')) {
+        dispatch(fetchFamousStays());
+    }
+  }, [dispatch, status, topPicks.length]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [showPriceFilter, setShowPriceFilter] = useState(false);
@@ -336,7 +345,19 @@ const FamousstayPage = () => {
                       {t('EditorsChoice')}
                     </span>
                   </div>
+                  
+                  {status === 'loading' && (
+                     <div className="spinner-border text-primary ms-3" role="status">
+                       <span className="visually-hidden">Loading...</span>
+                     </div>
+                  )}
                 </div>
+
+                {status === 'failed' && (
+                    <div className="alert alert-warning mb-4">
+                       Note: Showing cached/mock data due to connection error. ({error})
+                    </div>
+                )}
 
                 <div className="famousstay-stays-grid">
                   {displayedStays.map((stay) => (

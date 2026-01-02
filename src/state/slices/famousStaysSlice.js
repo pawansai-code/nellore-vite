@@ -1,7 +1,54 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { BASE_URL } from '../../services/config';
+
+export const fetchFamousStays = createAsyncThunk('famousStays/fetchFamousStays', async (_, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/famousStay-getFamousStays`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+    if (!response.ok) throw new Error('Failed to fetch famous stays');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const createFamousStay = createAsyncThunk('famousStays/createFamousStay', async (newStay, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/famousStay-createFamousStay`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newStay)
+    });
+    if (!response.ok) throw new Error('Failed to create famous stay');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const fetchFamousStayDetail = createAsyncThunk('famousStays/fetchFamousStayDetail', async (stayId, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/famousStay-getFamousStayDetail?id=${stayId}`);
+    if (!response.ok) throw new Error('Failed to fetch famous stay detail');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
 
 const initialState = {
-  topPicks: [
+  topPicks: [], // Will be populated by API
+  status: 'idle', // idle | loading | succeeded | failed
+  error: null,
+  currentStayDetail: null,
+  // Keep mock data for fallback
+  mockTopPicks: [
     {
       id: 1,
       name: 'Hotel Grand Peninsula',
@@ -188,6 +235,44 @@ const famousStaysSlice = createSlice({
       state.filters = initialState.filters;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchFamousStays.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchFamousStays.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        let items = [];
+        if (Array.isArray(action.payload)) {
+          items = action.payload;
+        } else if (action.payload && Array.isArray(action.payload.data)) {
+          items = action.payload.data;
+        }
+
+        state.topPicks = items.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(36).substr(2, 9),
+          // Ensure mock-like fields if backend missing them for UI consistency
+          image: item.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400',
+        }));
+      })
+      .addCase(fetchFamousStays.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+        // Fallback
+        if (state.topPicks.length === 0) {
+          state.topPicks = state.mockTopPicks;
+        }
+      })
+      .addCase(createFamousStay.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.topPicks.unshift(action.payload);
+        }
+      })
+      .addCase(fetchFamousStayDetail.fulfilled, (state, action) => {
+        state.currentStayDetail = action.payload;
+      });
+  }
 });
 
 export const { setStaysPage, setStaysLoading, updateFilters, resetFilters } = famousStaysSlice.actions;

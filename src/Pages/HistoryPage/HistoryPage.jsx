@@ -2,6 +2,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useRef, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import BannerImg from "../../assets/images/Banner_img.jpg";
 import HistoryImg1 from "../../assets/images/history-img1.jpg";
 import NellorePic from "../../assets/images/nellore_pic.jpg";
@@ -12,10 +13,26 @@ import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
 import TopHeader from "../../components/TopHeader";
 import useTranslation from "../../hooks/useTranslation";
+import { fetchHistory } from "../../state/slices/historySlice";
 import "./HistoryPage.css";
 
 const HistoryPage = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  
+  const { 
+      timelineData = [], 
+      landmarks = [], 
+      status, 
+      error 
+  } = useSelector((state) => state.history || {});
+
+  useEffect(() => {
+    if (status === 'idle' || (timelineData.length === 0 && status !== 'failed')) {
+        dispatch(fetchHistory());
+    }
+  }, [dispatch, status, timelineData.length]);
+
   /* Gallery State */
   const [activeDot, setActiveDot] = useState(0);
   const galleryRef = useRef(null);
@@ -69,56 +86,7 @@ const HistoryPage = () => {
   };
 
 
-  const timelineData = [
-    {
-      id: 1,
-      title: "EarlyMentions",
-      description: "EarlyMentionsDesc",
-      tags: ["Pre 6th c.", "Etymology"],
-      image: "image yet to do",
-      fullContent: "The history of Nellore begins in antiquity. Known as 'Vikrama Simhapuri' in ancient texts, the region has been a significant settlement since the Mauryan era. \n\n The name 'Nellore' is thought to be derived from 'Nelli' (Amla tree) and 'Ooru' (Village/Town). Archaeological findings suggest a thriving community with early trade links. It was a crucial part of the Dandakaranya forest mentioned in the Ramayana.",
-    },
-    {
-      id: 2,
-      title: "PallavaInfluence",
-      description: "PallavaInfluenceDesc",
-      tags: ["6th–9th c.", "Dynasty"],
-      image: "image yet to do",
-      fullContent: "From the 6th to the 9th century, Nellore flourished under the Pallava dynasty. This period saw the construction of several rock-cut temples and the expansion of agriculture through tank irrigation. \n\n The Pallavas established Nellore as a strategic northern outpost. The architectural style of this era laid the foundation for the Dravidian style that would evolve in later centuries.",
-    },
-    {
-      id: 3,
-      title: "CholaLinks",
-      description: "CholaLinksDesc",
-      tags: ["10th–12th c.", "Trade"],
-      image: "image yet to do",
-      fullContent: "The Cholas brought a golden age of administration and trade to Nellore. The region became a vital hub connecting the southern peninsula with northern kingdoms. \n\n Under rulers like Rajaraja Chola I, the Ranganatha Swamy Temple saw significant developments. Maritime trade flourished, with merchants from Nellore trading spices and textiles across the Bay of Bengal.",
-    },
-    {
-      id: 4,
-      title: "Vijayanagara",
-      description: "VijayanagaraDesc",
-      tags: ["14th–18th c.", "Polity"],
-      image: "image yet to do",
-      fullContent: "As part of the mighty Vijayanagara Empire, Nellore enjoyed stability and prosperity. The Udayagiri Fort was a key military stronghold during this period. \n\n The Rayas of Vijayanagara patronized arts and literature. Telugu literature, in particular, saw a renaissance. The region's strategic importance meant it was often the site of battles for control of the Andhra coast.",
-    },
-    {
-      id: 5,
-      title: "ColonialAdmin",
-      description: "ColonialAdminDesc",
-      tags: ["19th–20th c.", "Modernization"],
-      image: "image yet to do",
-      fullContent: "Under British rule, Nellore was constituted as a district in 1861. The colonial era brought distinct administrative shifts, railways, and western education. \n\n However, it was also a period of resistance. Nellore played a spirited role in the freedom struggle, with leaders like Potti Sreeramulu emerging from this soil. The district was known for its 'Satyagraha' movements.",
-    },
-    {
-      id: 6,
-      title: "PostIndep",
-      description: "PostIndepDesc",
-      tags: ["Since 1947", "Development"],
-      image: "image yet to do",
-      fullContent: "After Independence, Nellore became a part of the Madras State and later, the first district of the newly formed Andhra State in 1953. \n\n Today, it is a bustling hub of agriculture (known as the Rice Bowl of Andhra), aquaculture, and space research, home to the Satish Dhawan Space Centre at Sriharikota. It blends its rich cultural heritage with modern industrial growth.",
-    },
-  ];
+  /* Removed local timelineData in favor of Redux state */
 
   const quickFacts = [
     {
@@ -142,32 +110,7 @@ const HistoryPage = () => {
 
   ];
 
-  const landmarks = [
-    {
-      icon: "bi-building",
-      title: "NarasimhaSwamyTemple",
-      desc: "NarasimhaSwamyDesc",
-      tag: "Temple",
-    },
-    {
-      icon: "bi-bricks",
-      title: "HistoricFortRemains",
-      desc: "FortDesc",
-      tag: "Fort",
-    },
-    {
-      icon: "bi-water",
-      title: "PennaRiverGhats",
-      desc: "RiverDesc",
-      tag: "River",
-    },
-    {
-      icon: "bi-bank",
-      title: "MuseumArchives",
-      desc: "MuseumDesc",
-      tag: "Archive",
-    },
-  ];
+  /* Removed local landmarks in favor of Redux state */
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -249,8 +192,21 @@ const HistoryPage = () => {
               <div className="history-timeline-section">
                 <div className="section-header">
                   <h3>{t('TimelineHighlights')}</h3>
+                  
+                  {status === 'loading' && (
+                     <div className="spinner-border text-primary ms-3" role="status">
+                       <span className="visually-hidden">Loading...</span>
+                     </div>
+                  )}
+
                   <span className="badge-curated">{t('Curated')}</span>
                 </div>
+
+                {status === 'failed' && (
+                    <div className="alert alert-warning mb-3">
+                       Note: Showing cached/mock data due to connection error. ({error})
+                    </div>
+                )}
 
                 <div className="timeline-list">
                   <div className="timeline-decoration text-center mb-3">

@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setSelectedCategory } from '../../state/slices/homepageSlice';
+import { fetchNews } from '../../state/slices/newsSlice';
 import ContentSection from './ContentSection';
 import './MainContentArea.css';
 import SidebarContent from './SidebarContent';
@@ -9,6 +11,10 @@ import SidebarContent from './SidebarContent';
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { jobs, newsItems, publicInfo, events, results, sports, foods, history, famousstay, offers } = useSelector((state) => state.news);
+
+  useEffect(() => {
+    dispatch(fetchNews());
+  }, [dispatch]);
 
   const handleCardClick = (item, category) => {
     dispatch(setSelectedCategory(category));

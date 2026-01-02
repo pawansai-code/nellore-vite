@@ -1,18 +1,20 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import MainHeader from '../../components/MainHeader';
 import Navbar from '../../components/Navbar';
 import TopHeader from '../../components/TopHeader';
 import useTranslation from '../../hooks/useTranslation';
+import { fetchNews } from '../../state/slices/newsSlice';
 import './NewsFeed.css';
 
 const NewsFeed = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const { newsFeedArticles, newsFeedFilters } = useSelector((state) => ({
     newsFeedArticles: state.news.newsFeedArticles,
     newsFeedFilters: state.news.newsFeedFilters,
@@ -23,6 +25,10 @@ const NewsFeed = () => {
   const [currentPage, setCurrentPage] = useState(2);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const totalPages = 32;
+
+  useEffect(() => {
+    dispatch(fetchNews());
+  }, [dispatch]);
 
   const filteredArticles = useMemo(() => {
     return newsFeedArticles.filter((article) => {

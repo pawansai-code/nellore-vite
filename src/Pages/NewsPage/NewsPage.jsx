@@ -3,25 +3,35 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useMemo, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CommonAds from "../../components/CommonAds/CommonAds";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import Navbar from "../../components/Navbar";
 import Pagination from "../../components/Pagination";
 import TopHeader from "../../components/TopHeader";
-import useTranslation from "../../hooks/useTranslation";
+import useTranslation from '../../hooks/useTranslation';
+import { fetchNews, fetchNewsDetail } from "../../state/slices/newsSlice";
 import "./NewsPage.css";
 
 const NewsPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { id } = useParams(); // Get ID from URL
   const {
     newsFeedArticles,
     newsFeedFilters,
     newsPage,
+    currNewsDetail,
+    status, // Get status from state
+    error, // Get error from state
   } = useSelector((state) => state.news);
+  
+  // Fetch news on mount
+  useEffect(() => {
+    dispatch(fetchNews());
+  }, [dispatch]);
   const defaultFilter = newsFeedFilters?.[0]?.id ?? "local";
   const [activeFilter, setActiveFilter] = useState(defaultFilter);
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,9 +60,6 @@ const NewsPage = () => {
   };
 
 
-
-
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const [isLocalLoading, setIsLocalLoading] = useState(false);
@@ -61,6 +68,20 @@ const NewsPage = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [activeFilter, searchTerm]);
+
+  // Handle URL ID parameter
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchNewsDetail(id))
+        .unwrap()
+        .then((data) => {
+          setSelectedArticle(data);
+          setShowFullContent(true);
+          setShowModal(true);
+        })
+        .catch((error) => console.error("Failed to fetch news detail:", error));
+    }
+  }, [id, dispatch]);
 
   const displayedArticles = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -84,6 +105,7 @@ const NewsPage = () => {
     setSelectedArticle(article);
     setShowFullContent(true);
     setShowModal(true);
+    dispatch(fetchNewsDetail(article.id));
   };
 
   const handleCloseModal = () => {
@@ -91,6 +113,10 @@ const NewsPage = () => {
     setTimeout(() => {
       setSelectedArticle(null);
       setShowFullContent(false);
+      // If we are on a specific news route, go back to main news page
+      if (id) {
+         navigate('/hub/news'); // Defaulting to hub path
+      }
     }, 300);
   };
 
@@ -115,6 +141,17 @@ const NewsPage = () => {
                   <h2 className="news-page-heading">{t('News')}</h2>
                 </div>
               </div>
+              {status === 'failed' && (
+                <div className="alert alert-danger ms-auto mb-0 py-2 px-3" role="alert">
+                  <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                  API Error: {error || 'Connection Failed'}
+                </div>
+              )}
+              {status === 'succeeded' && (
+                 <div className="text-success ms-auto fw-bold" style={{ fontSize: '0.9rem' }}>
+                    <i className="bi bi-check-circle-fill me-1"></i> Live
+                 </div>
+              )}
             </div>
 
             <div className="news-page-tabs-row d-flex flex-wrap align-items-center gap-3 mb-4">
@@ -324,8 +361,8 @@ const NewsPage = () => {
                 <small>{selectedArticle.time}</small>
               </div>
               <p className="lead" style={{ fontSize: '1.1rem' }}>
-                {showFullContent && selectedArticle.fullContent 
-                  ? selectedArticle.fullContent.split('\n\n').map((paragraph, idx) => (
+                {showFullContent && (currNewsDetail?.id === selectedArticle?.id ? currNewsDetail.fullContent : selectedArticle.fullContent) 
+                  ? (currNewsDetail?.id === selectedArticle?.id ? currNewsDetail.fullContent : selectedArticle.fullContent).split('\n\n').map((paragraph, idx) => (
                       <span key={idx} style={{ display: 'block', marginBottom: '1rem' }}>{paragraph}</span>
                     ))
                   : selectedArticle.summary

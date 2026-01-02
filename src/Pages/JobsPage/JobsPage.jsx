@@ -15,11 +15,25 @@ import './JobsPage.css';
 
 
 
+import { fetchJobs } from '../../state/slices/newsSlice';
+
 const JobsPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const { govtJobs = [], privateJobs = [], internships = [] } = useSelector((state) => state.news);
+  const { 
+      govtJobs = [], 
+      privateJobs = [], 
+      internships = [], 
+      jobsStatus, 
+      jobsError 
+  } = useSelector((state) => state.news);
+
+  useEffect(() => {
+    if (jobsStatus === 'idle' || (govtJobs.length === 0 && jobsStatus !== 'failed')) {
+        dispatch(fetchJobs());
+    }
+  }, [dispatch, jobsStatus, govtJobs.length]);
 
 
   // Combine all jobs into a single array with normalized properties for filtering
@@ -293,20 +307,39 @@ const JobsPage = () => {
                 )}
               </div>
 
-               {/* Search Bar */}
-               <div className="jobs-search-bar" style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', borderRadius: '50px', padding: '0.5rem 1rem', border: '1px solid #dee2e6', minWidth: '250px' }}>
-                  <i className="bi bi-search me-2 text-muted"></i>
-                  <input
-                    type="text"
-                    placeholder={t('SearchJobs') || 'Search jobs...'}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%', fontSize: '0.9rem', color: '#495057' }}
-                  />
-            </div>
+                {/* Search Bar */}
+                <div className="jobs-search-bar" style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', borderRadius: '50px', padding: '0.5rem 1rem', border: '1px solid #dee2e6', minWidth: '250px' }}>
+                   <i className="bi bi-search me-2 text-muted"></i>
+                   <input
+                     type="text"
+                     placeholder={t('SearchJobs') || 'Search jobs...'}
+                     value={searchTerm}
+                     onChange={(e) => setSearchTerm(e.target.value)}
+                     style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%', fontSize: '0.9rem', color: '#495057' }}
+                   />
+             </div>
           </div>
         </div>
       </div>
+      
+      {jobsStatus === 'loading' && (
+          <div className="container py-3">
+              <div className="d-flex align-items-center">
+                  <div className="spinner-border text-primary me-3" role="status">
+                     <span className="visually-hidden">Loading...</span>
+                  </div>
+                  <span>Fetching latest jobs...</span>
+              </div>
+          </div>
+      )}
+
+      {jobsStatus === 'failed' && (
+          <div className="container py-3">
+            <div className="alert alert-warning mb-0">
+                Note: Showing cached/mock data due to connection error. ({jobsError})
+            </div>
+          </div>
+      )}
     </div>
 
       <main className="jobs-main-content">

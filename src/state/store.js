@@ -1,14 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
 import appReducer from './slices/appSlice';
-import newsReducer from './slices/newsSlice';
-import homepageReducer from './slices/homepageSlice';
-import resultsReducer from './slices/resultsSlice';
-import notificationReducer from './slices/notificationSlice';
-import famousStaysReducer from './slices/famousStaysSlice';
-import famousFoodsReducer from './slices/famousFoodsSlice';
-import eventsReducer from './slices/eventsSlice';
-import sportsReducer from './slices/sportsSlice';
 import articlesReducer from './slices/articlesSlice';
+import commonAdsReducer from './slices/commonAdsSlice';
+import eventsReducer from './slices/eventsSlice';
+import famousFoodsReducer from './slices/famousFoodsSlice';
+import famousStaysReducer from './slices/famousStaysSlice';
+import historyReducer from './slices/historySlice';
+import homepageReducer from './slices/homepageSlice';
+import newsReducer from './slices/newsSlice';
+import notificationReducer from './slices/notificationSlice';
+import resultsReducer from './slices/resultsSlice';
+import sportsReducer from './slices/sportsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -22,5 +24,7 @@ export const store = configureStore({
     events: eventsReducer,
     sports: sportsReducer,
     articles: articlesReducer,
+    history: historyReducer,
+    commonAds: commonAdsReducer,
   },
 });

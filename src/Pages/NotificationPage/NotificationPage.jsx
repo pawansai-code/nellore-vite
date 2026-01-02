@@ -8,8 +8,10 @@ import CommonAds from "../../components/CommonAds/CommonAds";
 import CommonPageLayout from "../../components/CommonPageLayout";
 import Pagination from "../../components/Pagination";
 import useTranslation from "../../hooks/useTranslation";
+import { fetchUpdates } from "../../state/slices/newsSlice";
 import {
     addToRecentlyOpened,
+    getNotifications,
     setNotificationsLoading,
     setNotificationsPage,
 } from "../../state/slices/notificationSlice";
@@ -25,9 +27,22 @@ const NotificationPage = () => {
     recentlyOpened,
     importantNotificationLinks,
     notificationTools,
+    status,
+    error
   } = useSelector((state) => state.notifications);
 
-  const { updatesFeedItems } = useSelector((state) => state.news);
+  const { updatesFeedItems, updatesStatus, updatesError } = useSelector((state) => state.news);
+
+  useEffect(() => {
+    // Fetch Notifications
+    if (status === 'idle' || (notificationsList.length === 0 && status !== 'loading' && status !== 'failed')) {
+        dispatch(getNotifications());
+    }
+    // Fetch Updates
+    if (updatesStatus === 'idle' || (updatesFeedItems.length === 0 && updatesStatus !== 'loading' && updatesStatus !== 'failed')) {
+         dispatch(fetchUpdates());
+    }
+  }, [dispatch, status, notificationsList.length, updatesStatus, updatesFeedItems.length]);
 
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,7 +61,7 @@ const NotificationPage = () => {
     const formattedUpdates = updatesFeedItems.map((item) => ({
       id: `update-${item.id}`,
       title: item.title,
-      category: "Updates",
+      category: item.category || "Updates",
       board: item.location || "Nellore",
       session: item.timeLabel || "Recent",
       tags: [item.category, item.timeframe].filter(Boolean),
@@ -367,7 +382,26 @@ const NotificationPage = () => {
   // Main Content
   const mainContent = (
     <>
+      {/* Updates Status/Error Feedback which are merged into list below, but effectively handled by slice fallback */}
+      {updatesStatus === 'failed' && (
+          <div className="alert alert-info py-1 mb-2 small">
+             Updates: Showing cached data. ({updatesError})
+          </div>
+      )}
       <div className="notifications-list">
+        {status === 'loading' && (
+           <div className="d-flex align-items-center justify-content-center p-5">
+             <div className="spinner-border text-primary me-3" role="status">
+                <span className="visually-hidden">Loading...</span>
+             </div>
+             <span>Loading notifications...</span>
+           </div>
+        )}
+        {status === 'failed' && (
+           <div className="alert alert-warning mb-3">
+              Note: Showing cached/mock data due to connection error. ({error})
+           </div>
+        )}
         {displayedNotifications.map((notification) => (
           <div key={notification.id} className="notification-card">
             <div className="notification-card-header">

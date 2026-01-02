@@ -1,14 +1,187 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { BASE_URL } from '../../services/config';
+
+// Async Thunks
+export const fetchNews = createAsyncThunk('news/fetchNews', async (_, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/news-getNews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}) // Assuming empty body or needed params
+    });
+    if (!response.ok) throw new Error('Failed to fetch news');
+    const data = await response.json();
+    console.log("News API Success:", data);
+    return data;
+  } catch (error) {
+    console.error("News API Error:", error.message);
+    return rejectWithValue(error.message);
+  }
+});
+
+export const createNews = createAsyncThunk('news/createNews', async (newsData, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/news-createNews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newsData)
+    });
+    if (!response.ok) throw new Error('Failed to create news');
+    return await response.json();
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const updateNews = createAsyncThunk('news/updateNews', async (newsData, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/news-updateNews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newsData)
+    });
+    if (!response.ok) throw new Error('Failed to update news');
+    return await response.json(); // Returning updated news
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const deleteNews = createAsyncThunk('news/deleteNews', async (newsId, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/news-deleteNews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: newsId })
+    });
+    if (!response.ok) throw new Error('Failed to delete news');
+    return newsId; // Return ID to remove from state
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+// -- Jobs Thunks --
+export const fetchJobs = createAsyncThunk('news/fetchJobs', async (_, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/jobs-getJobs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+    if (!response.ok) throw new Error('Failed to fetch jobs');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const createJob = createAsyncThunk('news/createJob', async (jobData, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/jobs-createJob`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(jobData)
+    });
+    if (!response.ok) throw new Error('Failed to create job');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const updateJob = createAsyncThunk('news/updateJob', async (jobData, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/jobs-updateJob`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(jobData)
+    });
+    if (!response.ok) throw new Error('Failed to update job');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const deleteJob = createAsyncThunk('news/deleteJob', async (jobId, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/jobs-deleteJob`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: jobId })
+    });
+    if (!response.ok) throw new Error('Failed to delete job');
+    return jobId;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+// -- Updates Thunks --
+export const fetchUpdates = createAsyncThunk('news/fetchUpdates', async (_, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/updates-getUpdates`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+    if (!response.ok) throw new Error('Failed to fetch updates');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const createUpdate = createAsyncThunk('news/createUpdate', async (updateData, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/updates-createUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updateData)
+    });
+    if (!response.ok) throw new Error('Failed to create update');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const fetchNewsDetail = createAsyncThunk('news/fetchNewsDetail', async (newsId, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/news-getNewsDetail?id=${newsId}`);
+    if (!response.ok) throw new Error('Failed to fetch news detail');
+    const data = await response.json();
+    console.log("News Detail API Success:", data);
+    return data;
+  } catch (error) {
+    console.error("News Detail API Error:", error.message);
+    return rejectWithValue(error.message);
+  }
+});
 
 const initialState = {
+  status: 'idle', // idle, loading, succeeded, failed
+  error: null,
+  currNewsDetail: null,
   breakingNews: [
     'Results Expected Next Week',
     'New Tourism Package for Nellore Beach Destinations Launched',
     'Local Sports Team Qualifies for National Tournament',
     'APPSC Group 2 Main Examination Schedule Announced',
   ],
-  jobs: [],
-  govtJobs: [
+  jobsStatus: 'idle', // idle, loading, succeeded, failed
+  jobsError: null,
+  govtJobs: [],
+  privateJobs: [],
+  internships: [],
+  // Mock fallback data for when API fails
+  mockGovtJobs: [
     {
       id: 1,
       title: 'Junior Assistant',
@@ -164,7 +337,7 @@ const initialState = {
       fullContent: 'The District Central Library is looking for a qualified Librarian. Responsibilities include cataloging books, managing digital resources, and organizing reading events for the community.',
     },
   ],
-  privateJobs: [
+  mockPrivateJobs: [
     {
       id: 5,
       title: 'Logistics Executive',
@@ -306,7 +479,7 @@ const initialState = {
       fullContent: 'CreativeAds Agency is looking for a creative Graphic Designer. Portfolio is mandatory. Work on branding projects for local businesses.',
     },
   ],
-  internships: [
+  mockInternships: [
     {
       id: 9,
       title: 'Marketing Intern',
@@ -448,7 +621,7 @@ const initialState = {
       fullContent: 'AutoWorld offers an internship in sales. Learn how to interact with customers and understand vehicle features. Performance-based incentives available.',
     },
   ],
-  updatesFeedItems: [
+  mockUpdatesFeedItems: [
     {
       id: 1,
       title: 'AP Fisheries Dept: Field Assistant openings',
@@ -648,10 +821,12 @@ const initialState = {
     total: 14,
   },
   updatesStatusIndicators: [
-    { id: 1, icon: 'bi-bell', label: 'Real-time feed enabled' },
     { id: 2, icon: 'bi-chat-right', label: 'Community comments open' },
     { id: 3, icon: 'bi-bookmark-check', label: 'Saved updates visible' },
   ],
+  updatesFeedItems: [], // Main list associated with API
+  updatesStatus: 'idle', // idle, loading, succeeded, failed
+  updatesError: null,
   jobsPage: {
     currentPage: 1,
     totalPages: 32,
@@ -1186,6 +1361,93 @@ const newsSlice = createSlice({
     setJobsLoading: (state, action) => {
       state.jobsPage.isLoading = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      // Fetch News
+      .addCase(fetchNews.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchNews.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // Assuming API returns { data: [...] } or just [...]
+        // Adjust based on actual API response structure. 
+        // If API returns list, use action.payload.
+        // For now, replacing newsFeedArticles if payload is array
+        let articles = [];
+        if (Array.isArray(action.payload)) {
+          articles = action.payload;
+        } else if (action.payload && Array.isArray(action.payload.data)) {
+          articles = action.payload.data;
+        }
+        state.newsFeedArticles = articles;
+
+        // Also update newsItems for the dashboard
+        state.newsItems = articles.slice(0, 5).map(article => ({
+          id: article.id,
+          title: article.title,
+          subtitle: article.time || 'Recently',
+          icon: 'bi-newspaper',
+          badge: article.categoryLabel || 'News',
+          badgeColor: 'light-blue'
+        }));
+      })
+      .addCase(fetchNews.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      // Create News
+      .addCase(createNews.fulfilled, (state, action) => {
+        // optimistically add or re-fetch
+        state.newsFeedArticles.unshift(action.payload);
+      })
+      // Update News
+      .addCase(updateNews.fulfilled, (state, action) => {
+        const index = state.newsFeedArticles.findIndex(news => news.id === action.payload.id);
+        if (index !== -1) {
+          state.newsFeedArticles[index] = action.payload;
+        }
+      })
+      // Delete News
+      .addCase(deleteNews.fulfilled, (state, action) => {
+        state.newsFeedArticles = state.newsFeedArticles.filter(news => news.id !== action.payload);
+      })
+      // Fetch Detail
+      .addCase(fetchNewsDetail.fulfilled, (state, action) => {
+        state.currNewsDetail = action.payload;
+      })
+
+      // -- Updates Reducers --
+      // Get Updates
+      .addCase(fetchUpdates.pending, (state) => {
+        state.updatesStatus = 'loading';
+      })
+      .addCase(fetchUpdates.fulfilled, (state, action) => {
+        state.updatesStatus = 'succeeded';
+        let items = [];
+        if (Array.isArray(action.payload)) {
+          items = action.payload;
+        } else if (action.payload && Array.isArray(action.payload.data)) {
+          items = action.payload.data;
+        } else if (action.payload && action.payload.updates) {
+          items = action.payload.updates;
+        }
+        state.updatesFeedItems = items.length > 0 ? items : [];
+      })
+      .addCase(fetchUpdates.rejected, (state, action) => {
+        state.updatesStatus = 'failed';
+        state.updatesError = action.payload;
+        // Fallback
+        if (state.updatesFeedItems.length === 0) {
+          state.updatesFeedItems = state.mockUpdatesFeedItems;
+        }
+      })
+      // Create Update
+      .addCase(createUpdate.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.updatesFeedItems.unshift(action.payload);
+        }
+      });
   },
 });
 

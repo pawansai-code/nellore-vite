@@ -8,8 +8,9 @@ import CommonPageLayout from "../../components/CommonPageLayout";
 import Pagination from "../../components/Pagination";
 import useTranslation from "../../hooks/useTranslation";
 import {
-    setResultsLoading,
-    setResultsPage,
+  fetchResults,
+  setResultsLoading,
+  setResultsPage,
 } from "../../state/slices/resultsSlice";
 import "./ResultsPage.css";
 
@@ -23,7 +24,15 @@ const ResultsPage = () => {
     recentlyViewed,
     importantLinks,
     resultTools,
+    status,
+    error,
   } = useSelector((state) => state.results);
+
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchResults());
+    }
+  }, [status, dispatch]);
 
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
@@ -309,6 +318,18 @@ const ResultsPage = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        
+       {/* Status Indicators */}
+       {status === 'loading' && (
+          <div className="spinner-border text-primary ms-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+       )}
+       {status === 'failed' && (
+          <div className="alert alert-danger ms-3 py-1 px-2 mb-0" style={{ fontSize: '0.85rem' }}>
+             Error: {error}
+          </div>
+       )}
 
       <div className="results-filter-dropdown">
         <label>{t('Categories')}:</label>

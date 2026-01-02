@@ -1,6 +1,6 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import CommonAds from "../../components/CommonAds/CommonAds";
@@ -11,9 +11,11 @@ import Pagination from "../../components/Pagination";
 import TopHeader from "../../components/TopHeader";
 import useTranslation from "../../hooks/useTranslation";
 import {
-    setSportsCategory,
-    setSportsNewsPage,
-    setSportsRegion
+  getFixtures,
+  getMatchResults,
+  setSportsCategory,
+  setSportsNewsPage,
+  setSportsRegion
 } from "../../state/slices/sportsSlice";
 import "./SportsPage.css";
 
@@ -31,7 +33,17 @@ const SportsPage = () => {
     standings,
     activeFilters,
     sportsNewsPage,
+    status,
+    error
   } = useSelector((state) => state.sports);
+
+  useEffect(() => {
+    // Determine if we need to fetch. Only fetch if idle or data is empty and not failed (so we don't loop on failure)
+    if (status === 'idle' || ((upcomingFixtures.length === 0 || liveScores.length === 0) && status !== 'failed')) {
+        dispatch(getFixtures());
+        dispatch(getMatchResults());
+    }
+  }, [dispatch, status, upcomingFixtures.length, liveScores.length]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
@@ -168,7 +180,18 @@ const SportsPage = () => {
                   <i className="bi bi-calendar3"></i>
                   <span>{t('ThisWeek')}</span>
                 </div>
+                {status === 'loading' && (
+                   <div className="ms-3 spinner-border text-primary spinner-border-sm" role="status">
+                     <span className="visually-hidden">Loading...</span>
+                   </div>
+                )}
               </section>
+
+              {status === 'failed' && (
+                 <div className="alert alert-warning mb-2" style={{ maxWidth: '400px' }}>
+                    Note: Showing cached/mock data due to connection error. ({error})
+                 </div>
+              )}
 
               {/* Hero Section */}
               <section className="sports-hero">

@@ -76,7 +76,9 @@ function App() {
       <Route path="/hub/jobs" element={<JobsPage />} />
       <Route path="/jobs" element={<JobsPage />} />
       <Route path="/hub/news" element={<NewsPage />} />
+      <Route path="/hub/news/:id" element={<NewsPage />} />
       <Route path="/news" element={<NewsPage />} />
+      <Route path="/news/:id" element={<NewsPage />} />
       <Route path="/hub/results" element={<ResultsPage />} />
       <Route path="/results" element={<ResultsPage />} />
       <Route path="/hub/history" element={<HistoryPage />} />

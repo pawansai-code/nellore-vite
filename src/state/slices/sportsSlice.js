@@ -1,5 +1,65 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import sportsHero from "../../assets/images/sports-hero.jpg";
+import { BASE_URL } from '../../services/config';
+
+// Sync Thunks
+export const createFixture = createAsyncThunk('sports/createFixture', async (fixtureData, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/sports-createFixture`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(fixtureData)
+    });
+    if (!response.ok) throw new Error('Failed to create fixture');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const getFixtures = createAsyncThunk('sports/getFixtures', async (_, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/sports-getFixtures`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (!response.ok) throw new Error('Failed to fetch fixtures');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const createMatchResult = createAsyncThunk('sports/createMatchResult', async (resultData, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/sports-createMatchResult`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(resultData)
+    });
+    if (!response.ok) throw new Error('Failed to create match result');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const getMatchResults = createAsyncThunk('sports/getMatchResults', async (_, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/sports-getMatchResults`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (!response.ok) throw new Error('Failed to fetch match results');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
 
 const initialState = {
   // Hero Section
@@ -25,8 +85,13 @@ const initialState = {
     { id: 5, label: "Mypadu" },
   ],
 
-  // Live Scores
-  liveScores: [
+  // Status State
+  status: 'idle', // idle, loading, succeeded, failed
+  error: null,
+
+  // Live Scores (Mapped from Match Results for now or separate logic)
+  liveScores: [],
+  mockLiveScores: [
     {
       id: 1,
       match: "Nellore XI vs Gudur CC",
@@ -46,7 +111,8 @@ const initialState = {
   ],
 
   // Upcoming Fixtures
-  upcomingFixtures: [
+  upcomingFixtures: [],
+  mockUpcomingFixtures: [
     {
       id: 1,
       title: "School Cricket Finals",
@@ -274,6 +340,57 @@ const sportsSlice = createSlice({
       state.sportsNewsPage.currentPage = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    // Get Fixtures
+    builder.addCase(getFixtures.pending, (state) => {
+      state.status = 'loading';
+    });
+    builder.addCase(getFixtures.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      // normalize data
+      let items = [];
+      if (Array.isArray(action.payload)) {
+        items = action.payload;
+      } else if (action.payload && Array.isArray(action.payload.data)) {
+        items = action.payload.data;
+      }
+      state.upcomingFixtures = items;
+    });
+    builder.addCase(getFixtures.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
+      // Fallback
+      if (state.upcomingFixtures.length === 0) {
+        state.upcomingFixtures = state.mockUpcomingFixtures;
+      }
+    });
+
+    // Get Match Results (Populates liveScores for demo purposes, or a separate list)
+    builder.addCase(getMatchResults.fulfilled, (state, action) => {
+      // Assume match results might double as live scores if marked 'isLive'
+      // For integration, let's populate liveScores with appropriate data from response
+      let items = [];
+      if (Array.isArray(action.payload)) {
+        items = action.payload;
+      } else if (action.payload && Array.isArray(action.payload.data)) {
+        items = action.payload.data;
+      }
+      state.liveScores = items.length > 0 ? items : state.mockLiveScores; // fallback if empty array returned from API?
+    });
+    builder.addCase(getMatchResults.rejected, (state) => {
+      if (state.liveScores.length === 0) {
+        state.liveScores = state.mockLiveScores;
+      }
+    });
+
+    // Create Actions
+    builder.addCase(createFixture.fulfilled, (state, action) => {
+      if (action.payload) state.upcomingFixtures.push(action.payload);
+    });
+    builder.addCase(createMatchResult.fulfilled, (state, action) => {
+      if (action.payload) state.liveScores.push(action.payload);
+    });
+  }
 });
 
 export const setSportsCategory = sportsSlice.actions.setActiveCategory;

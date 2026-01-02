@@ -1,8 +1,19 @@
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCommonAds } from '../../state/slices/commonAdsSlice';
 import './CommonAds.css';
 
 const CommonAds = () => {
-  const { commonAds, sponsored } = useSelector((state) => state.news);
+  const dispatch = useDispatch();
+  const { commonAds = [], sponsored = [], status } = useSelector((state) => state.commonAds || {});
+
+  useEffect(() => {
+    // Check if we need to fetch. 
+    // We fetch if status is idle or if we have no ads and not currently fetching/failed
+    if (status === 'idle' || (commonAds.length === 0 && sponsored.length === 0 && status !== 'loading' && status !== 'failed')) {
+        dispatch(fetchCommonAds());
+    }
+  }, [dispatch, status, commonAds.length, sponsored.length]);
 
   return (
     <div className="sidebar-section common-ads-section">

@@ -2,7 +2,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CommonAds from "../../components/CommonAds/CommonAds";
 import Footer from "../../components/Footer";
@@ -11,6 +11,7 @@ import Navbar from "../../components/Navbar";
 import Pagination from '../../components/Pagination';
 import TopHeader from "../../components/TopHeader";
 import useTranslation from '../../hooks/useTranslation';
+import { fetchFamousFoods } from "../../state/slices/famousFoodsSlice";
 import "./Famousfood.css";
 
 // Unused import 'useDispatch' effectively unused now if handleCreateItinerary removed, 
@@ -19,6 +20,7 @@ import "./Famousfood.css";
 // Let's check other usages of dispatch. None found in search.
 // So removal of dispatch is safe.
 const Famousfood = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -27,7 +29,16 @@ const Famousfood = () => {
     topRatedSpots = [],
     commonAds = [],
     filters: reduxFilters,
+    status, // Get status from state
+    error, // Get error from state
   } = useSelector((state) => state.famousFoods || {});
+
+  useEffect(() => {
+    // Fetch foods if signatureDishes is empty or status is idle
+    if (status === 'idle' || (signatureDishes.length === 0 && status !== 'failed')) {
+      dispatch(fetchFamousFoods());
+    }
+  }, [dispatch, status, signatureDishes.length]);
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -260,8 +271,21 @@ const Famousfood = () => {
               <section className="famousfood-signature-dishes">
                 <div className="famousfood-section-header">
                   <h2 className="famousfood-section-title">{t('SignatureDishes')}</h2>
+                  
+                  {status === 'loading' && (
+                     <div className="spinner-border text-primary ms-3" role="status">
+                       <span className="visually-hidden">Loading...</span>
+                     </div>
+                  )}
+
                   <button className="famousfood-must-try-btn">{t('MustTry')}</button>
                 </div>
+
+                {status === 'failed' && (
+                    <div className="alert alert-warning mb-4">
+                       Note: Showing cached/mock data due to connection error. ({error})
+                    </div>
+                )}
 
                 <div className="famousfood-dishes-list">
                   {displayedDishes.map((dish) => (

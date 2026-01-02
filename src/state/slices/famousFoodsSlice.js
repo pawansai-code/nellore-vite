@@ -1,7 +1,56 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { BASE_URL } from '../../services/config';
+
+export const fetchFamousFoods = createAsyncThunk('famousFoods/fetchFamousFoods', async (_, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/famousFoods-getFamousFoods`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+    if (!response.ok) throw new Error('Failed to fetch famous foods');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const createFamousFood = createAsyncThunk('famousFoods/createFamousFood', async (newFood, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/famousFoods-createFamousFood`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newFood)
+    });
+    if (!response.ok) throw new Error('Failed to create famous food');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const fetchFamousFoodDetail = createAsyncThunk('famousFoods/fetchFamousFoodDetail', async (foodId, { rejectWithValue }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/famousFoods-getFamousFoodDetail?id=${foodId}`);
+    if (!response.ok) throw new Error('Failed to fetch famous food detail');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
 
 const initialState = {
-  signatureDishes: [
+  signatureDishes: [], // Will be populated by API
+  status: 'idle', // idle | loading | succeeded | failed
+  error: null,
+  currentFoodDetail: null,
+  // Keep mock data for fallback if needed, or remove if API is strictly used. 
+  // For now, I'm setting signatureDishes to empty array, assuming API will fill it.
+  // If fallback is needed, we can keep the below array attached to a different key or use it on failure.
+  mockSignatureDishes: [
     {
       id: 1,
       name: 'Nellore Chepala Pulusu',
@@ -394,6 +443,45 @@ const famousFoodsSlice = createSlice({
       state.foodTourPlan = { ...state.foodTourPlan, ...action.payload };
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchFamousFoods.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchFamousFoods.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        let items = [];
+        if (Array.isArray(action.payload)) {
+          items = action.payload;
+        } else if (action.payload && Array.isArray(action.payload.data)) {
+          items = action.payload.data;
+        }
+        state.signatureDishes = items.map(item => ({
+          ...item,
+          // Ensure necessary fields exist, map if backend names differ
+          id: item.id || Math.random().toString(36).substr(2, 9),
+          // Default image if missing from backend
+          image: item.image || 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400',
+        }));
+      })
+      .addCase(fetchFamousFoods.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+        // Fallback to mock data on error if signatureDishes is empty
+        if (state.signatureDishes.length === 0) {
+          state.signatureDishes = state.mockSignatureDishes;
+        }
+      })
+      .addCase(createFamousFood.fulfilled, (state, action) => {
+        // Optimistically add
+        if (action.payload) {
+          state.signatureDishes.unshift(action.payload);
+        }
+      })
+      .addCase(fetchFamousFoodDetail.fulfilled, (state, action) => {
+        state.currentFoodDetail = action.payload;
+      });
+  }
 });
 
 export const { setFoodsPage, setFoodsLoading, updateFilters, resetFilters, updateFoodTourPlan } = famousFoodsSlice.actions;
