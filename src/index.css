@@ -3,12 +3,12 @@
 }
 
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
   --primary-color: #0d6efd;
   --secondary-color: #6c757d;
   --success-color: #198754;
@@ -28,6 +28,60 @@ body {
   background-color: #ffffff;
   color: #212529;
   line-height: 1.6;
+  /* Prevent Google Translate from shifting body */
+  top: 0 !important;
+}
+
+/* Hide Google Translate Top Banner */
+.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+}
+
+body {
+    top: 0px !important;
+}
+
+body > .skiptranslate {
+    display: none !important;
+}
+
+/* Hide the specific Google Translate icon/gadget */
+.goog-te-gadget-icon {
+    display: none !important;
+    background: none !important;
+}
+
+.goog-logo-link {
+    display: none !important;
+}
+
+/* Hide the floating popup (balloon) */
+#goog-gt-tt, .goog-te-balloon-frame {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide tooltips and highlights from Google Translate */
+.goog-tooltip {
+    display: none !important;
+}
+.goog-tooltip:hover {
+    display: none !important;
+}
+.goog-text-highlight {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Hide the 'Contribute a better translation' link */
+.goog-te-spinner-pos {
+    display: none !important;
+}
+
+/* Ensure the widget container itself is hidden (redundant safety) */
+#google_translate_element {
+    display: none !important;
 }
 
 #root {
