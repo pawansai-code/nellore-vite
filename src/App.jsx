@@ -30,6 +30,7 @@ const SportsPage = lazy(() => import("./Pages/SportsPage/SportsPage.jsx"));
 const TransportPage = lazy(() =>
   import("./Pages/TransportPage/TransportPage.jsx")
 ); // Added
+const ContactUs = lazy(() => import("./Pages/ContactUs/ContactUs.jsx"));
 
 function HomePage() {
   return (
@@ -97,6 +98,8 @@ function App() {
       <Route path="/hub/Articles" element={<ArticlesPage />} />
       <Route path="/movies" element={<MoviesPage />} />
       <Route path="/transport" element={<TransportPage />} />
+      <Route path="/contact" element={<ContactUs />} />
+      <Route path="/hub/contact" element={<ContactUs />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

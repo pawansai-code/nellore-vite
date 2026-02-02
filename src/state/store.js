@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import appReducer from './slices/appSlice';
 import articlesReducer from './slices/articlesSlice';
 import commonAdsReducer from './slices/commonAdsSlice';
+import contactReducer from './slices/contactSlice';
 import eventsReducer from './slices/eventsSlice';
 import famousFoodsReducer from './slices/famousFoodsSlice';
 import famousStaysReducer from './slices/famousStaysSlice';
@@ -26,5 +27,6 @@ export const store = configureStore({
     articles: articlesReducer,
     history: historyReducer,
     commonAds: commonAdsReducer,
+    contact: contactReducer,
   },
 });

@@ -71,10 +71,10 @@
 
 .results-search-bar {
   position: relative;
-  min-width: 300px;
+  min-width: 200px;
   flex: 1;
   max-width: 400px;
-  margin-right: 310px;
+  margin-right: 1rem;
 }
 
 .results-search-bar i {
@@ -188,22 +188,26 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  min-width: 0;
+  /* fixes grid overflow issues */
 }
 
 .results-filters-row {
   display: flex;
-  gap: 1.2rem;
-  flex-wrap: nowrap;
-  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  /* Changed from nowrap to wrap */
+  justify-content: flex-start;
+  /* Changed from space-between */
   align-items: center;
 
   background: #ffffff;
-  border-radius: 60px;
-  padding: 0.75rem 1.5rem;
+  border-radius: 30px;
+  /* Reduced radius for better fit when wrapping */
+  padding: 1rem;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
 
   width: 100%;
-  overflow-x: auto;
 }
 
 .results-filter-dropdown {
@@ -731,7 +735,7 @@
   }
 }
 
-/* Pagination Section (Copied/Adapted from JobsPage) */ 
+/* Pagination Section (Copied/Adapted from JobsPage) */
 .results-pagination-panel {
   background: white;
   border-radius: 50px;
@@ -744,7 +748,7 @@
   gap: 1rem;
   max-width: 800px;
   width: 100%;
-  }
+}
 
 .pagination-controls-group {
   display: flex;
